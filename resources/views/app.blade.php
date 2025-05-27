@@ -21,19 +21,8 @@
     window.CONFIG.APP_VERSION_STR = "{{ config('app.version_str', '1.0.0') }}";
     window.CONSTANTS = <?= json_encode([
           'USER_ROLES' => \App\Models\User::Roles,
-          'PRODUCT_TYPES' => \App\Models\Product::Types,
-          'STOCKMOVEMENT_REFTYPES' => \App\Models\StockMovement::RefTypes,
-          'STOCKADJUSTMENT_TYPES' => \App\Models\StockAdjustment::Types,
-          'STOCKADJUSTMENT_STATUSES' => \App\Models\StockAdjustment::Statuses,
-          'PRODUCTION_ORDER_TYPES' => \App\Models\ProductionOrder::Types,
-          'PRODUCTION_ORDER_STATUSES' => \App\Models\ProductionOrder::Statuses,
-          'PRODUCTION_ORDER_PAYMENT_STATUSES' => \App\Models\ProductionOrder::PaymentStatuses,
-          'PRODUCTION_ORDER_DELIVERY_STATUSES' => \App\Models\ProductionOrder::DeliveryStatuses,
-          'PRODUCTION_WORK_ASSIGNMENT_STATUSES' => \App\Models\ProductionWorkAssignment::Statuses,
       ]) ?>;
     window.CONSTANTS.USER_ROLE_ADMIN = "{{ \App\Models\User::Role_Admin }}";
-    window.CONSTANTS.USER_Role_Tailor = "{{ \App\Models\User::Role_Tailor }}";
-    window.CONSTANTS.USER_ROLE_OWNER = "{{ \App\Models\User::Role_Owner }}";
   </script>
   @routes
   @vite(['resources/js/app.js', 'resources/css/app.css'])

@@ -5,20 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
     public const Role_Admin = 'admin';
-    public const Role_Tailor = 'washer';
-    // public const Role_Cashier = 'cashier';
-    public const Role_Owner = 'owner';
+    public const Role_Sales = 'sales';
 
     // Display role di hardcode saja, tidak diambil dari translations
     public const Roles = [
         self::Role_Admin => 'Administrator',
-        self::Role_Tailor => 'Penjahit',
-        // self::Role_Cashier => 'Kasir',
-        self::Role_Owner => 'Owner',
+        self::Role_Sales => 'Sales',
     ];
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -73,5 +70,12 @@ class User extends Authenticatable
         $this->last_activity_description = $description;
         $this->last_activity_datetime = now();
         $this->save();
+    }
+
+    public static function activeUserCount()
+    {
+        return DB::select(
+            'select count(0) as count from users where active = 1'
+        )[0]->count;
     }
 }

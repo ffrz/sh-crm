@@ -87,7 +87,7 @@ const onFilterChange = () => {
                 { id: 5, name: 'Dani', total: 60 },
               ]"
               title="Top 5 Karyawan"
-              route_url="admin.employee.index"
+              route_url="admin.customer.index"
             />
           </div>
         </div>

@@ -98,8 +98,7 @@ onMounted(() => {
               <q-separator />
               <q-item clickable v-close-popup v-ripple style="color: inherit" :href="route('admin.auth.logout')">
                 <q-item-section>
-                  <q-item-label><q-icon name="logout" class="q-mr-sm" />
-                    {{ $t("logout") }}</q-item-label>
+                  <q-item-label><q-icon name="logout" class="q-mr-sm" />Keluar</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -120,46 +119,92 @@ onMounted(() => {
               <q-item-label>Dashboard</q-item-label>
             </q-item-section>
           </q-item>
+
+          <q-item clickable v-ripple :active="$page.url.startsWith('/admin/reports')"
+            @click="router.get(route('admin.dashboard'))">
+            <q-item-section avatar>
+              <q-icon name="docs" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Laporan</q-item-label>
+            </q-item-section>
+          </q-item>
+
+          <q-separator />
+
+          <q-item clickable v-ripple :active="$page.url.startsWith('/admin/visits')"
+            @click="router.get(route('admin.customer.index'))">
+            <q-item-section avatar>
+              <q-icon name="door_open" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Visit</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item clickable v-ripple :active="$page.url.startsWith('/admin/visits')"
+            @click="router.get(route('admin.customer.index'))">
+            <q-item-section avatar>
+              <q-icon name="eye_tracking" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Follow Up</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item clickable v-ripple :active="$page.url.startsWith('/admin/visits')"
+            @click="router.get(route('admin.customer.index'))">
+            <q-item-section avatar>
+              <q-icon name="update" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Status Log</q-item-label>
+            </q-item-section>
+          </q-item>
           <q-item clickable v-ripple :active="$page.url.startsWith('/admin/customers')"
             @click="router.get(route('admin.customer.index'))">
             <q-item-section avatar>
-              <q-icon name="people" />
+              <q-icon name="partner_exchange" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>Pelanggan</q-item-label>
+              <q-item-label>Customer</q-item-label>
             </q-item-section>
           </q-item>
-          <q-expansion-item expand-separator icon="settings" :label="$t('settings')"
-            :default-opened="$page.url.startsWith('/admin/settings')">
-            <q-item v-if="$page.props.auth.user.role == $CONSTANTS.USER_ROLE_ADMIN" class="subnav" clickable v-ripple
-              :active="$page.url.startsWith('/admin/settings/users')" @click="router.get(route('admin.user.index'))">
-              <q-item-section avatar>
-                <q-icon name="group" />
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>{{ $t("users") }}</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item class="subnav" clickable v-ripple :active="$page.url.startsWith('/admin/settings/profile')"
-              @click="router.get(route('admin.profile.edit'))">
-              <q-item-section avatar>
-                <q-icon name="manage_accounts" />
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>{{ $t("my_profile") }}</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item v-if="$page.props.auth.user.role == $CONSTANTS.USER_ROLE_ADMIN" class="subnav" clickable v-ripple
-              :active="$page.url.startsWith('/admin/settings/company-profile')"
-              @click="router.get(route('admin.company-profile.edit'))">
-              <q-item-section avatar>
-                <q-icon name="apartment" />
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>{{ $t("company_profile") }}</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-expansion-item>
+
+          <q-separator />
+
+          <q-item v-if="$page.props.auth.user.role == $CONSTANTS.USER_ROLE_ADMIN" clickable v-ripple
+            :active="$page.url.startsWith('/admin/settings/users')" @click="router.get(route('admin.user.index'))">
+            <q-item-section avatar>
+              <q-icon name="group" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Pengguna</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item clickable v-ripple :active="$page.url.startsWith('/admin/settings/profile')"
+            @click="router.get(route('admin.profile.edit'))">
+            <q-item-section avatar>
+              <q-icon name="manage_accounts" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Profil Saya</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item v-if="$page.props.auth.user.role == $CONSTANTS.USER_ROLE_ADMIN" clickable v-ripple
+            :active="$page.url.startsWith('/admin/settings/company-profile')"
+            @click="router.get(route('admin.company-profile.edit'))">
+            <q-item-section avatar>
+              <q-icon name="apartment" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Profil Perusahaan</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item clickable v-close-popup v-ripple style="color: inherit" :href="route('admin.auth.logout')">
+            <q-item-section>
+              <q-item-label><q-icon name="logout" class="q-mr-sm" />Keluar</q-item-label>
+            </q-item-section>
+          </q-item>
+
           <div class="absolute-bottom text-grey-6 q-pa-md">
             &copy; 2025 -
             {{ $config.APP_NAME + " v" + $config.APP_VERSION_STR }}

@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\ServiceOrder;
 use App\Models\Tailor;
 use App\Models\Technician;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -66,7 +67,7 @@ class DashboardController extends Controller
                 // 'total_active_bill' => ServiceOrder::totalActiveBill(),
                 // 'total_active_downpayment' => ServiceOrder::totalActiveDownPayment(),
                 'active_customer_count' => Customer::activeCustomerCount(),
-                'active_tailor_count' => Tailor::activeTailorCount(),
+                'active_user_count' => User::activeUserCount(),
                 // 'top_customers' => ServiceOrder::topCustomers($start_date, $end_date),
                 // 'top_technicians' => ServiceOrder::topTechnicians($start_date, $end_date),
                 // 'chart1_data' => [
