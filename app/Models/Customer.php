@@ -18,13 +18,36 @@ class Customer extends Model
         'status',
         'source',
         'notes',
-        'active',
+        'assigned_user_id',
+    ];
+
+    const Status_New = 'new';
+    const Status_Contacted = 'contacted';
+    const Status_ColdProspect = 'cold';
+    const Status_HotProspect = 'hot';
+    const Status_Converted = 'converted';
+    const Status_Churned = 'churned';
+    const Status_Inactive = 'inactive';
+
+    const Statuses = [
+        self::Status_New => 'New',
+        self::Status_ColdProspect => 'Contacted',
+        self::Status_ColdProspect => 'Cold Prospect',
+        self::Status_HotProspect => 'Hot Prospect',
+        self::Status_Converted => 'Converted',
+        self::Status_Churned => 'Churned',
+        self::Status_Inactive => 'Inactive',
     ];
 
     public static function activeCustomerCount()
     {
         return DB::select(
-            'select count(0) as count from customers where active = 1'
+            "select count(0) as count from customers where status = 'converted'"
         )[0]->count;
+    }
+
+    public function assigned_user()
+    {
+        return $this->belongsTo(User::class, 'assigned_user_id');
     }
 }

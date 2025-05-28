@@ -22,11 +22,11 @@ class UserSeeder extends Seeder
             'active' => 1,
         ]);
         User::factory()->create([
-            'username' => 'washer',
+            'username' => 'fahmi',
             'name' => 'Fahmi',
             'role' => User::Role_Sales,
             'active' => 1,
         ]);
-        User::factory(10)->create();
+        // User::factory(10)->create();
     }
 }

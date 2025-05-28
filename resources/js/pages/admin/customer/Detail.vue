@@ -17,29 +17,54 @@ const title = "Rincian Pelanggan";
             <q-card-section>
               <div class="text-subtitle1 text-bold text-grey-8">Info Pelanggan</div>
               <table class="detail">
-                  <tbody>
-                    <tr>
-                      <td style="width:70px">Nama</td>
-                      <td style="width:1px">:</td>
-                      <td>{{ page.props.data.name }}</td>
-                    </tr>
-                    <tr>
-                      <td>Telepon</td>
-                      <td>:</td>
-                      <td>{{ page.props.data.phone }}</td>
-                    </tr>
-                    <tr>
-                      <td>Alamat</td>
-                      <td>:</td>
-                      <td>{{ page.props.data.address }}</td>
-                    </tr>
-                    <tr>
-                      <td>Status</td>
-                      <td>:</td>
-                      <td>{{ page.props.data.active ? 'Aktif' : 'Tidak Aktif' }}</td>
-                    </tr>
-                  </tbody>
-                </table>
+                <tbody>
+                  <tr>
+                    <td style="width:100px">Nama</td>
+                    <td style="width:1px">:</td>
+                    <td>{{ page.props.data.name }}</td>
+                  </tr>
+                  <tr>
+                    <td>Perusahaan</td>
+                    <td>:</td>
+                    <td>{{ page.props.data.company }}</td>
+                  </tr>
+                  <tr>
+                    <td>No Telepon</td>
+                    <td>:</td>
+                    <td>{{ page.props.data.phone }}</td>
+                  </tr>
+                  <tr>
+                    <td>Email</td>
+                    <td>:</td>
+                    <td>{{ page.props.data.email }}</td>
+                  </tr>
+                  <tr>
+                    <td>Alamat</td>
+                    <td>:</td>
+                    <td>{{ page.props.data.address }}</td>
+                  </tr>
+                  <tr>
+                    <td>Sumber</td>
+                    <td>:</td>
+                    <td>{{ page.props.data.source }}</td>
+                  </tr>
+                  <tr>
+                    <td>Assigned to</td>
+                    <td>:</td>
+                    <td>{{ page.props.data.assigned_user?.name + ' - ' + (page.props.data.assigned_user?.username) }}</td>
+                  </tr>
+                  <tr>
+                    <td>Status</td>
+                    <td>:</td>
+                    <td>{{ $CONSTANTS.CUSTOMER_STATUSES[page.props.data.status] }}</td>
+                  </tr>
+                  <tr>
+                    <td>Catatan</td>
+                    <td>:</td>
+                    <td>{{ page.props.data.notes }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </q-card-section>
           </q-card>
         </div>

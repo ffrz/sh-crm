@@ -12,9 +12,18 @@ const rows = ref([]);
 const loading = ref(true);
 const filter = reactive({
   search: "",
-  status: "active",
+  status: "all",
   ...getQueryParams(),
 });
+const statusColors = {
+  new: "yellow",
+  contacted: "blue",
+  cold: "orange",
+  hot: "green",
+  converted: "grey",
+  churned: "red",
+  inactive: "black",
+};
 
 const pagination = ref({
   page: 1,
@@ -26,9 +35,23 @@ const pagination = ref({
 
 const columns = [
   {
+    name: "id",
+    label: "#",
+    field: "id",
+    align: "left",
+    sortable: true,
+  },
+  {
     name: "name",
     label: "Nama",
     field: "name",
+    align: "left",
+    sortable: true,
+  },
+  {
+    name: "company",
+    label: "Perusahaan",
+    field: "company",
     align: "left",
     sortable: true,
   },
@@ -37,14 +60,14 @@ const columns = [
     label: "No HP",
     field: "phone",
     align: "left",
-    sortable: true,
+    sortable: false,
   },
   {
-    name: "address",
-    label: "Alamat",
-    field: "address",
-    align: "left",
-    sortable: true,
+    name: "status",
+    label: "Status",
+    field: "status",
+    align: "center",
+    sortable: false,
   },
   {
     name: "action",
@@ -54,8 +77,10 @@ const columns = [
 
 const statuses = [
   { value: "all", label: "Semua" },
-  { value: "active", label: "Aktif" },
-  { value: "inactive", label: "Tidak Aktif" },
+  ...Object.entries(window.CONSTANTS.CUSTOMER_STATUSES).map(([key, value]) => ({
+    value: key,
+    label: value,
+  })),
 ];
 
 onMounted(() => {
@@ -131,20 +156,31 @@ const computedColumns = computed(() => {
         </template>
 
         <template v-slot:body="props">
-          <q-tr :props="props" :class="!props.row.active ? 'bg-red-1' : ''" class="cursor-pointer"
+          <q-tr :props="props" :class="props.row.active == 'inactive' ? 'bg-red-1' : ''" class="cursor-pointer"
             @click="onRowClicked(props.row)">
+            <q-td key="id" :props="props" class="wrap-column">
+              <div>{{ props.row.id }}</div>
+            </q-td>
             <q-td key="name" :props="props" class="wrap-column">
               <div><q-icon name="person" v-if="$q.screen.lt.md" /> {{ props.row.name }}</div>
               <template v-if="$q.screen.lt.md">
+                <div><q-icon name="domain" /> {{ props.row.company }}</div>
                 <div><q-icon name="phone" /> {{ props.row.phone }}</div>
                 <div><q-icon name="home_pin" /> {{ props.row.address }}</div>
+                <div v-if="props.row.email"><q-icon name="email" /> {{ props.row.email }}</div>
+                <div><q-badge :color="statusColors[props.row.status]">{{ props.row.status }}</q-badge>
+                </div>
+                <div v-if="props.row.notes"><q-icon name="notes" /> {{ props.row.notes }}</div>
               </template>
+            </q-td>
+            <q-td key="company" :props="props">
+              {{ props.row.company }}
             </q-td>
             <q-td key="phone" :props="props">
               {{ props.row.phone }}
             </q-td>
-            <q-td key="address" :props="props">
-              {{ props.row.address }}
+            <q-td key="status" :props="props">
+              <q-badge :color="statusColors[props.row.status]">{{ $CONSTANTS.CUSTOMER_STATUSES[props.row.status] }}</q-badge>
             </q-td>
             <q-td key="action" :props="props">
               <div class="flex justify-end">

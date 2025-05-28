@@ -165,7 +165,7 @@ onMounted(() => {
               <q-icon name="partner_exchange" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>Customer</q-item-label>
+              <q-item-label>Pelanggan</q-item-label>
             </q-item-section>
           </q-item>
 
