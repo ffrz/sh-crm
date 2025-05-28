@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->boolean('active')->default('true');
+            $table->boolean('active')->default(true);
             $table->text('notes')->nullable();
 
             $table->datetime('created_datetime')->nullable();

@@ -21,7 +21,6 @@ class CustomerFactory extends Factory
             'company' => $this->faker->company(),
             'phone' => $this->faker->phoneNumber(),
             'address' => $this->faker->address(),
-            'active' => $this->faker->boolean(90)
         ];
     }
 }

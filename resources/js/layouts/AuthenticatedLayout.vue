@@ -133,7 +133,7 @@ onMounted(() => {
           <q-separator />
 
           <q-item clickable v-ripple :active="$page.url.startsWith('/admin/visits')"
-            @click="router.get(route('admin.customer.index'))">
+            @click="router.get(route('admin.dashboard'))">
             <q-item-section avatar>
               <q-icon name="door_open" />
             </q-item-section>
@@ -142,7 +142,7 @@ onMounted(() => {
             </q-item-section>
           </q-item>
           <q-item clickable v-ripple :active="$page.url.startsWith('/admin/visits')"
-            @click="router.get(route('admin.customer.index'))">
+            @click="router.get(route('admin.dashboard'))">
             <q-item-section avatar>
               <q-icon name="eye_tracking" />
             </q-item-section>
@@ -151,7 +151,7 @@ onMounted(() => {
             </q-item-section>
           </q-item>
           <q-item clickable v-ripple :active="$page.url.startsWith('/admin/visits')"
-            @click="router.get(route('admin.customer.index'))">
+            @click="router.get(route('admin.dashboard'))">
             <q-item-section avatar>
               <q-icon name="update" />
             </q-item-section>
@@ -166,6 +166,15 @@ onMounted(() => {
             </q-item-section>
             <q-item-section>
               <q-item-label>Pelanggan</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item clickable v-ripple :active="$page.url.startsWith('/admin/services')"
+            @click="router.get(route('admin.dashboard'))">
+            <q-item-section avatar>
+              <q-icon name="apps" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Layanan</q-item-label>
             </q-item-section>
           </q-item>
 

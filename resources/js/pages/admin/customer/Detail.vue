@@ -51,7 +51,8 @@ const title = "Rincian Pelanggan";
                   <tr>
                     <td>Assigned to</td>
                     <td>:</td>
-                    <td>{{ page.props.data.assigned_user?.name + ' - ' + (page.props.data.assigned_user?.username) }}</td>
+                    <td v-if="page.props.data.assigned_user">{{ page.props.data.assigned_user.name + ' - ' + (page.props.data.assigned_user.username) }}</td>
+                    <td v-else>-</td>
                   </tr>
                   <tr>
                     <td>Status</td>
