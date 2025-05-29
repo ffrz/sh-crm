@@ -26,7 +26,7 @@ const form = useForm({
   status: page.props.data.status,
   source: page.props.data.source,
   notes: page.props.data.notes,
-  assigned_user_id: page.props.data.assigned_user_id,
+  assigned_user_id: page.props.data.assigned_user_id ? Number(page.props.data.assigned_user_id) : null,
 });
 
 const submit = () =>
