@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\VisitController;
 use App\Http\Middleware\Auth;
 use App\Http\Middleware\NonAuthenticated;
 use Illuminate\Support\Facades\Route;
@@ -64,6 +65,17 @@ Route::middleware([Auth::class])->group(function () {
             Route::get('detail/{id}', [CustomerController::class, 'detail'])->name('admin.customer.detail');
             Route::post('save', [CustomerController::class, 'save'])->name('admin.customer.save');
             Route::post('delete/{id}', [CustomerController::class, 'delete'])->name('admin.customer.delete');
+        });
+
+        Route::prefix('visits')->group(function () {
+            Route::get('', [VisitController::class, 'index'])->name('admin.visit.index');
+            Route::get('data', [VisitController::class, 'data'])->name('admin.visit.data');
+            Route::get('add', [VisitController::class, 'editor'])->name('admin.visit.add');
+            Route::get('duplicate/{id}', [VisitController::class, 'duplicate'])->name('admin.visit.duplicate');
+            Route::get('edit/{id}', [VisitController::class, 'editor'])->name('admin.visit.edit');
+            Route::get('detail/{id}', [VisitController::class, 'detail'])->name('admin.visit.detail');
+            Route::post('save', [VisitController::class, 'save'])->name('admin.visit.save');
+            Route::post('delete/{id}', [VisitController::class, 'delete'])->name('admin.visit.delete');
         });
 
         Route::prefix('settings')->group(function () {

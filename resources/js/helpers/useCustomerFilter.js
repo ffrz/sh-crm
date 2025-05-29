@@ -1,8 +1,11 @@
 import { ref } from 'vue';
 
 export function useCustomerFilter(customersRaw, includeAllOption = false) {
-  const baseCustomers = customersRaw.map((item) => {
-    return { value: item.id, label: '#' + item.id + ' - ' + item.name };
+  const baseCustomers = customersRaw.map((c) => {
+    return {
+      value: c.id,
+      label: `#${c.id} - ${c.name} - ${c.company} - ${c.address}`
+    };
   });
 
   const customers = includeAllOption

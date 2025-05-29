@@ -10,6 +10,7 @@ const statuses = Object.entries(window.CONSTANTS.CUSTOMER_STATUSES).map(([value,
   label,
   value
 }));
+
 const users = page.props.users.map(user => ({
   value: user.id,
   label: `${user.name} (${user.username})`,
@@ -50,8 +51,9 @@ const submit = () =>
                 ]" />
               <q-input v-model.trim="form.company" label="Nama Perusahaan" lazy-rules :error="!!form.errors.company"
                 :disable="form.processing" :error-message="form.errors.company" :rules="[]" />
-              <q-input v-model.trim="form.business_type" label="Jenis Usaha" lazy-rules :error="!!form.errors.business_type"
-                :disable="form.processing" :error-message="form.errors.business_type" :rules="[]" />
+              <q-input v-model.trim="form.business_type" label="Jenis Usaha" lazy-rules
+                :error="!!form.errors.business_type" :disable="form.processing"
+                :error-message="form.errors.business_type" :rules="[]" />
               <q-input v-model.trim="form.phone" type="text" label="No HP" lazy-rules :disable="form.processing"
                 :error="!!form.errors.phone" :error-message="form.errors.phone" :rules="[
                   (val) => (val && val.length > 0) || 'No HP harus diisi.',

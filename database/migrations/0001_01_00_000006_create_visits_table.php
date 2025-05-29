@@ -22,9 +22,9 @@ return new class extends Migration
             $table->enum('status', ['planned', 'done', 'cancelled'])->default('planned');
             $table->date('next_followup_date')->nullable();
             $table->string('location')->nullable();
-            $table->timestamps();
 
-            $table->index('visit_date');
+            $table->foreignId('created_by_uid')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('updated_by_uid')->nullable()->constrained('users')->nullOnDelete();
         });
     }
 

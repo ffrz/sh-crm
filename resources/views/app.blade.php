@@ -22,6 +22,7 @@
     window.CONSTANTS = <?= json_encode([
           'USER_ROLES' => \App\Models\User::Roles,
           'CUSTOMER_STATUSES' => \App\Models\Customer::Statuses,
+          'VISIT_STATUSES' => \App\Models\Visit::Statuses,
       ]) ?>;
     window.CONSTANTS.USER_ROLE_ADMIN = "{{ \App\Models\User::Role_Admin }}";
   </script>

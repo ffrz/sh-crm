@@ -133,7 +133,7 @@ onMounted(() => {
           <q-separator />
 
           <q-item clickable v-ripple :active="$page.url.startsWith('/admin/visits')"
-            @click="router.get(route('admin.dashboard'))">
+            @click="router.get(route('admin.visit.index'))">
             <q-item-section avatar>
               <q-icon name="door_open" />
             </q-item-section>
@@ -141,7 +141,7 @@ onMounted(() => {
               <q-item-label>Visit</q-item-label>
             </q-item-section>
           </q-item>
-          <q-item clickable v-ripple :active="$page.url.startsWith('/admin/visits')"
+          <q-item clickable v-ripple :active="$page.url.startsWith('/admin/follow-ups')"
             @click="router.get(route('admin.dashboard'))">
             <q-item-section avatar>
               <q-icon name="eye_tracking" />
@@ -150,7 +150,7 @@ onMounted(() => {
               <q-item-label>Follow Up</q-item-label>
             </q-item-section>
           </q-item>
-          <q-item clickable v-ripple :active="$page.url.startsWith('/admin/visits')"
+          <q-item clickable v-ripple :active="$page.url.startsWith('/admin/status-logs')"
             @click="router.get(route('admin.dashboard'))">
             <q-item-section avatar>
               <q-icon name="update" />
