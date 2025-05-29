@@ -169,7 +169,7 @@ onMounted(() => {
             </q-item-section>
           </q-item>
           <q-item clickable v-ripple :active="$page.url.startsWith('/admin/services')"
-            @click="router.get(route('admin.dashboard'))">
+            @click="router.get(route('admin.service.index'))">
             <q-item-section avatar>
               <q-icon name="apps" />
             </q-item-section>

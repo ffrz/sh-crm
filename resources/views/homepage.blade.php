@@ -52,8 +52,10 @@
       <div class="container">
         <div class="row gy-4">
           <div class="col-lg-6 order-lg-1 d-flex flex-column justify-content-center order-2" data-aos="fade-up">
-            <h2>Kelola Produksi Konveksi dengan Efisien dan Profesional</h2>
-            <p>{{ env('APP_NAME') }} adalah solusi digital untuk mengelola proses produksi maklun dan konveksi secara transparan, terstruktur, dan mudah diawasi — dari penyerahan bahan hingga pembayaran hasil kerja.</p>
+            <h2>Kelola Relasi Pelanggan dan Prospek secara Profesional</h2>
+            <p>{{ env('APP_NAME') }} adalah sistem manajemen hubungan pelanggan (Customer Relationship Management)
+              berbasis web yang membantu Anda melacak interaksi, memantau progres prospek, dan meningkatkan konversi
+              penjualan dalam satu platform terintegrasi.</p>
           </div>
           <div class="col-lg-6 order-lg-2 hero-img order-1" data-aos="zoom-out" data-aos-delay="200">
             <img src="assets/img/hero-img.jpg" class="img-fluid" style="border-radius: 10px;" alt="">
@@ -68,11 +70,10 @@
 
       <div class="container">
 
-        <h3 class="text-center">Sistem Terintegrasi untuk Manajemen Produksi yang Lebih Baik</h3>
+        <h3 class="text-center">Solusi CRM Fleksibel untuk Berbagai Jenis Usaha dan Proyek</h3>
         <p class="mb-5 text-center">
-          {{ env('APP_NAME') }} dirancang khusus untuk usaha konveksi yang bekerja sama dengan penjahit lepas
-          atau tim produksi internal. Aplikasi ini membantu Anda mencatat setiap proses produksi
-          secara akurat dan meminimalkan kesalahan administrasi.
+          Apapun bidang usaha Anda — baik jasa, produk, B2B, maupun individu — {{ env('APP_NAME') }} memberi
+          Anda kendali penuh atas data pelanggan dan kinerja tim pemasaran atau penjualan.
         </p>
         <div class="row gy-3 items-center">
           <div class="col-lg-6 d-flex flex-column justify-content-center" data-aos="fade-up" data-aos-delay="100">
@@ -82,45 +83,50 @@
             <div class="about-content ps-lg-3 ps-0">
               <ul>
                 <li>
-                  <i class="bi bi-activity"></i>
+                  <i class="bi bi-building-check"></i>
                   <div>
-                    <h4>Manajemen Order Produksi</h4>
-                    <p>Catat dan pantau setiap pesanan dari brand — mulai dari jenis produk, model, ukuran, jumlah, hingga status pengerjaan.</p>
+                    <h4>Pelacakan Kunjungan & Interaksi</h4>
+                    <p>Catat setiap pertemuan, follow-up, atau komunikasi yang dilakukan
+                      tim Anda dengan prospek atau pelanggan. Lacak hasil kunjungan, respon, dan rencana tindak lanjut secara historis.</p>
                   </div>
                 </li>
                 <li>
-                  <i class="bi bi-person-bounding-box"></i>
+                  <i class="bi bi-kanban"></i>
                   <div>
-                    <h4>Penugasan ke Penjahit</h4>
-                    <p>Distribusikan pekerjaan kepada penjahit dengan pencatatan detail bahan yang diambil, jumlah potongan, dan waktu target penyelesaian.</p>
+                    <h4>Manajemen Status Prospek</h4>
+                    <p>Tandai setiap pelanggan berdasarkan status mereka seperti: baru, tertarik, dalam negosiasi,
+                      atau ditutup (berhasil/gagal). Fokus pada prospek yang paling potensial.</p>
                   </div>
                 </li>
                 <li>
-                  <i class="bi bi-hand-thumbs-up"></i>
+                  <i class="bi bi-clock-history"></i>
                   <div>
-                    <h4>Proses Serah Terima</h4>
-                    <p>Pencatatan otomatis saat penjahit menyerahkan hasil jahitan. Sistem akan mencocokkan jumlah, status kualitas, dan progres pengerjaan.</p>
+                    <h4>Riwayat Layanan & Penawaran</h4>
+                    <p>Lihat data lengkap mengenai layanan atau produk yang pernah dikenalkan atau digunakan oleh masing-masing pelanggan.
+                      Cocok untuk upselling dan pengembangan relasi jangka panjang.</p>
                   </div>
                 </li>
                 <li>
-                  <i class="bi bi-journal-check"></i>
+                  <i class="bi bi-person-check"></i>
                   <div>
-                    <h4>Penghitungan Upah Otomatis</h4>
-                    <p>Perhitungan upah dilakukan secara otomatis berdasarkan jumlah potongan yang diselesaikan, sesuai dengan kesepakatan tarif per model atau ukuran.</p>
+                    <h4>Penugasan Tim</h4>
+                    <p>Tentukan siapa yang bertanggung jawab terhadap tiap prospek. Semua aktivitas terhubung ke pengguna tertentu
+                      untuk akuntabilitas dan pelacakan kerja.</p>
                   </div>
                 </li>
                 <li>
-                  <i class="bi bi-journal-check"></i>
+                  <i class="bi bi-speedometer"></i>
                   <div>
-                    <h4>Laporan Produksi dan Pembayaran</h4>
-                    <p>Dapatkan laporan ringkas dan mendetail mengenai kinerja produksi, status pembayaran, dan performa penjahit dalam satu dashboard terpusat.</p>
+                    <h4>Dashboard Insight</h4>
+                    <p>Pantau progres tim, status pelanggan, jumlah interaksi, dan hasil penjualan dalam satu tampilan visual yang mudah dipahami.</p>
                   </div>
                 </li>
                 <li>
-                  <i class="bi bi-journal-check"></i>
+                  <i class="bi bi-bell"></i>
                   <div>
-                    <h4>Notifikasi dan Riwayat Aktivitas</h4>
-                    <p>Dapatkan notifikasi terkait penyerahan, keterlambatan, atau pembayaran. Semua aktivitas tercatat untuk memudahkan evaluasi.</p>
+                    <h4>Notifikasi & Log Aktivitas</h4>
+                    <p>Setiap update tercatat secara otomatis: perubahan status, kunjungan baru, penambahan catatan, hingga penugasan ulang.
+                      Anda tidak akan kehilangan jejak.</p>
                   </div>
                 </li>
               </ul>
@@ -138,49 +144,48 @@
 
       <!-- Section Title -->
       <div class="section-title container" data-aos="fade-up">
-        <h2>Mendukung Dua Skema Produksi</h2>
+        <h2>Manfaat Utama Shiftech CRM</h2>
       </div><!-- End Section Title -->
 
       <div class="container">
 
         <div class="row gy-4">
 
-          <div class="col-6 col-md-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="col-12 col-md-3" data-aos="fade-up" data-aos-delay="100">
             <div class="service-item position-relative">
-              <div class="icon"><i class="bi bi-activity icon"></i></div>
-              <h4><a href="service-details.html" class="stretched-link">Maklun (CMT / Cut, Make, Trim)</a></h4>
-              <p>Brand menyediakan bahan baku, sistem hanya mencatat pekerjaan dan perhitungan ongkos jahit.</p>
+              <div class="icon"><i class="bi bi-transparency icon"></i></div>
+              <h4><a href="#" class="stretched-link">Transparansi Proses Penjualan</a></h4>
+              <p>Semua aktivitas terekam dan terstruktur sehingga Anda tahu apa yang sedang terjadi, siapa yang melakukannya, dan apa langkah selanjutnya.</p>
             </div>
           </div>
-          <div class="col-6 col-md-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="col-12 col-md-3" data-aos="fade-up" data-aos-delay="200">
             <div class="service-item position-relative">
-              <div class="icon"><i class="bi bi-bell icon"></i></div>
-              <h4><a href="service-details.html" class="stretched-link">Full Production (FOB / Full Order Basis)</a></h4>
-              <p>Konveksi menyuplai bahan hingga pengemasan akhir. StitchFlow siap menangani proses yang lebih kompleks pada fase pengembangan berikutnya.</p>
+              <div class="icon"><i class="bi bi-database-up icon"></i></div>
+              <h4><a href="#" class="stretched-link">Efisiensi & Produktivitas</a></h4>
+              <p>Kurangi catatan manual dan tumpukan spreadsheet. Sistem digital ini membuat manajemen pelanggan menjadi jauh lebih mudah.</p>
             </div>
           </div>
-
+          <div class="col-12 col-md-3" data-aos="fade-up" data-aos-delay="200">
+            <div class="service-item position-relative">
+              <div class="icon"><i class="bi bi-graph-up-arrow icon"></i></div>
+              <h4><a href="#" class="stretched-link">Skalabilitas Tim & Proyek</a></h4>
+              <p>Baik dikelola sendiri atau bersama tim, Shiftech CRM dirancang untuk mendukung pertumbuhan usaha tanpa ribet.</p>
+            </div>
+          </div>
+          <div class="col-12 col-md-3" data-aos="fade-up" data-aos-delay="200">
+            <div class="service-item position-relative">
+              <div class="icon"><i class="bi bi-hand-thumbs-up icon"></i></div>
+              <h4><a href="#" class="stretched-link">Meningkatkan Peluang Konversi</a></h4>
+              <p>Dengan data yang lebih jelas dan terpusat, Anda bisa membuat keputusan yang lebih tepat dalam menawarkan produk,
+                layanan, atau tindak lanjut.</p>
+            </div>
+          </div>
         </div>
 
       </div>
 
     </section><!-- /Services Section -->
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact section">
-
-      <!-- Section Title -->
-      <div class="container" data-aos="fade-up">
-        <h2 class="text-center">Bagaimana {{ env('APP_NAME') }} Membantu Bisnis Anda?</h2>
-        <div class="text-center">
-          <p><strong>1. Transparansi & Kejelasan Proses:</strong> Setiap pengambilan bahan, pengerjaan, hingga pembayaran tercatat secara digital.</p>
-          <p><strong>2. Efisiensi Waktu dan Administrasi:</strong> Kurangi pekerjaan manual yang repetitif dan fokus pada peningkatan produktivitas.</p>
-          <p><strong>3. Meningkatkan Kepercayaan Mitra dan Tim:</strong> Brand dapat memantau prosesnya, dan penjahit merasa lebih adil dan profesional karena semua data terdokumentasi dengan baik.</p>
-          <p><strong>4. Skalabilitas Usaha:</strong> Siap digunakan baik untuk usaha kecil maupun konveksi berskala besar dengan banyak mitra penjahit.</p>
-        </div>
-      </div><!-- End Section Title -->
-
-    </section><!-- /Contact Section -->
 
   </main>
 
@@ -191,8 +196,8 @@
         <div class="row justify-content-center text-center">
           <div class="col-lg-12">
             <h4>Mulai Sekarang!</h4>
-            <p>Daftar Sekarang dan nikmati pengalaman manajemen konveksi yang lebih mudah dan modern dengan {{ env('APP_NAME') }}!</p>
-            <a href="https://wa.me/6285317404760?text=Halo+saya+ingin+mendaftar+aplikasi+{{ env('APP_NAME') }}+untuk+manajemen+produksi+konveksi+usaha+saya.+Mohon+info+selanjutnya." target="_blank" class="btn-get-started">
+            <p>Tinggalkan sistem pencatatan manual. Kelola pelanggan, tim, dan prospek Anda lebih cerdas dengan {{ env('APP_NAME') }}!</p>
+            <a href="https://wa.me/6285317404760?text=Halo+saya+ingin+mendaftar+aplikasi+{{ env('APP_NAME') }}+untuk+usaha+saya.+Mohon+info+selanjutnya." target="_blank" class="btn-get-started">
               Pesan Sekrang
             </a>
           </div>
@@ -206,31 +211,10 @@
           <h4>Hubungi Kami</h4>
           <p class="mt-3"><strong>Telepon / WA:</strong> <a href="https://wa.me/6285317404760">+6285-3174-04760</a>
           </p>
-          <p><strong>Email:</strong> <span>sewflow@shiftech.my.id</span></p>
+          <p><strong>Email:</strong> <span>crm@shiftech.my.id</span></p>
         </div>
       </div>
-      <!--
-        <div class="col-lg-2 col-md-3 footer-links">
-          <h4>Tautan Lainnya</h4>
-          <ul>
-            <li><i class="bi bi-chevron-right"></i> <a href="#">Home</a></li>
-            <li><i class="bi bi-chevron-right"></i> <a href="#about">Tentang</a></li>
-            <li><i class="bi bi-chevron-right"></i> <a href="#features">Fitur</a></li>
-            <li><i class="bi bi-chevron-right"></i> <a href="#contact">Hubungi Kami</a></li>
-          </ul>
-        </div>
-
-
-        <div class="col-lg-4 col-md-12">
-          <h4>Follow Us</h4>
-          <p>Cras fermentum odio eu feugiat lide par naso tierra videa magna derita valies</p>
-          <div class="social-links d-flex">
-            <a href=""><i class="bi bi-twitter-x"></i></a>
-            <a href=""><i class="bi bi-facebook"></i></a>
-            <a href=""><i class="bi bi-instagram"></i></a>
-            <a href=""><i class="bi bi-linkedin"></i></a>
-          </div>
-        </div>-->
+      
 
     </div>
 

@@ -5,21 +5,8 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CompanyProfileController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\OperationalCostCategoryController;
-use App\Http\Controllers\Admin\ProductCategoryController;
-use App\Http\Controllers\Admin\OperationalCostController;
-use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\ProductionOrderController;
-use App\Http\Controllers\Admin\ProductionOrderItemController;
-use App\Http\Controllers\Admin\ProductionTailorPaymentController;
-use App\Http\Controllers\Admin\ProductionTailorPayrollController;
-use App\Http\Controllers\Admin\ProductionWorkAssignmentController;
-use App\Http\Controllers\Admin\ProductionWorkReturnController;
 use App\Http\Controllers\Admin\ProfileController;
-use App\Http\Controllers\Admin\StockAdjustmentController;
-use App\Http\Controllers\Admin\StockMovementController;
-use App\Http\Controllers\Admin\SupplierController;
-use App\Http\Controllers\Admin\TailorController;
+use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Middleware\Auth;
 use App\Http\Middleware\NonAuthenticated;
@@ -56,6 +43,17 @@ Route::middleware([Auth::class])->group(function () {
         Route::get('about', function () {
             return inertia('admin/About');
         })->name('admin.about');
+
+        Route::prefix('services')->group(function () {
+            Route::get('', [ServiceController::class, 'index'])->name('admin.service.index');
+            Route::get('data', [ServiceController::class, 'data'])->name('admin.service.data');
+            Route::get('add', [ServiceController::class, 'editor'])->name('admin.service.add');
+            Route::get('duplicate/{id}', [ServiceController::class, 'duplicate'])->name('admin.service.duplicate');
+            Route::get('edit/{id}', [ServiceController::class, 'editor'])->name('admin.service.edit');
+            Route::get('detail/{id}', [ServiceController::class, 'detail'])->name('admin.service.detail');
+            Route::post('save', [ServiceController::class, 'save'])->name('admin.service.save');
+            Route::post('delete/{id}', [ServiceController::class, 'delete'])->name('admin.service.delete');
+        });
 
         Route::prefix('customers')->group(function () {
             Route::get('', [CustomerController::class, 'index'])->name('admin.customer.index');
