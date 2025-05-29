@@ -17,7 +17,7 @@ class CustomerController extends Controller
     public function detail($id = 0)
     {
         return inertia('admin/customer/Detail', [
-            'data' => Customer::with(['assigned_user'])->findOrFail($id),
+            'data' => Customer::with(['assigned_user', 'created_by_user', 'updated_by_user'])->findOrFail($id),
         ]);
     }
 
@@ -37,6 +37,7 @@ class CustomerController extends Controller
                 $q->orWhere('email', 'like', '%' . $filter['search'] . '%');
                 $q->orWhere('company', 'like', '%' . $filter['search'] . '%');
                 $q->orWhere('source', 'like', '%' . $filter['search'] . '%');
+                $q->orWhere('business_type', 'like', '%' . $filter['search'] . '%');
             });
         }
 
@@ -79,6 +80,7 @@ class CustomerController extends Controller
             'email'          => 'nullable|email|max:255',
             'address'        => 'nullable|string|max:500',
             'company'        => 'nullable|string|max:255',
+            'business_type'  => 'nullable|string|max:255',
             'status'         => 'required|in:' . implode(',', array_keys(Customer::Statuses)),
             'source'         => 'nullable|string|max:100',
             'notes'          => 'nullable|string',

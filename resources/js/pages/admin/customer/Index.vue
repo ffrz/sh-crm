@@ -164,7 +164,9 @@ const computedColumns = computed(() => {
             <q-td key="name" :props="props" class="wrap-column">
               <div><q-icon name="person" v-if="$q.screen.lt.md" /> {{ props.row.name }}</div>
               <template v-if="$q.screen.lt.md">
-                <div><q-icon name="domain" /> {{ props.row.company }}</div>
+                <div><q-icon name="domain" /> {{ props.row.company }}
+                  <template v-if="props.row.business_type"> - {{ props.row.business_type }}</template>
+                </div>
                 <div><q-icon name="phone" /> {{ props.row.phone }}</div>
                 <div><q-icon name="home_pin" /> {{ props.row.address }}</div>
                 <div v-if="props.row.email"><q-icon name="email" /> {{ props.row.email }}</div>
@@ -174,7 +176,7 @@ const computedColumns = computed(() => {
               </template>
             </q-td>
             <q-td key="company" :props="props">
-              {{ props.row.company }}
+              {{ props.row.company }} <template v-if="props.row.business_type"> - {{ props.row.business_type }}</template>
             </q-td>
             <q-td key="phone" :props="props">
               {{ props.row.phone }}

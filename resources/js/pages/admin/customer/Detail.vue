@@ -29,11 +29,16 @@ const title = "Rincian Pelanggan";
                     <td>{{ page.props.data.company }}</td>
                   </tr>
                   <tr>
+                    <td>Jenis Usaha</td>
+                    <td>:</td>
+                    <td>{{ page.props.data.business_type }}</td>
+                  </tr>
+                  <tr>
                     <td>No Telepon</td>
                     <td>:</td>
                     <td>{{ page.props.data.phone }}</td>
                   </tr>
-                  <tr>
+                  <tr v-if="page.props.data.email">
                     <td>Email</td>
                     <td>:</td>
                     <td>{{ page.props.data.email }}</td>
@@ -51,13 +56,35 @@ const title = "Rincian Pelanggan";
                   <tr>
                     <td>Assigned to</td>
                     <td>:</td>
-                    <td v-if="page.props.data.assigned_user">{{ page.props.data.assigned_user.name + ' - ' + (page.props.data.assigned_user.username) }}</td>
+                    <td v-if="page.props.data.assigned_user">{{ page.props.data.assigned_user.name + ' - ' +
+                      (page.props.data.assigned_user.username) }}</td>
                     <td v-else>-</td>
                   </tr>
                   <tr>
                     <td>Status</td>
                     <td>:</td>
                     <td>{{ $CONSTANTS.CUSTOMER_STATUSES[page.props.data.status] }}</td>
+                  </tr>
+                  <tr v-if="page.props.data.created_datetime">
+                    <td>Ditambahkan</td>
+                    <td>:</td>
+                    <td>{{ $dayjs(page.props.data.created_datetime).fromNow() }}
+                      - {{ $dayjs(page.props.data.created_datetime).format('DD MMMM YYYY HH:mm:ss') }}
+                      <tempalte v-if="page.props.data.created_by_user">
+                        - {{ page.props.data.created_by_user?.username }}
+                      </tempalte>
+
+                    </td>
+                  </tr>
+                  <tr v-if="page.props.data.updated_datetime">
+                    <td>Diperbarui</td>
+                    <td>:</td>
+                    <td>{{ $dayjs(page.props.data.updated_datetime).fromNow() }}
+                      - {{ $dayjs(page.props.data.updated_datetime).format('DD MMMM YYYY HH:mm:ss') }}
+                      <tempalte v-if="page.props.data.updated_by_user">
+                        - {{ page.props.data.updated_by_user?.username }}
+                      </tempalte>
+                    </td>
                   </tr>
                   <tr>
                     <td>Catatan</td>

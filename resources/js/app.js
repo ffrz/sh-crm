@@ -15,9 +15,12 @@ import { router } from "@inertiajs/vue3";
 import processFlashMessage from "@/helpers/flash-message";
 import MyLink from "@/components/MyLink.vue";
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/id'; // Import the Indonesian locale
 import i18n from './i18n';
 
+
+dayjs.extend(relativeTime)
 // Set Indonesian as the global locale
 dayjs.locale('id');
 

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('address')->nullable();
             $table->string('company')->nullable();
+            $table->string('business_type')->nullable();
             $table->enum('status', array_keys(Customer::Statuses))->default(Customer::Status_New);
             $table->string('source')->nullable(); // e.g. 'referral', 'facebook', 'walk-in'
             $table->text('notes')->nullable();

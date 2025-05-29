@@ -12,7 +12,7 @@ const statuses = Object.entries(window.CONSTANTS.CUSTOMER_STATUSES).map(([value,
 }));
 const users = page.props.users.map(user => ({
   value: user.id,
-  label: `${user.name} (${user.username})` ,
+  label: `${user.name} (${user.username})`,
 }));
 
 const form = useForm({
@@ -22,6 +22,7 @@ const form = useForm({
   email: page.props.data.email,
   address: page.props.data.address,
   company: page.props.data.company,
+  business_type: page.props.data.business_type,
   status: page.props.data.status,
   source: page.props.data.source,
   notes: page.props.data.notes,
@@ -49,6 +50,8 @@ const submit = () =>
                 ]" />
               <q-input v-model.trim="form.company" label="Nama Perusahaan" lazy-rules :error="!!form.errors.company"
                 :disable="form.processing" :error-message="form.errors.company" :rules="[]" />
+              <q-input v-model.trim="form.business_type" label="Jenis Usaha" lazy-rules :error="!!form.errors.business_type"
+                :disable="form.processing" :error-message="form.errors.business_type" :rules="[]" />
               <q-input v-model.trim="form.phone" type="text" label="No HP" lazy-rules :disable="form.processing"
                 :error="!!form.errors.phone" :error-message="form.errors.phone" :rules="[
                   (val) => (val && val.length > 0) || 'No HP harus diisi.',

@@ -15,6 +15,7 @@ class Customer extends Model
         'email',
         'address',
         'company',
+        'business_type',
         'status',
         'source',
         'notes',
@@ -49,5 +50,15 @@ class Customer extends Model
     public function assigned_user()
     {
         return $this->belongsTo(User::class, 'assigned_user_id');
+    }
+
+    public function created_by_user()
+    {
+        return $this->belongsTo(User::class, 'created_by_uid');
+    }
+    
+    public function updated_by_user()
+    {
+        return $this->belongsTo(User::class, 'updated_by_uid');
     }
 }
