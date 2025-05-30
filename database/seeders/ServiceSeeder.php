@@ -18,6 +18,9 @@ class ServiceSeeder extends Seeder
     {
         DB::table('services')->insert([
             [
+                'name' => 'General',
+            ],
+            [
                 'name' => 'CCTV',
             ],
             [
@@ -32,7 +35,18 @@ class ServiceSeeder extends Seeder
             [
                 'name' => 'GPS',
             ],
-            
+            [
+                'name' => 'Networking',
+            ],
+            [
+                'name' => 'Printer',
+            ],
+            [
+                'name' => 'Server',
+            ],
+            [
+                'name' => 'Other',
+            ],
         ]);
     }
 }

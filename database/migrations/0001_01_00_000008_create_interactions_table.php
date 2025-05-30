@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('service_id')->constrained()->onDelete('cascade');
             $table->enum('type', array_keys(Interaction::Types))->default(Interaction::Type_Visit);
             $table->enum('status', array_keys(Interaction::Statuses))->default(Interaction::Status_Planned);
-            $table->enum('engagement_level', array_keys(Interaction::EngagementLevels))->default(Interaction::EngagementLevel_New);
+            $table->enum('engagement_level', array_keys(Interaction::EngagementLevels))->default(Interaction::EngagementLevel_None);
             $table->text('subject')->nullable();
             $table->text('summary')->nullable();
             $table->text('notes')->nullable();

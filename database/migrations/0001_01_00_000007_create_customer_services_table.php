@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\CustomerService;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,8 +16,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('customer_id')->constrained()->onDelete('cascade');
             $table->foreignId('service_id')->constrained()->onDelete('cascade');
-            $table->enum('engagement_level', ['prospect', 'cold', 'warm', 'hot', 'customer', 'churned', 'lost'])->default('prospect');
-            $table->date('first_contact_date')->nullable();
+            $table->enum('status', array_keys(CustomerService::Statuses))->default(CustomerService::Status_Active);
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->text('notes')->nullable();
 
             $table->datetime('created_datetime')->nullable();

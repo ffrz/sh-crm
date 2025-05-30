@@ -2,7 +2,7 @@
 import { router, usePage } from "@inertiajs/vue3";
 
 const page = usePage();
-const title = "Rincian Visit Pelanggan";
+const title = "Rincian Interaksi";
 
 </script>
 
@@ -15,7 +15,7 @@ const title = "Rincian Visit Pelanggan";
         <div class="row">
           <q-card square flat bordered class="col">
             <q-card-section>
-              <div class="text-subtitle1 text-bold text-grey-8">Info Visit</div>
+              <div class="text-subtitle1 text-bold text-grey-8">Info Interaksi</div>
               <table class="detail">
                 <tbody>
                   <tr>
@@ -24,47 +24,57 @@ const title = "Rincian Visit Pelanggan";
                     <td>#{{ page.props.data.id }}</td>
                   </tr>
                   <tr>
-                    <td>Tgl Visit</td>
+                    <td>Tanggal</td>
                     <td>:</td>
-                    <td>{{ $dayjs(page.props.data.visit_date).format('DD MMMM YYYY') }} {{ page.props.data.visit_time }}</td>
+                    <td>{{ $dayjs(page.props.data.date).format('DD MMMM YYYY') }} {{ page.props.data.date }}</td>
                   </tr>
                   <tr>
-                    <td>Sales</td>
+                    <td>Jenis</td>
                     <td>:</td>
-                    <td>{{ page.props.data.user.name }} ({{ page.props.data.user.username }})</td> 
-                  </tr>
-                  <tr>
-                    <td>Customer</td>
-                    <td>:</td>
-                    <td>#{{ page.props.data.customer.id }} - {{ page.props.data.customer.name }} - {{
-                      page.props.data.customer.company }}
-                      <br />{{ page.props.data.customer.address }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Tujuan</td>
-                    <td>:</td>
-                    <td>{{ page.props.data.purpose }}</td>
+                    <td>{{ $CONSTANTS.INTERACTION_TYPES[page.props.data.type] }}</td>
                   </tr>
                   <tr>
                     <td>Status</td>
                     <td>:</td>
-                    <td>{{ $CONSTANTS.VISIT_STATUSES[page.props.data.status] }}</td>
+                    <td>{{ $CONSTANTS.INTERACTION_STATUSES[page.props.data.status] }}</td>
+                  </tr>
+                  <tr>
+                    <td>Sales</td>
+                    <td>:</td>
+                    <td>{{ page.props.data.user.name }} ({{ page.props.data.user.username }})</td>
+                  </tr>
+                  <tr>
+                    <td>Customer</td>
+                    <td>:</td>
+                    <td>{{ page.props.data.customer.name }} - {{
+                      page.props.data.customer.company }} (#{{ page.props.data.customer.id }})
+                      <br />{{ page.props.data.customer.address }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Service</td>
+                    <td>:</td>
+                    <td>{{ page.props.data.service.name }}</td>
+                  </tr>
+                  <tr>
+                    <td>Subject</td>
+                    <td>:</td>
+                    <td>{{ page.props.data.subject }}</td>
+                  </tr>
+                  <tr>
+                    <td>Engagement Level</td>
+                    <td>:</td>
+                    <td>{{ $CONSTANTS.INTERACTION_ENGAGEMENT_LEVELS[page.props.data.engagement_level] }}</td>
+                  </tr>
+                  <tr>
+                    <td>Summary</td>
+                    <td>:</td>
+                    <td>{{ page.props.data.summary }}</td>
                   </tr>
                   <tr>
                     <td>Catatan</td>
                     <td>:</td>
                     <td>{{ page.props.data.notes }}</td>
-                  </tr>
-                  <tr>
-                    <td>Next Follow Up Date</td>
-                    <td>:</td>
-                    <td>{{ page.props.data.next_followup_date ? $dayjs(page.props.data.next_followup_date).format('DD MMMM YYYY') : 'Tidak ditetapkan' }}</td>
-                  </tr>
-                  <tr>
-                    <td>Lokasi</td>
-                    <td>:</td>
-                    <td>{{ page.props.data.location }}</td>
                   </tr>
                 </tbody>
               </table>

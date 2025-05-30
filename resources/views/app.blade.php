@@ -23,6 +23,7 @@
           'USER_ROLES' => \App\Models\User::Roles,
           'INTERACTION_STATUSES' => \App\Models\Interaction::Statuses,
           'INTERACTION_TYPES' => \App\Models\Interaction::Types,
+          'INTERACTION_ENGAGEMENT_LEVELS' => \App\Models\Interaction::EngagementLevels,
       ]) ?>;
     window.CONSTANTS.USER_ROLE_ADMIN = "{{ \App\Models\User::Role_Admin }}";
   </script>

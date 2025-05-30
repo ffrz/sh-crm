@@ -4,7 +4,7 @@ export function useCustomerFilter(customersRaw, includeAllOption = false) {
   const baseCustomers = customersRaw.map((c) => {
     return {
       value: c.id,
-      label: `#${c.id} - ${c.name} - ${c.company} - ${c.address}`
+      label: `${c.name} (#${c.id}) - ${c.company} - ${c.address}`
     };
   });
 

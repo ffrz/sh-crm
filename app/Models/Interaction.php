@@ -40,13 +40,23 @@ class Interaction extends Model
         self::Type_Other => 'Other',
     ];
 
-    const EngagementLevel_None = 'none';
-    const EngagementLevel_Cold = 'cold';
-    const EngagementLevel_Warm = 'warm';
-    const EngagementLevel_Hot = 'hot';
-    const EngagementLevel_Customer = 'customer';
-    const EngagementLevel_Churned = 'churned';
-    const EngagementLevel_Lost = 'lost';
+    const EngagementLevel_None = 'none'; // Belum ada indikasi ketertarikan. Mungkin hanya interaksi awal (misalnya tanya-tanya tanpa tujuan jelas).
+    const EngagementLevel_Cold = 'cold'; // Sudah ada interaksi, tapi belum menunjukkan minat atau belum layak untuk dikejar lebih lanjut
+    const EngagementLevel_Warm = 'warm'; // Ada minat, ada komunikasi, tapi masih perlu diyakinkan atau belum ada urgensi.
+    const EngagementLevel_Hot = 'hot'; // Sangat tertarik dan kemungkinan besar akan closing jika ditindaklanjuti dengan benar.
+    const EngagementLevel_Customer = 'customer'; // Sudah menjadi pelanggan aktif dan telah menggunakan layanan.
+    const EngagementLevel_Churned = 'churned'; // Pernah menjadi pelanggan, tapi saat ini sudah berhenti atau tidak aktif lagi.
+    const EngagementLevel_Lost = 'lost'; // Potensi pelanggan yang hilang. Sudah pasti tidak tertarik lagi atau menolak secara langsung.
+
+    const EngagementLevels = [
+        self::EngagementLevel_None => 'None',
+        self::EngagementLevel_Cold => 'Cold',
+        self::EngagementLevel_Warm => 'Warm',
+        self::EngagementLevel_Hot => 'Hot',
+        self::EngagementLevel_Customer => 'Customer',
+        self::EngagementLevel_Churned => 'Churned',
+        self::EngagementLevel_Lost => 'Lost',
+    ];
 
     public function user()
     {
