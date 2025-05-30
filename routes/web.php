@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CompanyProfileController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\InteractionController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\UserController;
@@ -67,15 +68,15 @@ Route::middleware([Auth::class])->group(function () {
             Route::post('delete/{id}', [CustomerController::class, 'delete'])->name('admin.customer.delete');
         });
 
-        Route::prefix('visits')->group(function () {
-            Route::get('', [VisitController::class, 'index'])->name('admin.visit.index');
-            Route::get('data', [VisitController::class, 'data'])->name('admin.visit.data');
-            Route::get('add', [VisitController::class, 'editor'])->name('admin.visit.add');
-            Route::get('duplicate/{id}', [VisitController::class, 'duplicate'])->name('admin.visit.duplicate');
-            Route::get('edit/{id}', [VisitController::class, 'editor'])->name('admin.visit.edit');
-            Route::get('detail/{id}', [VisitController::class, 'detail'])->name('admin.visit.detail');
-            Route::post('save', [VisitController::class, 'save'])->name('admin.visit.save');
-            Route::post('delete/{id}', [VisitController::class, 'delete'])->name('admin.visit.delete');
+        Route::prefix('interactions')->group(function () {
+            Route::get('', [InteractionController::class, 'index'])->name('admin.interaction.index');
+            Route::get('data', [InteractionController::class, 'data'])->name('admin.interaction.data');
+            Route::get('add', [InteractionController::class, 'editor'])->name('admin.interaction.add');
+            Route::get('duplicate/{id}', [InteractionController::class, 'duplicate'])->name('admin.interaction.duplicate');
+            Route::get('edit/{id}', [InteractionController::class, 'editor'])->name('admin.interaction.edit');
+            Route::get('detail/{id}', [InteractionController::class, 'detail'])->name('admin.interaction.detail');
+            Route::post('save', [InteractionController::class, 'save'])->name('admin.interaction.save');
+            Route::post('delete/{id}', [InteractionController::class, 'delete'])->name('admin.interaction.delete');
         });
 
         Route::prefix('settings')->group(function () {

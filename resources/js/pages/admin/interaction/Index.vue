@@ -84,7 +84,7 @@ const columns = [
 
 const statuses = [
   { value: "all", label: "Semua" },
-  ...Object.entries(window.CONSTANTS.VISIT_STATUSES).map(([key, value]) => ({
+  ...Object.entries(window.CONSTANTS.INTERACTION_STATUSES).map(([key, value]) => ({
     value: key,
     label: value,
   })),

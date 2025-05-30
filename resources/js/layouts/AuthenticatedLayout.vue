@@ -132,13 +132,13 @@ onMounted(() => {
 
           <q-separator />
 
-          <q-item clickable v-ripple :active="$page.url.startsWith('/admin/visits')"
-            @click="router.get(route('admin.visit.index'))">
+          <q-item clickable v-ripple :active="$page.url.startsWith('/admin/interactions')"
+            @click="router.get(route('admin.interaction.index'))">
             <q-item-section avatar>
-              <q-icon name="door_open" />
+              <q-icon name="handshake" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>Visit</q-item-label>
+              <q-item-label>Interaksi</q-item-label>
             </q-item-section>
           </q-item>
           <q-item clickable v-ripple :active="$page.url.startsWith('/admin/follow-ups')"

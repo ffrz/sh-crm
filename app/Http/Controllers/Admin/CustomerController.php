@@ -41,8 +41,8 @@ class CustomerController extends Controller
             });
         }
 
-        if (!empty($filter['status']) && ($filter['status'] != 'all')) {
-            $q->where('status', '=', $filter['status']);
+        if (!empty($filter['status']) && (in_array($filter['status'], ['active', 'inactive']))) {
+            $q->where('active', '=', $filter['status'] == 'active' ? true : false);
         }
 
         $q->orderBy($orderBy, $orderType);
@@ -64,11 +64,11 @@ class CustomerController extends Controller
 
     public function editor($id = 0)
     {
-        $item = $id ? Customer::findOrFail($id) : new Customer(['status' => Customer::Status_New]);
+        $item = $id ? Customer::findOrFail($id) : new Customer(['active' => true]);
         return inertia('admin/customer/Editor', [
             'data' => $item,
             'users' => User::where('active', true)->orderBy('username', 'asc')->get(),
-            'statuses' => Customer::Statuses,
+            // 'statuses' => Customer::Statuses,
         ]);
     }
 
@@ -81,7 +81,7 @@ class CustomerController extends Controller
             'address'        => 'nullable|string|max:500',
             'company'        => 'nullable|string|max:255',
             'business_type'  => 'nullable|string|max:255',
-            'status'         => 'required|in:' . implode(',', array_keys(Customer::Statuses)),
+            'active'         => 'required|boolean',
             'source'         => 'nullable|string|max:100',
             'notes'          => 'nullable|string',
             'assigned_user_id' => 'nullable|exists:users,id',

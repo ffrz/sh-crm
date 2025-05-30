@@ -6,10 +6,10 @@ import { scrollToFirstErrorField } from "@/helpers/utils";
 const page = usePage();
 const title = (!!page.props.data.id ? "Edit" : "Tambah") + " Pelanggan";
 
-const statuses = Object.entries(window.CONSTANTS.CUSTOMER_STATUSES).map(([value, label]) => ({
-  label,
-  value
-}));
+// const statuses = Object.entries(window.CONSTANTS.CUSTOMER_STATUSES).map(([value, label]) => ({
+//   label,
+//   value
+// }));
 
 const users = page.props.users.map(user => ({
   value: user.id,
@@ -24,7 +24,7 @@ const form = useForm({
   address: page.props.data.address,
   company: page.props.data.company,
   business_type: page.props.data.business_type,
-  status: page.props.data.status,
+  active: !!page.props.data.active,
   source: page.props.data.source,
   notes: page.props.data.notes,
   assigned_user_id: page.props.data.assigned_user_id ? Number(page.props.data.assigned_user_id) : null,
@@ -59,10 +59,10 @@ const submit = () =>
                   (val) => (val && val.length > 0) || 'No HP harus diisi.',
                 ]" />
               <q-input v-model.trim="form.address" type="textarea" autogrow counter maxlength="1000" label="Alamat"
-                lazy-rules :disable="form.processing" :error="!!form.errors.address"
-                :error-message="form.errorsstatusesaddress" :rules="[]" />
-              <q-select v-model="form.status" label="Status" :options="statuses" map-options emit-value
-                :error="!!form.errors.status" :disable="form.processing" />
+                lazy-rules :disable="form.processing" :error="!!form.errors.address" :error-message="form.address"
+                :rules="[]" />
+              <!-- <q-select v-model="form.status" label="Status" :options="statuses" map-options emit-value
+                :error="!!form.errors.status" :disable="form.processing" /> -->
               <q-input v-model.trim="form.source" type="text" label="Sumber" lazy-rules :disable="form.processing"
                 :error="!!form.errors.source" :error-message="form.errors.source" :rules="[]" />
               <q-input v-model.trim="form.email" type="email" label="Alamat Email" lazy-rules :disable="form.processing"
@@ -73,6 +73,10 @@ const submit = () =>
                 :error="!!form.errors.assigned_user_id" :disable="form.processing" />
               <q-input v-model.trim="form.notes" type="textarea" autogrow counter maxlength="1000" label="Catatan"
                 lazy-rules :disable="form.processing" :error="!!form.errors.notes" :error-message="form.errors.notes" />
+              <div style="margin-left: -10px;">
+                <q-checkbox class="full-width q-pl-none" v-model="form.active" :disable="form.processing"
+                  label="Aktif" />
+              </div>
             </q-card-section>
             <q-card-section class="q-gutter-sm">
               <q-btn icon="save" type="submit" label="Simpan" color="primary" :disable="form.processing" />
