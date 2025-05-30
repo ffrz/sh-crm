@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Customer;
+use App\Models\CustomerService;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,32 +12,29 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customers', function (Blueprint $table) {
+        Schema::create('customer_services', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('phone')->nullable()->index();
-            $table->string('email')->nullable();
-            $table->string('address')->nullable();
-            $table->string('company')->nullable();
-            $table->string('business_type')->nullable();
-            $table->enum('status', array_keys(Customer::Statuses))->default(Customer::Status_New);
-            $table->string('source')->nullable(); // e.g. 'referral', 'facebook', 'walk-in'
+            $table->foreignId('customer_id')->constrained()->onDelete('cascade');
+            $table->foreignId('service_id')->constrained()->onDelete('cascade');
+            $table->enum('status', array_keys(CustomerService::Statuses))->default(CustomerService::Status_Active);
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->text('notes')->nullable();
 
             $table->datetime('created_datetime')->nullable();
             $table->datetime('updated_datetime')->nullable();
 
-            $table->foreignId('assigned_user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('created_by_uid')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by_uid')->nullable()->constrained('users')->nullOnDelete();
         });
     }
+
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('customers');
+        Schema::dropIfExists('customer_services');
     }
 };

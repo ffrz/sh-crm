@@ -5,7 +5,7 @@ import { handleDelete, handleFetchItems } from "@/helpers/client-req-handler";
 import { check_role, getQueryParams } from "@/helpers/utils";
 import { useQuasar } from "quasar";
 
-const title = "Visit Pelanggan";
+const title = "Interaksi";
 const $q = useQuasar();
 const showFilter = ref(false);
 const rows = ref([]);
@@ -13,16 +13,32 @@ const loading = ref(true);
 const filter = reactive({
   search: "",
   status: "all",
+  type: "all",
+  engagement_level: "all",
   ...getQueryParams(),
 });
-const statusColors = {
-  new: "yellow",
-  contacted: "blue",
-  cold: "orange",
-  hot: "green",
-  converted: "grey",
+
+const type_colors = {
+  visit: "red",
+  chat: "orange",
+  call: "green",
+  email: "blue",
+  other: "black",
+};
+const status_colors = {
+  planned: "grey",
+  done: "blue",
+  cancelled: "red",
+};
+
+const engagement_level_colors = {
+  none: "grey",
+  cold: "blue",
+  warm: "yellow",
+  hot: "orange",
+  converted: "green",
   churned: "red",
-  inactive: "black",
+  lost: "black",
 };
 
 const pagination = ref({
@@ -49,6 +65,13 @@ const columns = [
     sortable: true,
   },
   {
+    name: "type",
+    label: "Jenis",
+    field: "type",
+    align: "left",
+    sortable: false,
+  },
+  {
     name: "sales",
     label: "Sales",
     field: "sales",
@@ -60,19 +83,26 @@ const columns = [
     label: "Customer",
     field: "customer",
     align: "left",
-    sortable: true,
+    sortable: false,
   },
   {
-    name: "purpose",
-    label: "Purpose",
-    field: "purpose",
+    name: "service",
+    label: "Layanan",
+    field: "service",
+    align: "left",
+    sortable: false,
+  },
+  {
+    name: "subject",
+    label: "Subjek",
+    field: "subject",
     align: "left",
     sortable: true,
   },
   {
-    name: "status",
-    label: "Status",
-    field: "status",
+    name: "engagement_level",
+    label: "Engagement",
+    field: "engagement_level",
     align: "center",
     sortable: false,
   },
@@ -84,20 +114,35 @@ const columns = [
 
 const statuses = [
   { value: "all", label: "Semua" },
-  ...Object.entries(window.CONSTANTS.VISIT_STATUSES).map(([key, value]) => ({
+  ...Object.entries(window.CONSTANTS.INTERACTION_STATUSES).map(([key, value]) => ({
     value: key,
     label: value,
   })),
 ];
 
+const engagement_levels = [
+  { value: "all", label: "Semua" },
+  ...Object.entries(window.CONSTANTS.INTERACTION_ENGAGEMENT_LEVELS).map(([key, value]) => ({
+    value: key,
+    label: value,
+  })),
+];
+
+const types = [
+  { value: "all", label: "Semua" },
+  ...Object.entries(window.CONSTANTS.INTERACTION_TYPES).map(([key, value]) => ({
+    value: key,
+    label: value,
+  })),
+];
 onMounted(() => {
   fetchItems();
 });
 
 const deleteItem = (row) =>
   handleDelete({
-    message: `Hapus visit ${row.name}?`,
-    url: route("admin.visit.delete", row.id),
+    message: `Hapus interaksi ${row.name}?`,
+    url: route("admin.interaction.delete", row.id),
     fetchItemsCallback: fetchItems,
     loading,
   });
@@ -108,13 +153,13 @@ const fetchItems = (props = null) => {
     filter,
     props,
     rows,
-    url: route("admin.visit.data"),
+    url: route("admin.interaction.data"),
     loading,
   });
 };
 
 const onFilterChange = () => fetchItems();
-const onRowClicked = (row) => router.get(route('admin.visit.detail', { id: row.id }));
+const onRowClicked = (row) => router.get(route('admin.interaction.detail', { id: row.id }));
 const computedColumns = computed(() => {
   if ($q.screen.gt.sm) return columns;
   return columns.filter((col) => col.name === "id" || col.name === "action");
@@ -126,7 +171,7 @@ const computedColumns = computed(() => {
   <authenticated-layout>
     <template #title>{{ title }}</template>
     <template #right-button>
-      <q-btn icon="add" dense color="primary" @click="router.get(route('admin.visit.add'))" />
+      <q-btn icon="add" dense color="primary" @click="router.get(route('admin.interaction.add'))" />
       <q-btn class="q-ml-sm" :icon="!showFilter ? 'filter_alt' : 'filter_alt_off'" color="grey" dense
         @click="showFilter = !showFilter" />
     </template>
@@ -135,6 +180,12 @@ const computedColumns = computed(() => {
         <div class="row q-col-gutter-xs items-center q-pa-sm full-width">
           <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.status"
             :options="statuses" label="Status" dense map-options emit-value outlined
+            @update:model-value="onFilterChange" />
+          <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.engagement_level"
+            :options="engagement_levels" label="Engagement Level" dense map-options emit-value outlined
+            @update:model-value="onFilterChange" />
+          <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.type"
+            :options="types" label="Type" dense map-options emit-value outlined
             @update:model-value="onFilterChange" />
           <q-input class="col" outlined dense debounce="300" v-model="filter.search" placeholder="Cari" clearable>
             <template v-slot:append>
@@ -169,43 +220,63 @@ const computedColumns = computed(() => {
               <div>
                 {{ props.row.id }}
                 <template v-if="$q.screen.lt.md">
-                  - <span><q-icon name="history" /> {{ props.row.visit_date }}</span>
-                  <template v-if="props.row.visit_time">
-                    <span class="text-grey-6">({{ props.row.visit_time }})</span>
-                  </template>
+                  - <span><q-icon name="history" /> {{ $dayjs(props.row.date).format('DD MMMM YYYY') }}</span>
                 </template>
               </div>
               <template v-if="$q.screen.lt.md">
-                <div><q-icon name="people" /> #{{ props.row.customer.id }} - {{ props.row.customer.name }} - {{ props.row.customer.company }}</div>
-                <div v-if="props.row.customer.address"><q-icon name="location_on" />{{ props.row.customer.address }} </div>
-                <q-badge :color="statusColors[props.row.status]">{{ $CONSTANTS.VISIT_STATUSES[props.row.status] }}</q-badge>
-                <div><q-icon name="input" /> {{ props.row.purpose }}</div>
+                <div>
+                  <q-icon name="people" /> #{{ props.row.customer.id }} - {{ props.row.customer.name }}
+                  - {{ props.row.customer.company }}
+                </div>
+                <div v-if="props.row.customer.address">
+                  <q-icon name="location_on" />{{ props.row.customer.address }}
+                </div>
+                <div><q-icon name="apps" /> {{ props.row.service.name }}</div>
+                <div><q-icon name="input" /> {{ props.row.subject }}</div>
+                <div class="flex items-center q-gutter-sm">
+                  <q-badge :color="type_colors[props.row.type]">
+                    {{ $CONSTANTS.INTERACTION_TYPES[props.row.type] }}
+                  </q-badge>
+                  <q-badge :color="engagement_level_colors[props.row.engagement_level]">
+                    <q-icon name="favorite" />&nbsp;{{ $CONSTANTS.INTERACTION_ENGAGEMENT_LEVELS[props.row.engagement_level] }}
+                  </q-badge>
+                  <q-badge :color="status_colors[props.row.status]">
+                    {{ $CONSTANTS.INTERACTION_STATUSES[props.row.status] }}
+                  </q-badge>
+                </div>
                 <div v-if="props.row.notes"><q-icon name="notes" /> {{ props.row.notes }}</div>
               </template>
             </q-td>
             <q-td key="date" :props="props" class="wrap-column">
               <div>
-                {{ $dayjs(props.row.visit_date).format('YYYY-MM-DD') }}
-                <template v-if="props.row.visit_time">
-                  <span class="text-grey-6">({{ props.row.visit_time }})</span>
+                {{ $dayjs(props.row.interaction_date).format('YYYY-MM-DD') }}
+                <template v-if="props.row.interaction_time">
+                  <span class="text-grey-6">({{ props.row.interaction_time }})</span>
                 </template>
               </div>
               <div><q-icon name="history" v-if="$q.screen.lt.md" /> {{ props.row.name }}</div>
+            </q-td>
+            <q-td key="type" :props="props">
+              {{ $CONSTANTS.INTERACTION_TYPES[props.row.type] }}
             </q-td>
             <q-td key="sales" :props="props">
               {{ props.row.user.username }}
             </q-td>
             <q-td key="customer" :props="props">
-              #{{ props.row.customer.id }} - {{ props.row.customer.name }}
+              {{ props.row.customer.name }} - {{ props.row.customer.company }} (#{{ props.row.customer.id }})
               <br />{{ props.row.customer.business_type }}
               <br />{{ props.row.customer.address }}
             </q-td>
-            <q-td key="purpose" :props="props">
-              {{ props.row.user.purpose }}
+            <q-td key="service" :props="props">
+              {{ props.row.service.name }}
             </q-td>
-            <q-td key="status" :props="props">
-              <q-badge :color="statusColors[props.row.status]">{{ $CONSTANTS.VISIT_STATUSES[props.row.status]
-                }}</q-badge>
+            <q-td key="subject" :props="props">
+              {{ props.row.subject }}
+            </q-td>
+            <q-td key="engagement_level" :props="props">
+              <q-badge :color="engagement_level_colors[props.row.engagement_level]">
+                {{ $CONSTANTS.INTERACTION_ENGAGEMENT_LEVELS[props.row.engagement_level] }}
+              </q-badge>
             </q-td>
             <q-td key="action" :props="props">
               <div class="flex justify-end">
@@ -213,15 +284,8 @@ const computedColumns = computed(() => {
                   style="height: 40px; width: 30px" @click.stop>
                   <q-menu anchor="bottom right" self="top right" transition-show="scale" transition-hide="scale">
                     <q-list style="width: 200px">
-                      <!-- <q-item clickable v-ripple v-close-popup
-                        @click.stop="router.get(route('admin.visit.duplicate', props.row.id))">
-                        <q-item-section avatar>
-                          <q-icon name="file_copy" />
-                        </q-item-section>
-                        <q-item-section icon="copy"> Duplikat </q-item-section>
-                      </q-item> -->
                       <q-item clickable v-ripple v-close-popup
-                        @click.stop="router.get(route('admin.visit.edit', props.row.id))">
+                        @click.stop="router.get(route('admin.interaction.edit', props.row.id))">
                         <q-item-section avatar>
                           <q-icon name="edit" />
                         </q-item-section>

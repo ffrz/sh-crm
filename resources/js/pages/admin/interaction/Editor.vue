@@ -7,16 +7,21 @@ import DatePicker from "@/components/DatePicker.vue";
 import dayjs from "dayjs";
 
 const page = usePage();
-const title = (!!page.props.data.id ? "Edit" : "Tambah") + " Visit";
+const title = (!!page.props.data.id ? "Edit" : "Tambah") + " Interaksi";
 
 const { filteredCustomers, filterCustomerFn } = useCustomerFilter(page.props.customers);
 
-const statuses = Object.entries(window.CONSTANTS.VISIT_STATUSES).map(([value, label]) => ({
+const statuses = Object.entries(window.CONSTANTS.INTERACTION_STATUSES).map(([value, label]) => ({
   label,
   value
 }));
 
-const customer_statuses = Object.entries(window.CONSTANTS.CUSTOMER_STATUSES).map(([value, label]) => ({
+const engagement_levels = Object.entries(window.CONSTANTS.INTERACTION_ENGAGEMENT_LEVELS).map(([value, label]) => ({
+  label,
+  value
+}));
+
+const types = Object.entries(window.CONSTANTS.INTERACTION_TYPES).map(([value, label]) => ({
   label,
   value
 }));
@@ -26,22 +31,28 @@ const users = page.props.users.map(user => ({
   label: `${user.name} (${user.username})`,
 }));
 
+const services = page.props.services.map(service => ({
+  value: service.id,
+  label: `${service.name} (#${service.id})`,
+}));
+
+
 const form = useForm({
   id: page.props.data.id,
   user_id: page.props.data.user_id ? Number(page.props.data.user_id) : null,
   customer_id: page.props.data.customer_id ? Number(page.props.data.customer_id) : null,
-  visit_date: dayjs(page.props.data.visit_date).format('YYYY-MM-DD'),
-  visit_time: page.props.data.visit_time,
-  purpose: page.props.data.purpose,
-  notes: page.props.data.notes,
+  service_id: page.props.data.service_id ? Number(page.props.data.service_id) : null,
+  date: dayjs(page.props.data.visit_date).format('YYYY-MM-DD'),
+  type: page.props.data.type ?? 'visit',
   status: page.props.data.status,
-  customer_status: page.props.data.customer_status,
-  next_followup_date: page.props.data.next_followup_date,
-  location: page.props.data.location,
+  engagement_level: page.props.data.engagement_level ?? 'none',
+  subject: page.props.data.subject,
+  summary: page.props.data.summary,
+  notes: page.props.data.notes,
 });
 
 const submit = () =>
-  handleSubmit({ form, url: route('admin.visit.save') });
+  handleSubmit({ form, url: route('admin.interaction.save') });
 
 </script>
 
@@ -55,10 +66,14 @@ const submit = () =>
           <q-card square flat bordered class="col">
             <q-card-section class="q-pt-none">
               <input type="hidden" name="id" v-model="form.id" />
+              <date-picker v-model="form.date" label="Tanggal" :error="!!form.errors.due_date"
+                :disable="form.processing" :error-message="form.errors.date" />
+              <q-select v-model="form.status" label="Status" :options="statuses" map-options emit-value
+                :error-message="form.errors.status" :error="!!form.errors.status" :disable="form.processing" />
+              <q-select v-model="form.type" label="Jenis" :options="types" map-options emit-value
+                :error="!!form.errors.type" :disable="form.processing" />
               <q-select v-model="form.user_id" label="Sales" :options="users" map-options emit-value
                 :error="!!form.errors.user_id" :disable="form.processing" />
-              <date-picker v-model="form.visit_date" label="Tanggal Visit" :error="!!form.errors.due_date"
-                :disable="form.processing" :error-message="form.errors.visit_date" />
               <q-select v-model="form.customer_id" label="Pelanggan" use-input input-debounce="300" clearable
                 :options="filteredCustomers" map-options emit-value @filter="filterCustomerFn" option-label="label"
                 :display-value="selectedCustomerLabel" option-value="value" :error="!!form.errors.customer_id"
@@ -69,28 +84,26 @@ const submit = () =>
                   </q-item>
                 </template>
               </q-select>
-              <q-input v-model.trim="form.purpose" type="text" label="Tujuan Visit" lazy-rules
-                :disable="form.processing" :error="!!form.errors.purpose" :error-message="form.errors.purpose" :rules="[
-                  (val) => (val && val.length > 0) || 'Tujuan harus diisi.',
+              <q-select v-model="form.service_id" label="Layanan" :options="services" map-options emit-value
+                :error="!!form.errors.service_id" :disable="form.processing" />
+              <q-select v-model="form.engagement_level" label="Engagement Level" :options="engagement_levels"
+                map-options emit-value :error-message="form.errors.engagement_level"
+                :error="!!form.errors.engagement_level" :disable="form.processing" />
+              <q-input v-model.trim="form.subject" type="text" label="Subject" lazy-rules :disable="form.processing"
+                :error="!!form.errors.subject" :error-message="form.errors.purpose" :rules="[
+                  (val) => (val && val.length > 0) || 'Subject harus diisi.',
                 ]" />
-              <q-select v-model="form.status" label="Status Visit" :options="statuses" map-options emit-value
-                :error-message="form.errors.status" :error="!!form.errors.status" :disable="form.processing" />
-              <q-select v-if="form.status == 'done'" v-model="form.customer_status" label="Update Customer Status"
-                :options="customer_statuses" map-options emit-value :error="!!form.errors.customer_status"
-                :error-message="form.errors.customer_status" :disable="form.processing" />
+              <q-input v-model.trim="form.summary" type="textarea" autogrow counter maxlength="255" label="Summary"
+                lazy-rules :disable="form.processing" :error="!!form.errors.summary" :error-message="form.errors.notes"
+                :rules="[]" />
               <q-input v-model.trim="form.notes" type="textarea" autogrow counter maxlength="255" label="Catatan"
                 lazy-rules :disable="form.processing" :error="!!form.errors.notes" :error-message="form.errors.notes"
                 :rules="[]" />
-              <date-picker v-model="form.next_followup_date" label="Next Follow Up Date"
-                :error="!!form.errors.next_followup_date" :disable="form.processing"
-                :error-message="form.errors.next_followup_date" />
-              <q-input v-model.trim="form.location" type="text" label="Lokasi" lazy-rules :disable="form.processing"
-                :error="!!form.errors.location" :error-message="form.errors.location" :rules="[]" />
             </q-card-section>
             <q-card-section class="q-gutter-sm">
               <q-btn icon="save" type="submit" label="Simpan" color="primary" :disable="form.processing" />
               <q-btn icon="cancel" label="Batal" :disable="form.processing"
-                @click="router.get(route('admin.visit.index'))" />
+                @click="router.get(route('admin.interaction.index'))" />
             </q-card-section>
           </q-card>
         </q-form>

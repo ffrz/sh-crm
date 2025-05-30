@@ -63,7 +63,7 @@ const title = "Rincian Pelanggan";
                   <tr>
                     <td>Status</td>
                     <td>:</td>
-                    <td>{{ $CONSTANTS.CUSTOMER_STATUSES[page.props.data.status] }}</td>
+                    <td>{{ page.props.data.active ? 'Aktif' : 'Tidak Aktif' }}</td>
                   </tr>
                   <tr v-if="page.props.data.created_datetime">
                     <td>Ditambahkan</td>

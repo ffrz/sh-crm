@@ -1,0 +1,75 @@
+<?php
+
+namespace App\Models;
+
+class Interaction extends Model
+{
+    protected $fillable = [
+        'user_id',
+        'customer_id',
+        'service_id',
+        'date',
+        'type',
+        'status',
+        'subject',
+        'summary',
+        'notes',
+    ];
+
+    const Status_Planned = 'planned';
+    const Status_Done = 'done';
+    const Status_Cancelled = 'cancelled';
+
+    const Statuses = [
+        self::Status_Planned => 'Planned',
+        self::Status_Done => 'Done',
+        self::Status_Cancelled => 'Cancelled',
+    ];
+
+    const Type_Visit = 'visit';
+    const Type_Call = 'call';
+    const Type_Chat = 'chat';
+    const Type_Email = 'email';
+    const Type_Other = 'other';
+
+    const Types = [
+        self::Type_Visit => 'Visit',
+        self::Type_Call => 'Call',
+        self::Type_Chat => 'Chat',
+        self::Type_Email => 'Email',
+        self::Type_Other => 'Other',
+    ];
+
+    const EngagementLevel_None = 'none'; // Belum ada indikasi ketertarikan. Mungkin hanya interaksi awal (misalnya tanya-tanya tanpa tujuan jelas).
+    const EngagementLevel_Cold = 'cold'; // Sudah ada interaksi, tapi belum menunjukkan minat atau belum layak untuk dikejar lebih lanjut
+    const EngagementLevel_Warm = 'warm'; // Ada minat, ada komunikasi, tapi masih perlu diyakinkan atau belum ada urgensi.
+    const EngagementLevel_Hot = 'hot'; // Sangat tertarik dan kemungkinan besar akan closing jika ditindaklanjuti dengan benar.
+    const EngagementLevel_Customer = 'customer'; // Sudah menjadi pelanggan aktif dan telah menggunakan layanan.
+    const EngagementLevel_Churned = 'churned'; // Pernah menjadi pelanggan, tapi saat ini sudah berhenti atau tidak aktif lagi.
+    const EngagementLevel_Lost = 'lost'; // Potensi pelanggan yang hilang. Sudah pasti tidak tertarik lagi atau menolak secara langsung.
+
+    const EngagementLevels = [
+        self::EngagementLevel_None => 'None',
+        self::EngagementLevel_Cold => 'Cold',
+        self::EngagementLevel_Warm => 'Warm',
+        self::EngagementLevel_Hot => 'Hot',
+        self::EngagementLevel_Customer => 'Customer',
+        self::EngagementLevel_Churned => 'Churned',
+        self::EngagementLevel_Lost => 'Lost',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
+    public function service()
+    {
+        return $this->belongsTo(Service::class, 'service_id');
+    }
+}

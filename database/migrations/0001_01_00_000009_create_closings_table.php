@@ -11,17 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('visits', function (Blueprint $table) {
+        Schema::create('closings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('customer_id')->constrained()->onDelete('cascade');
-            $table->date('visit_date');
-            $table->time('visit_time')->nullable();
-            $table->text('purpose');
+            $table->foreignId('service_id')->constrained()->onDelete('cascade');
+            $table->text('description')->nullable();
+            $table->date('date');
+            $table->decimal('amount', 18, 2);
             $table->text('notes')->nullable();
-            $table->enum('status', ['planned', 'done', 'cancelled'])->default('planned');
-            $table->date('next_followup_date')->nullable();
-            $table->string('location')->nullable();
+
+            $table->datetime('created_datetime')->nullable();
+            $table->datetime('updated_datetime')->nullable();
 
             $table->foreignId('created_by_uid')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by_uid')->nullable()->constrained('users')->nullOnDelete();
@@ -34,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('visits');
+        Schema::dropIfExists('closings');
     }
 };
