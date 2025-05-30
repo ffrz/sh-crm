@@ -5,8 +5,8 @@ import { ref } from "vue";
 
 
 let form = useForm({
-  username: "admin",
-  password: "12345",
+  username: "",
+  password: "",
   remember: true,
 });
 
