@@ -69,6 +69,14 @@ const title = "Rincian Client";
                     <td>Layanan</td>
                     <td>:</td>
                     <td>
+                      <div v-for="item in page.props.data.services" :key="item.id">
+                        {{ item.service.name }} -
+                        <q-badge>
+                          {{ $CONSTANTS.CUSTOMER_SERVICE_STATUSES[item.status] }}
+                        </q-badge>
+                        | <span>{{ item.start_date ?? '?' }}</span>
+                        - <span>{{ item.end_date ?? '?' }}</span>
+                      </div>
                     </td>
                   </tr>
                   <tr v-if="page.props.data.created_datetime">
@@ -79,7 +87,6 @@ const title = "Rincian Client";
                       <tempalte v-if="page.props.data.created_by_user">
                         - {{ page.props.data.created_by_user?.username }}
                       </tempalte>
-
                     </td>
                   </tr>
                   <tr v-if="page.props.data.updated_datetime">

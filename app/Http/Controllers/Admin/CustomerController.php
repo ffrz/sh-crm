@@ -17,7 +17,14 @@ class CustomerController extends Controller
     public function detail($id = 0)
     {
         return inertia('admin/customer/Detail', [
-            'data' => Customer::with(['assigned_user', 'created_by_user', 'updated_by_user'])->findOrFail($id),
+            'data' => Customer::with([
+                'assigned_user:id,username,name',
+                'created_by_user:id,username,name',
+                'updated_by_user:id,username,name',
+                'services',
+                'services.service:id,name',
+
+            ])->findOrFail($id),
         ]);
     }
 

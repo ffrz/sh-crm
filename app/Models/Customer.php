@@ -21,7 +21,7 @@ class Customer extends Model
         'notes',
         'active',
     ];
-    
+
     public static function activeCustomerCount()
     {
         return DB::select(
@@ -38,9 +38,14 @@ class Customer extends Model
     {
         return $this->belongsTo(User::class, 'created_by_uid');
     }
-    
+
     public function updated_by_user()
     {
         return $this->belongsTo(User::class, 'updated_by_uid');
+    }
+
+    public function services()
+    {
+        return $this->hasMany(CustomerService::class);
     }
 }
