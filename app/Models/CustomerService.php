@@ -49,4 +49,9 @@ class CustomerService extends Model
     {
         return $this->belongsTo(Closing::class, 'closing_id');
     }
+
+    public static function activeCustomerServiceCount()
+    {
+        return CustomerService::where('status', self::Status_Active)->count();
+    }
 }

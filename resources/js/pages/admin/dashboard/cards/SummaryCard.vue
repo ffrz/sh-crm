@@ -2,17 +2,6 @@
 import { usePage, router } from '@inertiajs/vue3';
 import { formatNumber } from '@/helpers/utils';
 
-const page = usePage();
-
-const goToUrl = (url, newFilter) => {
-  const baseFilter = { order_status: 'all', service_status: 'all', repair_status: 'all', payment_status: 'all', search: '' };
-  const mergedFilter = { ...baseFilter, ...newFilter };
-  localStorage.setItem('fixsync.service-orders.filter', JSON.stringify(mergedFilter));
-  router.visit(url, {
-    data: mergedFilter
-  });
-}
-
 </script>
 
 <template>
@@ -22,92 +11,78 @@ const goToUrl = (url, newFilter) => {
         <div class="row q-col-gutter-sm ">
           <div class="col-md-4 col-sm-6 col-xs-12">
             <q-item :style="`background-color: #fd8e24`" class="q-pa-none" clickable
-              @click="goToUrl(route('admin.service-order.index'), { order_status: 'open' })">
+              @click="router.visit(route('admin.customer.index'), { status: 'active' })">
               <q-item-section side :style="`background-color: #fd7e14`" class="q-pa-lg q-mr-none text-white">
-                <q-icon class="material-filled" name="handyman" color="white" size="24px" />
+                <q-icon class="material-filled" name="info" color="white" size="24px" />
               </q-item-section>
               <q-item-section class=" q-pa-md q-ml-none  text-white">
                 <q-item-label class="text-white text-h6 text-weight-bolder">
-                  8
+                  {{ $page.props.data.active_customer_count }}
                 </q-item-label>
-                <q-item-label>Pesanan Aktif</q-item-label>
+                <q-item-label>Client Aktif</q-item-label>
               </q-item-section>
             </q-item>
           </div>
           <div class="col-md-4 col-sm-6 col-xs-12">
             <q-item :style="`background-color: #dc3545`" class="q-pa-none" clickable
-              @click="goToUrl(route('admin.service-order.index'), { order_status: 'open', service_status: 'received' })">
+              @click="router.visit(route('admin.user.index'), { status: 'active', role: 'sales' })">
               <q-item-section side :style="`background-color: #cc2535`" class="q-pa-lg q-mr-none text-white">
-                <q-icon class="material-filled" name="handyman" color="white" size="24px" />
+                <q-icon class="material-filled" name="info" color="white" size="24px" />
               </q-item-section>
               <q-item-section class=" q-pa-md q-ml-none  text-white">
                 <q-item-label class="text-white text-h6 text-weight-bolder">
-                  7
+                  {{ $page.props.data.active_sales_count }}
                 </q-item-label>
-                <q-item-label>Sedang Dikerjakan</q-item-label>
+                <q-item-label>Sales Aktif</q-item-label>
               </q-item-section>
             </q-item>
           </div>
           <div class="col-md-4 col-sm-6 col-xs-12">
             <q-item :style="`background-color: #28a745`" class="q-pa-none" clickable
-              @click="goToUrl(route('admin.service-order.index'), { order_status: 'open', service_status: 'completed' })">
+              @click="router.visit(route('admin.service.index'), { status: 'active' })">
               <q-item-section side :style="`background-color: #189735`" class="q-pa-lg q-mr-none text-white">
-                <q-icon class="material-filled" name="handyman" color="white" size="24px" />
+                <q-icon class="material-filled" name="info" color="white" size="24px" />
               </q-item-section>
               <q-item-section class=" q-pa-md q-ml-none  text-white">
                 <q-item-label class="text-white text-h6 text-weight-bolder">
-                  <!-- {{ $page.props.data.pickable_order_count }} -->
-                  10
+                  {{ $page.props.data.active_service_count }}
                 </q-item-label>
-                <q-item-label>Selesai</q-item-label>
+                <q-item-label>Layanan Aktif</q-item-label>
               </q-item-section>
             </q-item>
           </div>
           <div class="col-md-4 col-xs-12">
             <q-item :style="`background-color: #e83e8c`" class="q-pa-none" clickable
-              @click="goToUrl(route('admin.service-order.index'), { order_status: 'open', service_status: 'completed' })">
+              @click="router.visit(route('admin.interaction.index'), { status: 'plan' })">
               <q-item-section side :style="`background-color: #d82e7c`" class="q-pa-lg q-mr-none text-white">
-                <q-icon class="material-filled" name="request_quote" color="white" size="24px" />
+                <q-icon class="material-filled" name="info" color="white" size="24px" />
               </q-item-section>
               <q-item-section class=" q-pa-md q-ml-none  text-white">
                 <q-item-label class="text-white text-h6 text-weight-bolder">
-                  Rp. {{ formatNumber($page.props.data.total_active_bill) }}
+                  {{ formatNumber($page.props.data.active_interaction_plan_count) }}
                 </q-item-label>
-                <q-item-label>Total Tagihan Aktif</q-item-label>
+                <q-item-label>Plan Interaksi Aktif</q-item-label>
               </q-item-section>
             </q-item>
           </div>
           <div class="col-md-4 col-xs-12">
             <q-item :style="`background-color: #e83e8c`" class="q-pa-none" clickable
-              @click="goToUrl(route('admin.service-order.index'), { order_status: 'open', service_status: 'completed' })">
+              @click="router.visit(route('admin.customer-service.index'), { status: 'active', })">
               <q-item-section side :style="`background-color: #d82e7c`" class="q-pa-lg q-mr-none text-white">
-                <q-icon class="material-filled" name="request_quote" color="white" size="24px" />
+                <q-icon class="material-filled" name="info" color="white" size="24px" />
               </q-item-section>
               <q-item-section class=" q-pa-md q-ml-none  text-white">
                 <q-item-label class="text-white text-h6 text-weight-bolder">
-                  Rp. {{ formatNumber($page.props.data.total_active_downpayment) }}
+                  {{ formatNumber($page.props.data.active_customer_service_count) }}
                 </q-item-label>
-                <q-item-label>Total Uang Muka</q-item-label>
+                <q-item-label>Layanan Client Aktif</q-item-label>
               </q-item-section>
             </q-item>
           </div>
+          
           <div class="col-md-4 col-xs-12">
-            <q-item :style="`background-color: #e83e8c`" class="q-pa-none" clickable
-              @click="goToUrl(route('admin.service-order.index'), { order_status: 'open', service_status: 'completed' })">
-              <q-item-section side :style="`background-color: #d82e7c`" class="q-pa-lg q-mr-none text-white">
-                <q-icon class="material-filled" name="request_quote" color="white" size="24px" />
-              </q-item-section>
-              <q-item-section class=" q-pa-md q-ml-none  text-white">
-                <q-item-label class="text-white text-h6 text-weight-bolder">
-                  Rp. {{ formatNumber($page.props.data.total_billable_order) }}
-                </q-item-label>
-                <q-item-label>Total Sisa Tagihan</q-item-label>
-              </q-item-section>
-            </q-item>
-          </div>
-          <div class="col-sm-6 col-xs-12">
             <q-item :style="`background-color: #008cff`" class="q-pa-none" clickable
-              @click="$inertia.visit(route('admin.customer.index', { status: 'active' }))">
+              @click="$inertia.visit(route('admin.user.index', { status: 'active' }))">
               <q-item-section side :style="`background-color: #007bff`" class="q-pa-lg q-mr-none text-white">
                 <q-icon class="material-filled" name="groups_2" color="white" size="24px" />
               </q-item-section>
@@ -116,20 +91,6 @@ const goToUrl = (url, newFilter) => {
                   {{ $page.props.data.active_user_count }}
                 </q-item-label>
                 <q-item-label>Pengguna Aktif</q-item-label>
-              </q-item-section>
-            </q-item>
-          </div>
-          <div class="col-sm-6 col-xs-12">
-            <q-item :style="`background-color: #008cff`" class="q-pa-none" clickable
-              @click="$inertia.visit(route('admin.customer.index', { status: 'active' }))">
-              <q-item-section side :style="`background-color: #007bff`" class="q-pa-lg q-mr-none text-white">
-                <q-icon class="material-filled" name="groups_2" color="white" size="24px" />
-              </q-item-section>
-              <q-item-section class=" q-pa-md q-ml-none  text-white">
-                <q-item-label class="text-white text-h6 text-weight-bolder">
-                  {{ $page.props.data.active_customer_count }}
-                </q-item-label>
-                <q-item-label>Pelanggan Aktif</q-item-label>
               </q-item-section>
             </q-item>
           </div>

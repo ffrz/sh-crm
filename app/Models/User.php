@@ -15,7 +15,7 @@ class User extends Authenticatable
     // Display role di hardcode saja, tidak diambil dari translations
     public const Roles = [
         self::Role_Admin => 'Administrator',
-        self::Role_Sales => 'Sales',
+        self::Role_Sales => 'Salesman',
     ];
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -76,6 +76,13 @@ class User extends Authenticatable
     {
         return DB::select(
             'select count(0) as count from users where active = 1'
+        )[0]->count;
+    }
+
+    public static function activeSalesCount()
+    {
+        return DB::select(
+            'select count(0) as count from users where active = 1 and role = \''. self::Role_Sales . '\''
         )[0]->count;
     }
 }

@@ -12,8 +12,17 @@ const showFilter = ref(true);
 const selected_month = ref(getQueryParams()["month"] ?? "this_month");
 
 const month_options = ref([
+  { value: "today", label: "Hari Ini" },
+  { value: "yesterday", label: "Kemarin" },
+  { value: "this_week", label: "Minggu Ini" },
+  { value: "last_week", label: "Minggu Lalu" },
+  { value: "this_month", label: "Bulan Ini" },
+  { value: "last_month", label: "Bulan Lalu" },
+  { value: "this_year", label: "Tahun Ini" },
+  { value: "last_year", label: "Tahun Lalu" },
   { value: "this_week", label: "7 Hari Terakhir" },
   { value: "this_month", label: "30 Hari Terakhir" },
+  { value: "all_time", label: "Seluruh Waktu" },
 ]);
 const onFilterChange = () => {
   router.visit(route("admin.dashboard", { month: selected_month.value }));
@@ -37,7 +46,7 @@ const onFilterChange = () => {
         </div>
       </q-toolbar>
     </template>
-    <div v-if="0" class="q-pa-sm">
+    <div class="q-pa-sm">
       <div>
         <div class="text-subtitle1 text-bold text-grey-8">Statistik Aktual</div>
         <summary-card class="q-py-none" />
@@ -57,25 +66,22 @@ const onFilterChange = () => {
               { id: 3, name: 'G-Fashion', total: 5520000 },
               { id: 4, name: 'Parinda', total: 730000 },
               { id: 5, name: 'Anto', total: 1215000 },
-            ]" title="Top 5 Customer" route_url="admin.customer.index" />
+            ]" title="Top 5 Client" route_url="admin.customer.index" />
           </div>
           <div class="col-md-6 col-12">
-            <top-card-2 class="full-width full-height" :items="[
+            <top-card class="full-width full-height" :items="[
               { id: 1, name: 'Deni', total: 122 },
               { id: 2, name: 'Wanda', total: 121 },
               { id: 3, name: 'Jeri', total: 93 },
               { id: 4, name: 'Uden', total: 88 },
               { id: 5, name: 'Dani', total: 60 },
-            ]" title="Top 5 Karyawan" route_url="admin.customer.index" />
+            ]" title="Top 5 Salesman" route_url="admin.user.index" />
           </div>
         </div>
       </div>
       <div v-if="0">
         <chart-card class="q-py-none q-pt-sm" />
       </div>
-    </div>
-    <div v-else class="q-pa-sm text-center">
-      <p class="text-caption">Maaf, fitur belum tersedia!</p>
     </div>
   </authenticated-layout>
 </template>

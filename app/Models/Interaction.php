@@ -83,4 +83,9 @@ class Interaction extends Model
     {
         return $this->belongsTo(Service::class, 'service_id');
     }
+
+    public static function activePlanCount()
+    {
+        return self::where('status', self::Status_Planned)->count();
+    }
 }
