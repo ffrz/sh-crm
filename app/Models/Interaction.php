@@ -59,6 +59,16 @@ class Interaction extends Model
         self::EngagementLevel_Lost => 'Lost',
     ];
 
+    public function created_by_user()
+    {
+        return $this->belongsTo(User::class, 'created_by_uid');
+    }
+
+    public function updated_by_user()
+    {
+        return $this->belongsTo(User::class, 'updated_by_uid');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

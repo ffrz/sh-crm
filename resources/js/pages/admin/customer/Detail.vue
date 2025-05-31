@@ -56,9 +56,15 @@ const title = "Rincian Client";
                   <tr>
                     <td>Assigned to</td>
                     <td>:</td>
-                    <td v-if="page.props.data.assigned_user">{{ page.props.data.assigned_user.name + ' - ' +
-                      (page.props.data.assigned_user.username) }}</td>
-                    <td v-else>-</td>
+                    <td>
+                      <template v-if="page.props.data.assigned_user">
+                        {{ page.props.data.assigned_user.name + ' - ' +
+                          (page.props.data.assigned_user.username) }}
+                      </template>
+                      <template v-else>
+                        -
+                      </template>
+                    </td>
                   </tr>
                   <tr>
                     <td>Status</td>
@@ -79,30 +85,38 @@ const title = "Rincian Client";
                       </div>
                     </td>
                   </tr>
-                  <tr v-if="page.props.data.created_datetime">
-                    <td>Ditambahkan</td>
+                  <tr>
+                    <td>Catatan</td>
                     <td>:</td>
-                    <td>{{ $dayjs(page.props.data.created_datetime).fromNow() }}
-                      - {{ $dayjs(page.props.data.created_datetime).format('DD MMMM YYYY HH:mm:ss') }}
-                      <tempalte v-if="page.props.data.created_by_user">
-                        - {{ page.props.data.created_by_user?.username }}
-                      </tempalte>
+                    <td>{{ page.props.data.notes }}</td>
+                  </tr>
+                  <tr v-if="page.props.data.created_datetime">
+                    <td>Dibuat</td>
+                    <td>:</td>
+                    <td>
+                      {{ $dayjs(page.props.data.created_datetime).fromNow() }} -
+                      {{ $dayjs(page.props.data.created_datetime).format("DD MMMM YY HH:mm:ss") }}
+                      <template v-if="page.props.data.created_by_user">
+                        oleh
+                        <a :href="route('admin.user.detail', { id: page.props.data.created_by_user.id })">
+                          {{ page.props.data.created_by_user.username }}
+                        </a>
+                      </template>
                     </td>
                   </tr>
                   <tr v-if="page.props.data.updated_datetime">
                     <td>Diperbarui</td>
                     <td>:</td>
-                    <td>{{ $dayjs(page.props.data.updated_datetime).fromNow() }}
-                      - {{ $dayjs(page.props.data.updated_datetime).format('DD MMMM YYYY HH:mm:ss') }}
-                      <tempalte v-if="page.props.data.updated_by_user">
-                        - {{ page.props.data.updated_by_user?.username }}
-                      </tempalte>
+                    <td>
+                      {{ $dayjs(page.props.data.updated_datetime).fromNow() }} -
+                      {{ $dayjs(page.props.data.updated_datetime).format("DD MMMM YY HH:mm:ss") }}
+                      <template v-if="page.props.data.updated_by_user">
+                        oleh
+                        <a :href="route('admin.user.detail', { id: page.props.data.updated_by_user.id })">
+                          {{ page.props.data.updated_by_user.username }}
+                        </a>
+                      </template>
                     </td>
-                  </tr>
-                  <tr>
-                    <td>Catatan</td>
-                    <td>:</td>
-                    <td>{{ page.props.data.notes }}</td>
                   </tr>
                 </tbody>
               </table>

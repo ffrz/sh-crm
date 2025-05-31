@@ -18,7 +18,10 @@ class ServiceController extends Controller
     public function detail($id = 0)
     {
         return inertia('admin/service/Detail', [
-            'data' => Service::findOrFail($id),
+            'data' => Service::with([
+                'created_by_user:id,username',
+                'updated_by_user:id,username',
+            ])->findOrFail($id),
             // TODO: Implement active customer count when the relationship is defined
             // 'active_customer_count' => Service::findOrFail($id)->customers()->where('active', true)->count(),
         ]);

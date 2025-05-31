@@ -1,10 +1,11 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from "vue";
-import { router } from "@inertiajs/vue3";
+import { router, usePage } from "@inertiajs/vue3";
 import { handleDelete, handleFetchItems } from "@/helpers/client-req-handler";
 import { check_role, formatNumber, getQueryParams } from "@/helpers/utils";
 import { useQuasar } from "quasar";
 
+const page = usePage();
 const title = "Closing";
 const $q = useQuasar();
 const showFilter = ref(false);
@@ -13,10 +14,33 @@ const loading = ref(true);
 const filter = reactive({
   search: "",
   date: "all",
-  sales: "all",
+  user_id: "all",
+  service_id: "all",
   ...getQueryParams(),
 });
 
+const date_options = [
+  { value: "all", label: "Semua" },
+  { value: "this_month", label: "Bulan Ini" },
+  { value: "last_month", label: "Bulan Lalu" },
+  { value: "this_year", label: "Tahun Ini" },
+  { value: "last_year", label: "Tahun Lalu" },  
+];
+
+const services = [
+  { value: "all", label: "Semua" },
+  ...page.props.services.map((service) => ({
+    value: service.id,
+    label: service.name,
+  })),
+];
+const users = [
+  { value: "all", label: "Semua" },
+  ...page.props.users.map((user) => ({
+    value: user.id,
+    label: `${user.name} (${user.username})`,
+  })),
+];
 const pagination = ref({
   page: 1,
   rowsPerPage: 10,
@@ -82,7 +106,7 @@ onMounted(() => {
 
 const deleteItem = (row) =>
   handleDelete({
-    message: `Hapus closing ${row.name}?`,
+    message: `Hapus closing #${row.id}?`,
     url: route("admin.closing.delete", row.id),
     fetchItemsCallback: fetchItems,
     loading,
@@ -119,6 +143,15 @@ const computedColumns = computed(() => {
     <template #header v-if="showFilter">
       <q-toolbar class="filter-bar">
         <div class="row q-col-gutter-xs items-center q-pa-sm full-width">
+          <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.date"
+            :options="date_options" label="Kurun Waktu" dense map-options emit-value outlined
+            @update:model-value="onFilterChange" />
+          <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.user_id"
+            :options="users" label="Sales" dense map-options emit-value outlined
+            @update:model-value="onFilterChange" />
+          <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.service_id"
+            :options="services" label="Layanan" dense map-options emit-value outlined
+            @update:model-value="onFilterChange" />
           <q-input class="col" outlined dense debounce="300" v-model="filter.search" placeholder="Cari" clearable>
             <template v-slot:append>
               <q-icon name="search" />

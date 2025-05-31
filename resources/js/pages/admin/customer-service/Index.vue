@@ -196,6 +196,7 @@ const computedColumns = computed(() => {
                   (#{{ props.row.customer.id }})
                 </div>
                 <div><q-icon name="apps" /> {{ props.row.service.name }}</div>
+                <div><q-icon name="notes" /> {{ props.row.description }}</div>
                 <div v-if="props.row.start_date">
                   <q-icon name="event" /> {{
                     props.row.start_date ? 'Berlangganan: ' + $dayjs(props.row.start_date).format('DD MMMM YYYY') : ''

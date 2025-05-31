@@ -178,9 +178,6 @@ onMounted(() => {
               <q-item-label>Layanan</q-item-label>
             </q-item-section>
           </q-item>
-
-          <q-separator />
-
           <q-item v-if="$page.props.auth.user.role == $CONSTANTS.USER_ROLE_ADMIN" clickable v-ripple
             :active="$page.url.startsWith('/admin/settings/users')" @click="router.get(route('admin.user.index'))">
             <q-item-section avatar>
@@ -190,6 +187,7 @@ onMounted(() => {
               <q-item-label>Pengguna</q-item-label>
             </q-item-section>
           </q-item>
+          <q-separator />
           <q-item clickable v-ripple :active="$page.url.startsWith('/admin/settings/profile')"
             @click="router.get(route('admin.profile.edit'))">
             <q-item-section avatar>
@@ -209,6 +207,9 @@ onMounted(() => {
               <q-item-label>Profil Perusahaan</q-item-label>
             </q-item-section>
           </q-item>
+
+          <q-separator />
+          
           <q-item clickable v-close-popup v-ripple style="color: inherit" :href="route('admin.auth.logout')">
             <q-item-section>
               <q-item-label><q-icon name="logout" class="q-mr-sm" />Keluar</q-item-label>

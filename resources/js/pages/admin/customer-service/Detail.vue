@@ -24,17 +24,44 @@ const title = "Rincian Layanan Client";
                     <td>#{{ page.props.data.id }}</td>
                   </tr>
                   <tr>
+                    <td>Id Closing</td>
+                    <td>:</td>
+                    <td>
+                      <span v-if="page.props.data.closing_id">
+                        <a :href="route('admin.closing.detail', { id: page.props.data.closing_id })">
+                          #{{ page.props.data.closing_id }}
+                        </a>
+                      </span>
+                      <span v-else>-</span>
+                    </td>
+                  </tr>
+                  <tr>
                     <td>Pelanggan</td>
                     <td>:</td>
-                    <td>{{ page.props.data.customer.name }} - {{
-                      page.props.data.customer.company }} (#{{ page.props.data.customer.id }})
-                      <br />{{ page.props.data.customer.address }}
+                    <td>
+                      <div>
+                        <a :href="route('admin.customer.detail', { id: page.props.data.customer.id })">
+                          {{ page.props.data.customer.name }}
+                          - {{ page.props.data.customer.company }}
+                          (#{{ page.props.data.customer.id }})
+                        </a>
+                      </div>
+                      {{ page.props.data.customer.address }}
                     </td>
                   </tr>
                   <tr>
                     <td>Layanan</td>
                     <td>:</td>
-                    <td>{{ page.props.data.service.name }}</td>
+                    <td>
+                      <a :href="route('admin.service.detail', { id: page.props.data.service.id })">
+                        {{ page.props.data.service.name }}
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Deskripsi</td>
+                    <td>:</td>
+                    <td>{{ page.props.data.description }}</td>
                   </tr>
                   <tr>
                     <td>Status</td>
@@ -44,17 +71,48 @@ const title = "Rincian Layanan Client";
                   <tr>
                     <td>Tgl Mulai</td>
                     <td>:</td>
-                    <td>{{ page.props.data.start_date ? $dayjs(page.props.data.start_date).format('DD MMMM YYYY') : '-'}}</td>
+                    <td>{{ page.props.data.start_date ? $dayjs(page.props.data.start_date).format('DD MMMM YYYY') :
+                      '-' }}
+                    </td>
                   </tr>
                   <tr>
                     <td>Tgl Berhenti</td>
                     <td>:</td>
-                    <td>{{ page.props.data.end_date ? $dayjs(page.props.data.end_date).format('DD MMMM YYYY') : '-'}}</td>
+                    <td>{{ page.props.data.end_date ? $dayjs(page.props.data.end_date).format('DD MMMM YYYY') : '-' }}
+                    </td>
                   </tr>
                   <tr>
                     <td>Catatan</td>
                     <td>:</td>
                     <td>{{ page.props.data.notes }}</td>
+                  </tr>
+                  <tr v-if="page.props.data.created_datetime">
+                    <td>Dibuat</td>
+                    <td>:</td>
+                    <td>
+                      {{ $dayjs(page.props.data.created_datetime).fromNow() }} -
+                      {{ $dayjs(page.props.data.created_datetime).format("DD MMMM YY HH:mm:ss") }}
+                      <template v-if="page.props.data.created_by_user">
+                        oleh
+                        <a :href="route('admin.user.detail', { id: page.props.data.created_by_user.id })">
+                          {{ page.props.data.created_by_user.username }}
+                        </a>
+                      </template>
+                    </td>
+                  </tr>
+                  <tr v-if="page.props.data.updated_datetime">
+                    <td>Diperbarui</td>
+                    <td>:</td>
+                    <td>
+                      {{ $dayjs(page.props.data.updated_datetime).fromNow() }} -
+                      {{ $dayjs(page.props.data.updated_datetime).format("DD MMMM YY HH:mm:ss") }}
+                      <template v-if="page.props.data.updated_by_user">
+                        oleh
+                        <a :href="route('admin.user.detail', { id: page.props.data.updated_by_user.id })">
+                          {{ page.props.data.updated_by_user.username }}
+                        </a>
+                      </template>
+                    </td>
                   </tr>
                 </tbody>
               </table>

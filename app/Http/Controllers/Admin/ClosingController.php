@@ -15,13 +15,22 @@ class ClosingController extends Controller
 {
     public function index()
     {
-        return inertia('admin/closing/Index');
+        return inertia('admin/closing/Index', [
+            'users' => User::where('active', true)->orderBy('username', 'asc')->get(),
+            'services' => Service::orderBy('name', 'asc')->get(),
+        ]);
     }
 
     public function detail($id = 0)
     {
         return inertia('admin/closing/Detail', [
-            'data' => Closing::with(['user', 'customer', 'service'])->findOrFail($id),
+            'data' => Closing::with([
+                'user',
+                'customer',
+                'service',
+                'created_by_user:id,username',
+                'updated_by_user:id,username',
+            ])->findOrFail($id),
         ]);
     }
 
@@ -43,6 +52,42 @@ class ClosingController extends Controller
                 ->orWhereHas('service', function ($q) use ($filter) {
                     $q->where('name', 'like', '%' . $filter['search'] . '%');
                 });
+        }
+
+        if (!empty($filter['user_id']) && ($filter['user_id'] != 'all')) {
+            $q->where('user_id', '=', $filter['user_id']);
+        }
+
+        if (!empty($filter['service_id']) && ($filter['service_id'] != 'all')) {
+            $q->where('service_id', '=', $filter['service_id']);
+        }
+
+        if (!empty($filter['date']) && ($filter['date'] != 'all')) {
+            if ($filter['date'] == 'this_month') {
+                $start = Carbon::now()->startOfMonth();
+                $end = Carbon::now()->endOfMonth();
+                $q->whereBetween('date', [$start, $end]);
+            } elseif ($filter['date'] == 'last_month') {
+                $start = Carbon::now()->subMonthNoOverflow()->startOfMonth();
+                $end = Carbon::now()->subMonthNoOverflow()->endOfMonth();
+                $q->whereBetween('date', [$start, $end]);
+            } elseif ($filter['date'] == 'this_year') {
+                $start = Carbon::now()->startOfYear();
+                $end = Carbon::now()->endOfYear();
+                $q->whereBetween('date', [$start, $end]);
+            } elseif ($filter['date'] == 'last_year') {
+                $start = Carbon::now()->subYear()->startOfYear();
+                $end = Carbon::now()->subYear()->endOfYear();
+                $q->whereBetween('date', [$start, $end]);
+            } else {
+                // Asumsikan filter['date'] dalam format YYYY-MM-DD
+                try {
+                    $date = Carbon::parse($filter['date']);
+                    $q->whereDate('date', $date);
+                } catch (\Exception $e) {
+                    // Handle kesalahan parsing tanggal jika perlu
+                }
+            }
         }
 
         $q->orderBy($orderBy, $orderType);

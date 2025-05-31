@@ -39,46 +39,38 @@ const title = "Rincian Pengguna";
                     <td>Dibuat</td>
                     <td>:</td>
                     <td>
-                      {{
-                        $dayjs(new Date(page.props.data.created_at)).format(
-                          "DD MMMM YY HH:mm:ss"
-                        )
-                      }}
+                      {{ $dayjs(page.props.data.created_at).fromNow() }} -
+                      {{ $dayjs(page.props.data.created_at).format("DD MMMM YY HH:mm:ss") }}
                     </td>
                   </tr>
                   <tr>
                     <td>Diperbarui</td>
                     <td>:</td>
                     <td>
-                      {{
-                        $dayjs(new Date(page.props.data.updated_at)).format(
-                          "DD MMMM YY HH:mm:ss"
-                        )
-                      }}
+                      {{ $dayjs(page.props.data.updated_at).fromNow() }} -
+                      {{ $dayjs(page.props.data.updated_at).format("DD MMMM YY HH:mm:ss") }}
                     </td>
                   </tr>
                   <tr>
                     <td>Terakhir login</td>
                     <td>:</td>
                     <td>
-                      {{ page.props.data.last_login_datetime ?
-                        $dayjs(
-                          new Date(page.props.data.last_login_datetime)
-                        ).format("DD MMMM YY HH:mm:ss")
-                        : "Belum pernah login"
-                      }}
+                      <template v-if="page.props.data.last_login_datetime">
+                        {{ $dayjs(page.props.data.last_login_datetime).fromNow() }} -
+                        {{ $dayjs(page.props.data.last_login_datetime).format("DD MMMM YY HH:mm:ss") }}
+                      </template>
+                      <template v-else>
+                        Belum pernah login
+                      </template>
                     </td>
                   </tr>
                   <tr v-if="page.props.data.last_activity_datetime">
                     <td>Aktifitas Terakhir</td>
                     <td>:</td>
                     <td>
-                      {{
-                        $dayjs(
-                          new Date(page.props.data.last_activity_datetime)
-                        ).format("DD MMMM YY HH:mm:ss")
-                      }}
-                      <br />{{ page.props.data.last_activity_description }}
+                      {{ $dayjs(page.props.data.last_activity_datetime).fromNow() }} -
+                      {{ $dayjs(page.props.data.last_activity_datetime).format("DD MMMM YY HH:mm:ss") }}
+                      <br />Jenis aktifitas: {{ page.props.data.last_activity_description }}
                     </td>
                   </tr>
                 </tbody>

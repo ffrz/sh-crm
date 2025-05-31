@@ -14,6 +14,16 @@ class Closing extends Model
         'notes',
     ];
 
+    public function created_by_user()
+    {
+        return $this->belongsTo(User::class, 'created_by_uid');
+    }
+
+    public function updated_by_user()
+    {
+        return $this->belongsTo(User::class, 'updated_by_uid');
+    }
+    
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -27,5 +37,37 @@ class Closing extends Model
     public function service()
     {
         return $this->belongsTo(Service::class, 'service_id');
+    }
+
+    public function customerService()
+    {
+        return $this->hasOne(CustomerService::class, 'closing_id');
+    }
+
+    public static function booted()
+    {
+        static::saved(function ($item) {
+            if ($item->customerService) {
+                $item->customerService->closing_id = $item->id;
+                $item->customerService->save();
+            } else {
+                $customerService = new CustomerService([
+                    'customer_id' => $item->customer_id,
+                    'service_id' => $item->service_id,
+                    'closing_id' => $item->id,
+                    'status' => CustomerService::Status_Active,
+                    'description' => $item->description,
+                    'start_date' => $item->date,
+                    'notes' => $item->notes,
+                ]);
+                $customerService->save();
+            }
+        });
+
+        static::deleted(function ($item) {
+            if ($item->customerService) {
+                $item->customerService->delete();
+            }
+        });
     }
 }

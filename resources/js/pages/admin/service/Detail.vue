@@ -43,6 +43,34 @@ const title = "Rincian Pelanggan";
                     <td>:</td>
                     <td>{{ page.props.customer_count }}</td>
                   </tr>
+                  <tr v-if="page.props.data.created_datetime">
+                    <td>Dibuat</td>
+                    <td>:</td>
+                    <td>
+                      {{ $dayjs(page.props.data.created_datetime).fromNow() }} -
+                      {{ $dayjs(page.props.data.created_datetime).format("DD MMMM YY HH:mm:ss") }}
+                      <template v-if="page.props.data.created_by_user">
+                        oleh
+                        <a :href="route('admin.user.detail', { id: page.props.data.created_by_user.id })">
+                          {{ page.props.data.created_by_user.username }}
+                        </a>
+                      </template>
+                    </td>
+                  </tr>
+                  <tr v-if="page.props.data.updated_datetime">
+                    <td>Diperbarui</td>
+                    <td>:</td>
+                    <td>
+                      {{ $dayjs(page.props.data.updated_datetime).fromNow() }} -
+                      {{ $dayjs(page.props.data.updated_datetime).format("DD MMMM YY HH:mm:ss") }}
+                      <template v-if="page.props.data.updated_by_user">
+                        oleh
+                        <a :href="route('admin.user.detail', { id: page.props.data.updated_by_user.id })">
+                          {{ page.props.data.updated_by_user.username }}
+                        </a>
+                      </template>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </q-card-section>

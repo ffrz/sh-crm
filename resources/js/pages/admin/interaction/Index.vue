@@ -14,9 +14,18 @@ const filter = reactive({
   search: "",
   status: "all",
   type: "all",
+  date: "all",
   engagement_level: "all",
   ...getQueryParams(),
 });
+
+const date_options = [
+  { value: "all", label: "Semua" },
+  { value: "this_month", label: "Bulan Ini" },
+  { value: "last_month", label: "Bulan Lalu" },
+  { value: "this_year", label: "Tahun Ini" },
+  { value: "last_year", label: "Tahun Lalu" },  
+];
 
 const type_colors = {
   visit: "red",
@@ -178,6 +187,9 @@ const computedColumns = computed(() => {
     <template #header v-if="showFilter">
       <q-toolbar class="filter-bar">
         <div class="row q-col-gutter-xs items-center q-pa-sm full-width">
+          <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.date"
+            :options="date_options" label="Kurun Waktu" dense map-options emit-value outlined
+            @update:model-value="onFilterChange" />
           <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.status"
             :options="statuses" label="Status" dense map-options emit-value outlined
             @update:model-value="onFilterChange" />

@@ -7,6 +7,7 @@ class CustomerService extends Model
     protected $fillable = [
         'customer_id',
         'service_id',
+        'closing_id',
         'description',
         'status',
         'start_date',
@@ -24,6 +25,16 @@ class CustomerService extends Model
         self::Status_Cancelled => 'Dibatalkan',
     ];
 
+    public function created_by_user()
+    {
+        return $this->belongsTo(User::class, 'created_by_uid');
+    }
+
+    public function updated_by_user()
+    {
+        return $this->belongsTo(User::class, 'updated_by_uid');
+    }
+    
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id');
@@ -32,5 +43,10 @@ class CustomerService extends Model
     public function service()
     {
         return $this->belongsTo(Service::class, 'service_id');
+    }
+
+    public function closing()
+    {
+        return $this->belongsTo(Closing::class, 'closing_id');
     }
 }

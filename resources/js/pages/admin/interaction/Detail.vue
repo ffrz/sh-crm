@@ -41,30 +41,44 @@ const title = "Rincian Interaksi";
                   <tr>
                     <td>Sales</td>
                     <td>:</td>
-                    <td>{{ page.props.data.user.name }} ({{ page.props.data.user.username }})</td>
+                    <td>
+                      <a :href="route('admin.user.detail', { id: page.props.data.user.id })">
+                        {{ page.props.data.user.name }} ({{ page.props.data.user.username }})
+                      </a>
+                    </td>
                   </tr>
                   <tr>
                     <td>Client</td>
                     <td>:</td>
-                    <td>{{ page.props.data.customer.name }} - {{
-                      page.props.data.customer.company }} (#{{ page.props.data.customer.id }})
-                      <br />{{ page.props.data.customer.address }}
+                    <td>
+                      <a :href="route('admin.customer.detail', { id: page.props.data.customer.id })">
+                        {{ page.props.data.customer.name }}
+                        {{ page.props.data.customer.company ? `- ${page.props.data.customer.company}` : '' }}
+                        - (#{{ page.props.data.customer.id }})
+                      </a>
+                      <template v-if="page.props.data.customer.address">
+                        <br />{{ page.props.data.customer.address }}
+                      </template>
                     </td>
                   </tr>
                   <tr>
                     <td>Service</td>
                     <td>:</td>
-                    <td>{{ page.props.data.service.name }}</td>
-                  </tr>
-                  <tr>
-                    <td>Subject</td>
-                    <td>:</td>
-                    <td>{{ page.props.data.subject }}</td>
+                    <td>
+                      <a :href="route('admin.service.detail', { id: page.props.data.service.id })">
+                        {{ page.props.data.service.name }}
+                      </a>
+                    </td>
                   </tr>
                   <tr>
                     <td>Engagement Level</td>
                     <td>:</td>
                     <td>{{ $CONSTANTS.INTERACTION_ENGAGEMENT_LEVELS[page.props.data.engagement_level] }}</td>
+                  </tr>
+                  <tr>
+                    <td>Subject</td>
+                    <td>:</td>
+                    <td>{{ page.props.data.subject }}</td>
                   </tr>
                   <tr>
                     <td>Summary</td>
@@ -75,6 +89,34 @@ const title = "Rincian Interaksi";
                     <td>Catatan</td>
                     <td>:</td>
                     <td>{{ page.props.data.notes }}</td>
+                  </tr>
+                  <tr v-if="page.props.data.created_datetime">
+                    <td>Dibuat</td>
+                    <td>:</td>
+                    <td>
+                      {{ $dayjs(page.props.data.created_datetime).fromNow() }} -
+                      {{ $dayjs(page.props.data.created_datetime).format("DD MMMM YY HH:mm:ss") }}
+                      <template v-if="page.props.data.created_by_user">
+                        oleh
+                        <a :href="route('admin.user.detail', { id: page.props.data.created_by_user.id })">
+                          {{ page.props.data.created_by_user.username }}
+                        </a>
+                      </template>
+                    </td>
+                  </tr>
+                  <tr v-if="page.props.data.updated_datetime">
+                    <td>Diperbarui</td>
+                    <td>:</td>
+                    <td>
+                      {{ $dayjs(page.props.data.updated_datetime).fromNow() }} -
+                      {{ $dayjs(page.props.data.updated_datetime).format("DD MMMM YY HH:mm:ss") }}
+                      <template v-if="page.props.data.updated_by_user">
+                        oleh
+                        <a :href="route('admin.user.detail', { id: page.props.data.updated_by_user.id })">
+                          {{ page.props.data.updated_by_user.username }}
+                        </a>
+                      </template>
+                    </td>
                   </tr>
                 </tbody>
               </table>

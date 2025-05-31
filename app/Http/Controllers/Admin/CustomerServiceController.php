@@ -14,15 +14,20 @@ class CustomerServiceController extends Controller
     public function index()
     {
         return inertia('admin/customer-service/Index', [
-            'customers' => Customer::where('active', '=', 1)->orderBy('name', 'asc')->get(),
-            'services' => Service::where('active', '=', 1)->orderBy('name', 'asc')->get(),
+            'customers' => Customer::query()->orderBy('name', 'asc')->get(),
+            'services' => Service::query()->orderBy('name', 'asc')->get(),
         ]);
     }
 
     public function detail($id = 0)
     {
         return inertia('admin/customer-service/Detail', [
-            'data' => CustomerService::with(['customer', 'service'])->findOrFail($id),
+            'data' => CustomerService::with([
+                'customer',
+                'service',
+                'created_by_user:id,username',
+                'updated_by_user:id,username',
+            ])->findOrFail($id),
         ]);
     }
 
