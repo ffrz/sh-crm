@@ -217,8 +217,12 @@ const computedColumns = computed(() => {
             </q-td>
             <q-td key="customer" :props="props">
               {{ props.row.customer.name }} - {{ props.row.customer.company }} (#{{ props.row.customer.id }})
-              <br />{{ props.row.customer.business_type }}
-              <br />{{ props.row.customer.address }}
+              <div v-if="props.row.customer.business_type">
+                {{ props.row.customer.business_type }}
+              </div>
+              <div v-if="props.row.customer.address">
+                {{ props.row.customer.address }}
+              </div>
             </q-td>
             <q-td key="service" :props="props">
               {{ props.row.service.name }}
@@ -232,7 +236,7 @@ const computedColumns = computed(() => {
               </q-badge>
             </q-td>
             <q-td key="start_date" :props="props">
-              {{ props.row.start_date ? $dayjs(props.row.start_date).format('DD MMMM YYYY') : ''}}
+              {{ props.row.start_date ? $dayjs(props.row.start_date).format('DD MMMM YYYY') : '' }}
             </q-td>
             <q-td key="end_date" :props="props">
               {{ props.row.end_date ? $dayjs(props.row.end_date).format('DD MMMM YYYY') : '' }}
