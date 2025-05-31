@@ -4,24 +4,22 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
-use App\Models\Interaction;
+use App\Models\CustomerService;
 use App\Models\Service;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class InteractionController extends Controller
+class CustomerServiceController extends Controller
 {
     public function index()
     {
-        return inertia('admin/interaction/Index');
+        return inertia('admin/customer-service/Index');
     }
 
     public function detail($id = 0)
     {
-        return inertia('admin/interaction/Detail', [
-            'data' => Interaction::with(['user', 'customer', 'service'])->findOrFail($id),
+        return inertia('admin/customer-service/Detail', [
+            'data' => CustomerService::with(['customer', 'service'])->findOrFail($id),
         ]);
     }
 
@@ -31,7 +29,7 @@ class InteractionController extends Controller
         $orderType = $request->get('order_type', 'asc');
         $filter = $request->get('filter', []);
 
-        $q = Interaction::with(['user', 'customer', 'service']);
+        $q = CustomerService::with(['customer', 'service']);
 
         if (!empty($filter['search'])) {
             $q->where(function ($q) use ($filter) {
@@ -52,14 +50,6 @@ class InteractionController extends Controller
             $q->where('status', '=', $filter['status']);
         }
 
-        if (!empty($filter['type']) && ($filter['type'] != 'all')) {
-            $q->where('type', '=', $filter['type']);
-        }
-
-        if (!empty($filter['engagement_level']) && ($filter['engagement_level'] != 'all')) {
-            $q->where('engagement_level', '=', $filter['engagement_level']);
-        }
-
         $q->orderBy($orderBy, $orderType);
 
         $items = $q->paginate($request->get('per_page', 10))->withQueryString();
@@ -69,51 +59,53 @@ class InteractionController extends Controller
 
     public function editor($id = 0)
     {
-        $item = $id ? Interaction::findOrFail($id) : new Interaction([
-            'status' => Interaction::Status_Planned,
-            'user_id' => Auth::user()->id,
-            'interaction_date' => Carbon::now(),
+        $item = $id ? CustomerService::findOrFail($id) : new CustomerService([
+            'status' => CustomerService::Status_Active,
         ]);
-        return inertia('admin/interaction/Editor', [
+        return inertia('admin/customer-service/Editor', [
             'data' => $item,
-            'users' => User::where('active', true)->orderBy('username', 'asc')->get(),
             'customers' => Customer::orderBy('name', 'asc')->get(),
             'services' => Service::orderBy('name', 'asc')->get(),
-            'statuses' => Interaction::Statuses,
         ]);
     }
 
     public function save(Request $request)
     {
         $validated =  $request->validate([
-            'user_id'          => 'required|exists:users,id',
             'customer_id'      => 'required|exists:customers,id',
             'service_id'       => 'required|exists:services,id',
-            'date'             => 'required|date',
-            'type'             => 'required|in:' . implode(',', array_keys(Interaction::Types)),
-            'engagement_level' => 'required|in:' . implode(',', array_keys(Interaction::EngagementLevels)),
-            'status'           => 'required|in:' . implode(',', array_keys(Interaction::Statuses)),
-            'subject'          => 'required|string|max:255',
-            'summary'          => 'nullable|string|max:500',
-            'notes'            => 'nullable|string|max:500',
+            'status'           => 'required|in:' . implode(',', array_keys(CustomerService::Statuses)),
+            'start_date'       => 'nullable|date',
+            'end_date'         => 'nullable|date',
+            'notes'            => 'nullable|string',
         ]);
 
-        $item = !$request->id ? new Interaction() : Interaction::findOrFail($request->post('id', 0));
+        // validasi pengguna dengan layanan yang sama
+        $exists = CustomerService::where('customer_id', $request->customer_id)
+            ->where('service_id', $request->service_id)
+            ->when($request->id, fn($q) => $q->where('id', '!=', $request->id))
+            ->exists();
+
+        if ($exists) {
+            return back()->withErrors(['customer_id' => 'Data pelanggan dengan layanan tersebut sudah ada.'])->withInput();
+        }
+
+        $item = !$request->id ? new CustomerService() : CustomerService::findOrFail($request->post('id', 0));
         $item->fill($validated);
         $item->save();
 
-        return redirect(route('admin.interaction.index'))->with('success', "Intearksi #$item->id telah disimpan.");
+        return redirect(route('admin.customer-service.index'))->with('success', "Intearksi #$item->id telah disimpan.");
     }
 
     public function delete($id)
     {
         allowed_roles([User::Role_Admin]);
 
-        $item = Interaction::findOrFail($id);
+        $item = CustomerService::findOrFail($id);
         $item->delete();
 
         return response()->json([
-            'message' => "Interaction $item->name telah dihapus."
+            'message' => "CustomerService #$item->id telah dihapus."
         ]);
     }
 }

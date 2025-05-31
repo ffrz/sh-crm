@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-
 class CustomerService extends Model
 {
     protected $fillable = [
@@ -23,7 +22,7 @@ class CustomerService extends Model
         self::Status_Churned => 'Berhenti',
         self::Status_Cancelled => 'Dibatalkan',
     ];
-    
+
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id');

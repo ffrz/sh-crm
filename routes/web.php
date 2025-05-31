@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\ApiController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CompanyProfileController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\CustomerServiceController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\InteractionController;
 use App\Http\Controllers\Admin\ProfileController;
@@ -72,11 +73,20 @@ Route::middleware([Auth::class])->group(function () {
             Route::get('', [InteractionController::class, 'index'])->name('admin.interaction.index');
             Route::get('data', [InteractionController::class, 'data'])->name('admin.interaction.data');
             Route::get('add', [InteractionController::class, 'editor'])->name('admin.interaction.add');
-            Route::get('duplicate/{id}', [InteractionController::class, 'duplicate'])->name('admin.interaction.duplicate');
             Route::get('edit/{id}', [InteractionController::class, 'editor'])->name('admin.interaction.edit');
             Route::get('detail/{id}', [InteractionController::class, 'detail'])->name('admin.interaction.detail');
             Route::post('save', [InteractionController::class, 'save'])->name('admin.interaction.save');
             Route::post('delete/{id}', [InteractionController::class, 'delete'])->name('admin.interaction.delete');
+        });
+
+        Route::prefix('customer-services')->group(function () {
+            Route::get('', [CustomerServiceController::class, 'index'])->name('admin.customer-service.index');
+            Route::get('data', [CustomerServiceController::class, 'data'])->name('admin.customer-service.data');
+            Route::get('add', [CustomerServiceController::class, 'editor'])->name('admin.customer-service.add');
+            Route::get('edit/{id}', [CustomerServiceController::class, 'editor'])->name('admin.customer-service.edit');
+            Route::get('detail/{id}', [CustomerServiceController::class, 'detail'])->name('admin.customer-service.detail');
+            Route::post('save', [CustomerServiceController::class, 'save'])->name('admin.customer-service.save');
+            Route::post('delete/{id}', [CustomerServiceController::class, 'delete'])->name('admin.customer-service.delete');
         });
 
         Route::prefix('settings')->group(function () {

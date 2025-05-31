@@ -5,8 +5,8 @@ import { ref } from "vue";
 
 
 let form = useForm({
-  username: "",
-  password: "",
+  username: "admin",
+  password: "12345",
   remember: true,
 });
 
@@ -55,7 +55,7 @@ const showPassword = ref(false);
                 <q-btn icon="login" type="submit" color="primary" class="full-width" label="Login"
                   :disable="form.processing" />
               </q-card-actions>
-              
+
             </q-card>
           </q-form>
         </div>

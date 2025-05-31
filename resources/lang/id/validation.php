@@ -34,6 +34,7 @@ return [
         'date' => 'Tanggal',
         'description' => 'Deskripsi',
         'category_id' => 'Kategori',
+        'service_id' => 'Layanan',
         'notes' => 'Catatan',
         'amount' => 'Jumlah',
         'customer_id' => 'Pelanggan',
@@ -46,6 +47,5 @@ return [
         'password' => 'Kata sandi',
         'current_password' => 'Kata sandi sekarang',
         'model' => 'Model',
-        'due_date' => 'Deadline',
     ],
 ];

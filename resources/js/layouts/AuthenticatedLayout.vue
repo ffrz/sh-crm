@@ -138,34 +138,25 @@ onMounted(() => {
               <q-icon name="touch_double" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>Interaksi</q-item-label>
+              <q-item-label>Interaksi Pelanggan</q-item-label>
             </q-item-section>
           </q-item>
-          <!-- <q-item clickable v-ripple :active="$page.url.startsWith('/admin/follow-ups')"
-            @click="router.get(route('admin.dashboard'))">
+          <q-item clickable v-ripple :active="$page.url.startsWith('/admin/customer-services')"
+            @click="router.get(route('admin.customer-service.index'))">
             <q-item-section avatar>
-              <q-icon name="eye_tracking" />
+              <q-icon name="linked_services" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>Follow Up</q-item-label>
+              <q-item-label>Layanan Pelanggan</q-item-label>
             </q-item-section>
           </q-item>
-          <q-item clickable v-ripple :active="$page.url.startsWith('/admin/status-logs')"
-            @click="router.get(route('admin.dashboard'))">
-            <q-item-section avatar>
-              <q-icon name="update" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Status Log</q-item-label>
-            </q-item-section>
-          </q-item> -->
           <q-item clickable v-ripple :active="$page.url.startsWith('/admin/customers')"
             @click="router.get(route('admin.customer.index'))">
             <q-item-section avatar>
               <q-icon name="partner_exchange" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>Customer</q-item-label>
+              <q-item-label>Pelanggan</q-item-label>
             </q-item-section>
           </q-item>
           <q-item clickable v-ripple :active="$page.url.startsWith('/admin/services')"
