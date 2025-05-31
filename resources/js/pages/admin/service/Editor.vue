@@ -26,6 +26,9 @@ const submit = () =>
       <div class="col col-lg-6 q-pa-sm">
         <q-form class="row" @submit.prevent="submit" @validation-error="scrollToFirstErrorField">
           <q-card square flat bordered class="col">
+            <q-inner-loading :showing="form.processing">
+              <q-spinner size="50px" color="primary" />
+            </q-inner-loading>
             <q-card-section class="q-pt-none">
               <input type="hidden" name="id" v-model="form.id" />
               <q-input autofocus v-model.trim="form.name" label="Nama" lazy-rules :error="!!form.errors.name"

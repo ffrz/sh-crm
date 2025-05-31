@@ -2,7 +2,7 @@
 import { router, usePage } from "@inertiajs/vue3";
 
 const page = usePage();
-const title = "Rincian Layanan Pengguna";
+const title = "Rincian Layanan Client";
 
 </script>
 
@@ -15,7 +15,7 @@ const title = "Rincian Layanan Pengguna";
         <div class="row">
           <q-card square flat bordered class="col">
             <q-card-section>
-              <div class="text-subtitle1 text-bold text-grey-8">Info Layanan Pengguna</div>
+              <div class="text-subtitle1 text-bold text-grey-8">Info Layanan Client</div>
               <table class="detail">
                 <tbody>
                   <tr>

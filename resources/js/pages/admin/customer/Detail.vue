@@ -2,7 +2,7 @@
 import { router, usePage } from "@inertiajs/vue3";
 
 const page = usePage();
-const title = "Rincian Pelanggan";
+const title = "Rincian Client";
 
 </script>
 
@@ -15,7 +15,7 @@ const title = "Rincian Pelanggan";
         <div class="row">
           <q-card square flat bordered class="col">
             <q-card-section>
-              <div class="text-subtitle1 text-bold text-grey-8">Info Pelanggan</div>
+              <div class="text-subtitle1 text-bold text-grey-8">Info Client</div>
               <table class="detail">
                 <tbody>
                   <tr>
@@ -64,6 +64,12 @@ const title = "Rincian Pelanggan";
                     <td>Status</td>
                     <td>:</td>
                     <td>{{ page.props.data.active ? 'Aktif' : 'Tidak Aktif' }}</td>
+                  </tr>
+                  <tr>
+                    <td>Layanan</td>
+                    <td>:</td>
+                    <td>
+                    </td>
                   </tr>
                   <tr v-if="page.props.data.created_datetime">
                     <td>Ditambahkan</td>

@@ -87,7 +87,7 @@ class CustomerServiceController extends Controller
             ->exists();
 
         if ($exists) {
-            return back()->withErrors(['customer_id' => 'Data pelanggan dengan layanan tersebut sudah ada.'])->withInput();
+            return back()->withErrors(['customer_id' => 'Data client dengan layanan tersebut sudah ada.'])->withInput();
         }
 
         $item = !$request->id ? new CustomerService() : CustomerService::findOrFail($request->post('id', 0));

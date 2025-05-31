@@ -5,7 +5,7 @@ import { handleDelete, handleFetchItems } from "@/helpers/client-req-handler";
 import { check_role, getQueryParams } from "@/helpers/utils";
 import { useQuasar } from "quasar";
 
-const title = "Layanan Pelanggan";
+const title = "Layanan Client";
 const $q = useQuasar();
 const showFilter = ref(false);
 const rows = ref([]);
@@ -40,7 +40,7 @@ const columns = [
   },
   {
     name: "customer",
-    label: "Customer",
+    label: "Client",
     field: "customer",
     align: "left",
     sortable: false,
@@ -93,7 +93,7 @@ onMounted(() => {
 
 const deleteItem = (row) =>
   handleDelete({
-    message: `Hapus layanan pelanggan #${row.id}?`,
+    message: `Hapus layanan client #${row.id}?`,
     url: route("admin.customer-service.delete", row.id),
     fetchItemsCallback: fetchItems,
     loading,
@@ -156,11 +156,10 @@ const computedColumns = computed(() => {
 
         <template v-slot:no-data="{ icon, message, filter }">
           <div class="full-width row flex-center text-grey-8 q-gutter-sm">
-            <q-icon size="2em" name="sentiment_dissatisfied" />
             <span>
               {{ message }}
-              {{ filter ? " with term " + filter : "" }}</span>
-            <q-icon size="2em" :name="filter ? 'filter_b_and_w' : icon" />
+              {{ filter ? " with term " + filter : "" }}
+            </span>
           </div>
         </template>
 

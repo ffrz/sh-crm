@@ -138,7 +138,7 @@ onMounted(() => {
               <q-icon name="touch_double" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>Interaksi Pelanggan</q-item-label>
+              <q-item-label>Interaksi Client</q-item-label>
             </q-item-section>
           </q-item>
           <q-item clickable v-ripple :active="$page.url.startsWith('/admin/customer-services')"
@@ -147,16 +147,17 @@ onMounted(() => {
               <q-icon name="linked_services" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>Layanan Pelanggan</q-item-label>
+              <q-item-label>Layanan Client</q-item-label>
             </q-item-section>
           </q-item>
           <q-item clickable v-ripple :active="$page.url.startsWith('/admin/customers')"
             @click="router.get(route('admin.customer.index'))">
             <q-item-section avatar>
               <q-icon name="partner_exchange" />
+
             </q-item-section>
             <q-item-section>
-              <q-item-label>Pelanggan</q-item-label>
+              <q-item-label>Client</q-item-label>
             </q-item-section>
           </q-item>
           <q-item clickable v-ripple :active="$page.url.startsWith('/admin/services')"

@@ -44,7 +44,7 @@ const title = "Rincian Interaksi";
                     <td>{{ page.props.data.user.name }} ({{ page.props.data.user.username }})</td>
                   </tr>
                   <tr>
-                    <td>Customer</td>
+                    <td>Client</td>
                     <td>:</td>
                     <td>{{ page.props.data.customer.name }} - {{
                       page.props.data.customer.company }} (#{{ page.props.data.customer.id }})

@@ -11,6 +11,7 @@ class Interaction extends Model
         'date',
         'type',
         'status',
+        'engagement_level',
         'subject',
         'summary',
         'notes',

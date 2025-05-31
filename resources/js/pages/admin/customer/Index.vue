@@ -5,7 +5,7 @@ import { handleDelete, handleFetchItems } from "@/helpers/client-req-handler";
 import { check_role, getQueryParams } from "@/helpers/utils";
 import { useQuasar } from "quasar";
 
-const title = "Pelanggan";
+const title = "Client";
 const $q = useQuasar();
 const showFilter = ref(false);
 const rows = ref([]);
@@ -15,15 +15,6 @@ const filter = reactive({
   status: "all",
   ...getQueryParams(),
 });
-// const statusColors = {
-//   new: "yellow",
-//   contacted: "blue",
-//   cold: "orange",
-//   hot: "green",
-//   converted: "grey",
-//   churned: "red",
-//   inactive: "black",
-// };
 
 const pagination = ref({
   page: 1,
@@ -62,13 +53,6 @@ const columns = [
     align: "left",
     sortable: false,
   },
-  // {
-  //   name: "status",
-  //   label: "Status",
-  //   field: "status",
-  //   align: "center",
-  //   sortable: false,
-  // },
   {
     name: "action",
     align: "right",
@@ -79,10 +63,6 @@ const statuses = [
   { value: "all", label: "Semua" },
   { value: "active", label: "Aktif" },
   { value: "inactive", label: "Tidak Aktif" },
-  // ...Object.entries(window.CONSTANTS.CUSTOMER_STATUSES).map(([key, value]) => ({
-  //   value: key,
-  //   label: value,
-  // })),
 ];
 
 onMounted(() => {
@@ -91,7 +71,7 @@ onMounted(() => {
 
 const deleteItem = (row) =>
   handleDelete({
-    message: `Hapus pelanggan ${row.name}?`,
+    message: `Hapus client ${row.name}?`,
     url: route("admin.customer.delete", row.id),
     fetchItemsCallback: fetchItems,
     loading,
@@ -149,11 +129,10 @@ const computedColumns = computed(() => {
 
         <template v-slot:no-data="{ icon, message, filter }">
           <div class="full-width row flex-center text-grey-8 q-gutter-sm">
-            <q-icon size="2em" name="sentiment_dissatisfied" />
             <span>
               {{ message }}
-              {{ filter ? " with term " + filter : "" }}</span>
-            <q-icon size="2em" :name="filter ? 'filter_b_and_w' : icon" />
+              {{ filter ? " with term " + filter : "" }}
+            </span>
           </div>
         </template>
 
@@ -177,14 +156,12 @@ const computedColumns = computed(() => {
               </template>
             </q-td>
             <q-td key="company" :props="props">
-              {{ props.row.company }} <template v-if="props.row.business_type"> - {{ props.row.business_type }}</template>
+              {{ props.row.company }} <template v-if="props.row.business_type"> - {{ props.row.business_type
+                }}</template>
             </q-td>
             <q-td key="phone" :props="props">
               {{ props.row.phone }}
             </q-td>
-            <!-- <q-td key="status" :props="props">
-              <q-badge :color="statusColors[props.row.status]">{{ $CONSTANTS.CUSTOMER_STATUSES[props.row.status] }}</q-badge>
-            </q-td> -->
             <q-td key="action" :props="props">
               <div class="flex justify-end">
                 <q-btn :disabled="!check_role($CONSTANTS.USER_ROLE_ADMIN)" icon="more_vert" dense flat

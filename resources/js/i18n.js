@@ -17,14 +17,8 @@ const messages = {
 
     dashboard: 'Dasbor',
     service_orders: 'Order Servis',
-    stock_adjustment: 'Penyesuaian Stok',
-    customers: 'Pelanggan',
-    suppliers: 'Pemasok',
-    sales_orders: 'Penjualan',
-    purchase_orders: 'Pembelian',
-    technicians: 'Teknisi',
-    products: 'Produk',
-    product_categories: 'Kategori Produk',
+    customers: 'Client',
+
     users: 'Pengguna',
     settings: 'Pengaturan',
     my_profile: 'Profil Saya',

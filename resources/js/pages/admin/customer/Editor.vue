@@ -4,12 +4,7 @@ import { handleSubmit } from "@/helpers/client-req-handler";
 import { scrollToFirstErrorField } from "@/helpers/utils";
 
 const page = usePage();
-const title = (!!page.props.data.id ? "Edit" : "Tambah") + " Pelanggan";
-
-// const statuses = Object.entries(window.CONSTANTS.CUSTOMER_STATUSES).map(([value, label]) => ({
-//   label,
-//   value
-// }));
+const title = (!!page.props.data.id ? "Edit" : "Tambah") + " Client";
 
 const users = page.props.users.map(user => ({
   value: user.id,
@@ -43,6 +38,9 @@ const submit = () =>
       <div class="col col-lg-6 q-pa-sm">
         <q-form class="row" @submit.prevent="submit" @validation-error="scrollToFirstErrorField">
           <q-card square flat bordered class="col">
+            <q-inner-loading :showing="form.processing">
+              <q-spinner size="50px" color="primary" />
+            </q-inner-loading>
             <q-card-section class="q-pt-none">
               <input type="hidden" name="id" v-model="form.id" />
               <q-input autofocus v-model.trim="form.name" label="Nama" lazy-rules :error="!!form.errors.name"
@@ -61,8 +59,6 @@ const submit = () =>
               <q-input v-model.trim="form.address" type="textarea" autogrow counter maxlength="1000" label="Alamat"
                 lazy-rules :disable="form.processing" :error="!!form.errors.address" :error-message="form.address"
                 :rules="[]" />
-              <!-- <q-select v-model="form.status" label="Status" :options="statuses" map-options emit-value
-                :error="!!form.errors.status" :disable="form.processing" /> -->
               <q-input v-model.trim="form.source" type="text" label="Sumber" lazy-rules :disable="form.processing"
                 :error="!!form.errors.source" :error-message="form.errors.source" :rules="[]" />
               <q-input v-model.trim="form.email" type="email" label="Alamat Email" lazy-rules :disable="form.processing"

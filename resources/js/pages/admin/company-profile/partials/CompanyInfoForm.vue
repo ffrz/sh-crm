@@ -15,13 +15,16 @@ const form = useForm({
 });
 
 const submit = () =>
-  handleSubmit({form, url: route('admin.company-profile.update')});
+  handleSubmit({ form, url: route('admin.company-profile.update') });
 
 </script>
 
 <template>
   <q-form class="row" @submit.prevent="submit" @validation-error="scrollToFirstErrorField">
     <q-card flat bordered square class="col">
+      <q-inner-loading :showing="form.processing">
+        <q-spinner size="50px" color="primary" />
+      </q-inner-loading>
       <q-card-section>
         <div class="text-subtitle1 q-my-xs">Profil Perusahaan</div>
         <p class="text-caption text-grey-9">Perbarui profil perusahaan anda.</p>

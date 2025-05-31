@@ -34,7 +34,7 @@ const status_colors = {
 const engagement_level_colors = {
   none: "grey",
   cold: "blue",
-  warm: "yellow",
+  warm: "yellow-8",
   hot: "orange",
   converted: "green",
   churned: "red",
@@ -80,7 +80,7 @@ const columns = [
   },
   {
     name: "customer",
-    label: "Customer",
+    label: "Client",
     field: "customer",
     align: "left",
     sortable: false,
@@ -185,8 +185,7 @@ const computedColumns = computed(() => {
             :options="engagement_levels" label="Engagement Level" dense map-options emit-value outlined
             @update:model-value="onFilterChange" />
           <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.type"
-            :options="types" label="Type" dense map-options emit-value outlined
-            @update:model-value="onFilterChange" />
+            :options="types" label="Type" dense map-options emit-value outlined @update:model-value="onFilterChange" />
           <q-input class="col" outlined dense debounce="300" v-model="filter.search" placeholder="Cari" clearable>
             <template v-slot:append>
               <q-icon name="search" />
@@ -205,11 +204,10 @@ const computedColumns = computed(() => {
 
         <template v-slot:no-data="{ icon, message, filter }">
           <div class="full-width row flex-center text-grey-8 q-gutter-sm">
-            <q-icon size="2em" name="sentiment_dissatisfied" />
             <span>
               {{ message }}
-              {{ filter ? " with term " + filter : "" }}</span>
-            <q-icon size="2em" :name="filter ? 'filter_b_and_w' : icon" />
+              {{ filter ? " with term " + filter : "" }}
+            </span>
           </div>
         </template>
 
@@ -238,7 +236,8 @@ const computedColumns = computed(() => {
                     {{ $CONSTANTS.INTERACTION_TYPES[props.row.type] }}
                   </q-badge>
                   <q-badge :color="engagement_level_colors[props.row.engagement_level]">
-                    <q-icon name="favorite" />&nbsp;{{ $CONSTANTS.INTERACTION_ENGAGEMENT_LEVELS[props.row.engagement_level] }}
+                    <q-icon name="favorite" />&nbsp;{{
+                      $CONSTANTS.INTERACTION_ENGAGEMENT_LEVELS[props.row.engagement_level] }}
                   </q-badge>
                   <q-badge :color="status_colors[props.row.status]">
                     {{ $CONSTANTS.INTERACTION_STATUSES[props.row.status] }}
