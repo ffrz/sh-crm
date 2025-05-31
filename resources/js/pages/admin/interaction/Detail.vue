@@ -26,7 +26,7 @@ const title = "Rincian Interaksi";
                   <tr>
                     <td>Tanggal</td>
                     <td>:</td>
-                    <td>{{ $dayjs(page.props.data.date).format('DD MMMM YYYY') }} {{ page.props.data.date }}</td>
+                    <td>{{ $dayjs(page.props.data.date).format('DD MMMM YYYY') }}</td>
                   </tr>
                   <tr>
                     <td>Jenis</td>

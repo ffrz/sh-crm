@@ -93,7 +93,7 @@ const submit = () =>
                 map-options emit-value :error-message="form.errors.engagement_level"
                 :error="!!form.errors.engagement_level" :disable="form.processing" />
               <q-input v-model.trim="form.subject" type="text" label="Subject" lazy-rules :disable="form.processing"
-                :error="!!form.errors.subject" :error-message="form.errors.purpose" :rules="[
+                :error="!!form.errors.subject" :error-message="form.errors.subject" :rules="[
                   (val) => (val && val.length > 0) || 'Subject harus diisi.',
                 ]" />
               <q-input v-model.trim="form.summary" type="textarea" autogrow counter maxlength="255" label="Summary"
