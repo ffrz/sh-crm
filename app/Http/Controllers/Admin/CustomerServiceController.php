@@ -78,20 +78,11 @@ class CustomerServiceController extends Controller
             'customer_id'      => 'required|exists:customers,id',
             'service_id'       => 'required|exists:services,id',
             'status'           => 'required|in:' . implode(',', array_keys(CustomerService::Statuses)),
+            'description'      => 'nullable|string',
             'start_date'       => 'nullable|date',
             'end_date'         => 'nullable|date',
             'notes'            => 'nullable|string',
         ]);
-
-        // validasi pengguna dengan layanan yang sama
-        $exists = CustomerService::where('customer_id', $request->customer_id)
-            ->where('service_id', $request->service_id)
-            ->when($request->id, fn($q) => $q->where('id', '!=', $request->id))
-            ->exists();
-
-        if ($exists) {
-            return back()->withErrors(['customer_id' => 'Data client dengan layanan tersebut sudah ada.'])->withInput();
-        }
 
         $item = !$request->id ? new CustomerService() : CustomerService::findOrFail($request->post('id', 0));
         $item->fill($validated);

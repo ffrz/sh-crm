@@ -7,6 +7,7 @@ class CustomerService extends Model
     protected $fillable = [
         'customer_id',
         'service_id',
+        'description',
         'status',
         'start_date',
         'end_date',

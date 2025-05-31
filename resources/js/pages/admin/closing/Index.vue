@@ -1,27 +1,21 @@
 <script setup>
-import { router, usePage } from "@inertiajs/vue3";
 import { computed, onMounted, reactive, ref } from "vue";
+import { router } from "@inertiajs/vue3";
 import { handleDelete, handleFetchItems } from "@/helpers/client-req-handler";
-import { check_role, getQueryParams } from "@/helpers/utils";
+import { check_role, formatNumber, getQueryParams } from "@/helpers/utils";
 import { useQuasar } from "quasar";
 
-const title = "Layanan Client";
+const title = "Closing";
 const $q = useQuasar();
-const page = usePage();
 const showFilter = ref(false);
 const rows = ref([]);
 const loading = ref(true);
 const filter = reactive({
   search: "",
-  status: "all",
+  date: "all",
+  sales: "all",
   ...getQueryParams(),
 });
-
-const status_colors = {
-  active: "green",
-  churned: "red",
-  lost: "black",
-};
 
 const pagination = ref({
   page: 1,
@@ -36,6 +30,20 @@ const columns = [
     name: "id",
     label: "#",
     field: "id",
+    align: "left",
+    sortable: true,
+  },
+  {
+    name: "date",
+    label: "Tanggal",
+    field: "date",
+    align: "left",
+    sortable: true,
+  },
+  {
+    name: "sales",
+    label: "Sales",
+    field: "sales",
     align: "left",
   },
   {
@@ -57,51 +65,15 @@ const columns = [
     align: "left",
   },
   {
-    name: "status",
-    label: "Status",
-    field: "status",
-    align: "center",
-  },
-  {
-    name: "start_date",
-    label: "Tgl Mulai",
-    field: "start_date",
-    align: "left",
-  },
-  {
-    name: "end_date",
-    label: "Tgl Berhenti",
-    field: "end_date",
-    align: "left",
+    name: "amount",
+    label: "Jumlah (Rp)",
+    field: "amount",
+    align: "right",
   },
   {
     name: "action",
     align: "right",
   },
-];
-
-const statuses = [
-  { value: "all", label: "Semua" },
-  ...Object.entries(window.CONSTANTS.CUSTOMER_SERVICE_STATUSES).map(([key, value]) => ({
-    value: key,
-    label: value,
-  })),
-];
-
-const services = [
-  { value: "all", label: "Semua" },
-  ...page.props.services.map((service) => ({
-    value: service.id,
-    label: service.name,
-  })),
-];
-
-const customers = [
-  { value: "all", label: "Semua" },
-  ...page.props.customers.map((c) => ({
-    value: c.id,
-    label: c.name,
-  })),
 ];
 
 onMounted(() => {
@@ -110,8 +82,8 @@ onMounted(() => {
 
 const deleteItem = (row) =>
   handleDelete({
-    message: `Hapus layanan client #${row.id}?`,
-    url: route("admin.customer-service.delete", row.id),
+    message: `Hapus closing ${row.name}?`,
+    url: route("admin.closing.delete", row.id),
     fetchItemsCallback: fetchItems,
     loading,
   });
@@ -122,13 +94,13 @@ const fetchItems = (props = null) => {
     filter,
     props,
     rows,
-    url: route("admin.customer-service.data"),
+    url: route("admin.closing.data"),
     loading,
   });
 };
 
 const onFilterChange = () => fetchItems();
-const onRowClicked = (row) => router.get(route('admin.customer-service.detail', { id: row.id }));
+const onRowClicked = (row) => router.get(route('admin.closing.detail', { id: row.id }));
 const computedColumns = computed(() => {
   if ($q.screen.gt.sm) return columns;
   return columns.filter((col) => col.name === "id" || col.name === "action");
@@ -140,22 +112,13 @@ const computedColumns = computed(() => {
   <authenticated-layout>
     <template #title>{{ title }}</template>
     <template #right-button>
-      <q-btn icon="add" dense color="primary" @click="router.get(route('admin.customer-service.add'))" />
+      <q-btn icon="add" dense color="primary" @click="router.get(route('admin.closing.add'))" />
       <q-btn class="q-ml-sm" :icon="!showFilter ? 'filter_alt' : 'filter_alt_off'" color="grey" dense
         @click="showFilter = !showFilter" />
     </template>
     <template #header v-if="showFilter">
       <q-toolbar class="filter-bar">
         <div class="row q-col-gutter-xs items-center q-pa-sm full-width">
-          <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.status"
-            :options="statuses" label="Status" dense map-options emit-value outlined
-            @update:model-value="onFilterChange" />
-          <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.customers"
-            :options="customers" label="Client" dense map-options emit-value outlined
-            @update:model-value="onFilterChange" />
-          <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.services"
-            :options="services" label="Layanan" dense map-options emit-value outlined
-            @update:model-value="onFilterChange" />
           <q-input class="col" outlined dense debounce="300" v-model="filter.search" placeholder="Cari" clearable>
             <template v-slot:append>
               <q-icon name="search" />
@@ -182,42 +145,46 @@ const computedColumns = computed(() => {
         </template>
 
         <template v-slot:body="props">
-          <q-tr :props="props" class="cursor-pointer" @click="onRowClicked(props.row)">
+          <q-tr :props="props" :class="props.row.active == 'inactive' ? 'bg-red-1' : ''" class="cursor-pointer"
+            @click="onRowClicked(props.row)">
             <q-td key="id" :props="props" class="wrap-column">
-              <template v-if="!$q.screen.lt.md">
+              <div>
                 {{ props.row.id }}
-              </template>
-              <template v-else>
+                <template v-if="$q.screen.lt.md">
+                  - <span><q-icon name="history" /> {{ $dayjs(props.row.date).format('DD MMMM YYYY') }}</span>
+                </template>
+              </div>
+              <template v-if="$q.screen.lt.md">
                 <div>
-                  #{{ props.row.id }}
-                  - <q-icon name="people" />
-                  - {{ props.row.customer.name }}
-                  {{ props.row.customer.company ? ` - ${props.row.customer.company}` : '' }}
-                  (#{{ props.row.customer.id }})
+                  <q-icon name="person" /> {{ props.row.user.name }} ({{ props.row.user.username }})
+                </div>
+                <div>
+                  <q-icon name="account_circle" /> {{ props.row.customer.name }} {{ props.row.customer.company ? ` -
+                  ${props.row.customer.company}` : '' }} (#{{ props.row.customer.id }})
+                </div>
+                <div v-if="props.row.customer.address">
+                  <q-icon name="location_on" />{{ props.row.customer.address }}
                 </div>
                 <div><q-icon name="apps" /> {{ props.row.service.name }}</div>
-                <div v-if="props.row.start_date">
-                  <q-icon name="event" /> {{
-                    props.row.start_date ? 'Berlangganan: ' + $dayjs(props.row.start_date).format('DD MMMM YYYY') : ''
-                  }}
-                </div>
-                <div v-if="props.row.end_date">
-                  <q-icon name="event" /> {{
-                    props.row.end_date ? 'Berhenti: ' + $dayjs(props.row.end_date).format('DD MMMM YYYY') : ''
-                  }}
-                </div>
+                <div><q-icon name="input" /> {{ props.row.description }}</div>
+                <div><q-icon name="money" /> Rp. {{ formatNumber(props.row.amount) }}</div>
                 <div v-if="props.row.notes"><q-icon name="notes" /> {{ props.row.notes }}</div>
-                <div class="flex items-center q-gutter-sm">
-                  <q-badge :color="status_colors[props.row.status]">
-                    {{ $CONSTANTS.CUSTOMER_SERVICE_STATUSES[props.row.status] }}
-                  </q-badge>
-                </div>
               </template>
+            </q-td>
+            <q-td key="date" :props="props" class="wrap-column">
+              {{ $dayjs(props.row.date).format('DD MMMM YYYY') }}
+            </q-td>
+            <q-td key="sales" :props="props">
+              {{ props.row.user.username }}
             </q-td>
             <q-td key="customer" :props="props">
               {{ props.row.customer.name }} - {{ props.row.customer.company }} (#{{ props.row.customer.id }})
-              <br />{{ props.row.customer.business_type }}
-              <br />{{ props.row.customer.address }}
+              <template v-if="props.row.customer.business_type">
+                <br />{{ props.row.customer.business_type }}
+              </template>
+              <template v-if="props.row.customer.address">
+                <br />{{ props.row.customer.address }}
+              </template>
             </q-td>
             <q-td key="service" :props="props">
               {{ props.row.service.name }}
@@ -225,16 +192,8 @@ const computedColumns = computed(() => {
             <q-td key="description" :props="props">
               {{ props.row.description }}
             </q-td>
-            <q-td key="status" :props="props">
-              <q-badge :color="status_colors[props.row.status]">
-                {{ $CONSTANTS.CUSTOMER_SERVICE_STATUSES[props.row.status] }}
-              </q-badge>
-            </q-td>
-            <q-td key="start_date" :props="props">
-              {{ props.row.start_date ? $dayjs(props.row.start_date).format('DD MMMM YYYY') : ''}}
-            </q-td>
-            <q-td key="end_date" :props="props">
-              {{ props.row.end_date ? $dayjs(props.row.end_date).format('DD MMMM YYYY') : '' }}
+            <q-td key="amount" :props="props">
+              {{ formatNumber(props.row.amount) }}
             </q-td>
             <q-td key="action" :props="props">
               <div class="flex justify-end">
@@ -243,7 +202,7 @@ const computedColumns = computed(() => {
                   <q-menu anchor="bottom right" self="top right" transition-show="scale" transition-hide="scale">
                     <q-list style="width: 200px">
                       <q-item clickable v-ripple v-close-popup
-                        @click.stop="router.get(route('admin.customer-service.edit', props.row.id))">
+                        @click.stop="router.get(route('admin.closing.edit', props.row.id))">
                         <q-item-section avatar>
                           <q-icon name="edit" />
                         </q-item-section>

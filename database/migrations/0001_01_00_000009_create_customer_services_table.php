@@ -16,7 +16,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('customer_id')->constrained()->onDelete('cascade');
             $table->foreignId('service_id')->constrained()->onDelete('cascade');
+            $table->foreignId('closing_id')->nullable()->constrained()->onDelete('cascade');
             $table->enum('status', array_keys(CustomerService::Statuses))->default(CustomerService::Status_Active);
+            $table->text('description')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->text('notes')->nullable();

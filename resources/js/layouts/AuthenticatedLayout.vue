@@ -141,6 +141,15 @@ onMounted(() => {
               <q-item-label>Interaksi Client</q-item-label>
             </q-item-section>
           </q-item>
+          <q-item clickable v-ripple :active="$page.url.startsWith('/admin/closings')"
+            @click="router.get(route('admin.closing.index'))">
+            <q-item-section avatar>
+              <q-icon name="handshake" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Closing</q-item-label>
+            </q-item-section>
+          </q-item>
           <q-item clickable v-ripple :active="$page.url.startsWith('/admin/customer-services')"
             @click="router.get(route('admin.customer-service.index'))">
             <q-item-section avatar>
@@ -150,11 +159,11 @@ onMounted(() => {
               <q-item-label>Layanan Client</q-item-label>
             </q-item-section>
           </q-item>
+          <q-separator />
           <q-item clickable v-ripple :active="$page.url.startsWith('/admin/customers')"
             @click="router.get(route('admin.customer.index'))">
             <q-item-section avatar>
               <q-icon name="partner_exchange" />
-
             </q-item-section>
             <q-item-section>
               <q-item-label>Client</q-item-label>

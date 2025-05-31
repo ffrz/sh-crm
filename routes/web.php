@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ApiController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\ClosingController;
 use App\Http\Controllers\Admin\CompanyProfileController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\CustomerServiceController;
@@ -77,6 +78,16 @@ Route::middleware([Auth::class])->group(function () {
             Route::get('detail/{id}', [InteractionController::class, 'detail'])->name('admin.interaction.detail');
             Route::post('save', [InteractionController::class, 'save'])->name('admin.interaction.save');
             Route::post('delete/{id}', [InteractionController::class, 'delete'])->name('admin.interaction.delete');
+        });
+
+        Route::prefix('closings')->group(function () {
+            Route::get('', [ClosingController::class, 'index'])->name('admin.closing.index');
+            Route::get('data', [ClosingController::class, 'data'])->name('admin.closing.data');
+            Route::get('add', [ClosingController::class, 'editor'])->name('admin.closing.add');
+            Route::get('edit/{id}', [ClosingController::class, 'editor'])->name('admin.closing.edit');
+            Route::get('detail/{id}', [ClosingController::class, 'detail'])->name('admin.closing.detail');
+            Route::post('save', [ClosingController::class, 'save'])->name('admin.closing.save');
+            Route::post('delete/{id}', [ClosingController::class, 'delete'])->name('admin.closing.delete');
         });
 
         Route::prefix('customer-services')->group(function () {
