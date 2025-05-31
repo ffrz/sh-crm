@@ -104,56 +104,36 @@ const onRowClicked = (row) => router.get(route("admin.user.detail", row.id));
   <authenticated-layout>
     <template #title>{{ title }}</template>
     <template #right-button>
-      <q-btn
-        icon="add"
-        dense
-        color="primary"
-        @click="router.get(route('admin.user.add'))"
-      />
-      <q-btn
-        class="q-ml-sm"
-        :icon="!showFilter ? 'filter_alt' : 'filter_alt_off'"
-        color="grey"
-        dense
-        @click="showFilter = !showFilter"
-      />
+      <q-btn icon="add" dense color="primary" @click="router.get(route('admin.user.add'))" />
+      <q-btn class="q-ml-sm" :icon="!showFilter ? 'filter_alt' : 'filter_alt_off'" color="grey" dense
+        @click="showFilter = !showFilter" />
+      <q-btn icon="file_export" dense class="q-ml-sm" color="grey" style="" @click.stop>
+        <q-menu anchor="bottom right" self="top right" transition-show="scale" transition-hide="scale">
+          <q-list style="width: 200px">
+            <q-item clickable v-ripple v-close-popup @click.stop="$q.notify({ message: 'Fitur ini belum tersedia!' });">
+              <q-item-section avatar>
+                <q-icon name="picture_as_pdf" color="red-9" />
+              </q-item-section>
+              <q-item-section>Export PDF</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple v-close-popup @click.stop="$q.notify({ message: 'Fitur ini belum tersedia!' });">
+              <q-item-section avatar>
+                <q-icon name="csv" color="green-9" />
+              </q-item-section>
+              <q-item-section>Export Excel</q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </q-btn>
     </template>
     <template #header v-if="showFilter">
       <q-toolbar class="filter-bar">
         <div class="row q-col-gutter-xs items-center q-pa-sm full-width">
-          <q-select
-            v-model="filter.role"
-            class="custom-select col-xs-12 col-sm-2"
-            :options="roles"
-            label="Role"
-            dense
-            map-options
-            emit-value
-            outlined
-            style="min-width: 150px"
-            @update:model-value="onFilterChange"
-          />
-          <q-select
-            v-model="filter.status"
-            class="custom-select col-xs-12 col-sm-2"
-            :options="statuses"
-            label="Status"
-            dense
-            map-options
-            emit-value
-            outlined
-            style="min-width: 150px"
-            @update:model-value="onFilterChange"
-          />
-          <q-input
-            class="col"
-            outlined
-            dense
-            debounce="300"
-            v-model="filter.search"
-            placeholder="Cari"
-            clearable
-          >
+          <q-select v-model="filter.role" class="custom-select col-xs-12 col-sm-2" :options="roles" label="Role" dense
+            map-options emit-value outlined style="min-width: 150px" @update:model-value="onFilterChange" />
+          <q-select v-model="filter.status" class="custom-select col-xs-12 col-sm-2" :options="statuses" label="Status"
+            dense map-options emit-value outlined style="min-width: 150px" @update:model-value="onFilterChange" />
+          <q-input class="col" outlined dense debounce="300" v-model="filter.search" placeholder="Cari" clearable>
             <template v-slot:append>
               <q-icon name="search" />
             </template>
@@ -162,23 +142,9 @@ const onRowClicked = (row) => router.get(route("admin.user.detail", row.id));
       </q-toolbar>
     </template>
     <div class="q-pa-sm">
-      <q-table
-        class="full-height-table"
-        flat
-        bordered
-        square
-        color="primary"
-        row-key="id"
-        virtual-scroll
-        v-model:pagination="pagination"
-        :filter="filter.search"
-        :loading="loading"
-        :columns="computedColumns"
-        :rows="rows"
-        :rows-per-page-options="[10, 25, 50]"
-        @request="fetchItems"
-        binary-state-sort
-      >
+      <q-table class="full-height-table" flat bordered square color="primary" row-key="id" virtual-scroll
+        v-model:pagination="pagination" :filter="filter.search" :loading="loading" :columns="computedColumns"
+        :rows="rows" :rows-per-page-options="[10, 25, 50]" @request="fetchItems" binary-state-sort>
         <template v-slot:loading>
           <q-inner-loading showing color="red" />
         </template>
@@ -190,12 +156,14 @@ const onRowClicked = (row) => router.get(route("admin.user.detail", row.id));
         </template>
 
         <template v-slot:body="props">
-          <q-tr :props="props" :class="!props.row.active ? 'bg-red-1' : ''" @click="onRowClicked(props.row)" class="cursor-pointer">
+          <q-tr :props="props" :class="!props.row.active ? 'bg-red-1' : ''" @click="onRowClicked(props.row)"
+            class="cursor-pointer">
             <q-td key="username" :props="props">
               <div>{{ props.row.username }}</div>
               <template v-if="!$q.screen.gt.sm">
-                <div><q-icon name="person"/> {{ props.row.name }}</div>
-                <div class="elipsis" style="max-width: 200px;"><q-icon name="group"/> <span>{{ $CONSTANTS.USER_ROLES[props.row.role] }}</span></div>
+                <div><q-icon name="person" /> {{ props.row.name }}</div>
+                <div class="elipsis" style="max-width: 200px;"><q-icon name="group" /> <span>{{
+                  $CONSTANTS.USER_ROLES[props.row.role] }}</span></div>
               </template>
             </q-td>
             <q-td key="name" :props="props">
@@ -204,54 +172,27 @@ const onRowClicked = (row) => router.get(route("admin.user.detail", row.id));
             <q-td key="role" :props="props" align="center">
               <span>{{ $CONSTANTS.USER_ROLES[props.row.role] }}</span>
             </q-td>
-            <q-td
-              key="action"
-              :props="props"
-            >
+            <q-td key="action" :props="props">
               <div class="flex justify-end">
-                <q-btn
-                  :disable="props.row.id == currentUser.id || props.row.username == 'admin'"
-                  icon="more_vert"
-                  dense
-                  flat
-                  style="height: 40px; width: 30px"
-                  @click.stop
-                >
-                  <q-menu
-                    anchor="bottom right"
-                    self="top right"
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
+                <q-btn :disable="props.row.id == currentUser.id || props.row.username == 'admin'" icon="more_vert" dense
+                  flat style="height: 40px; width: 30px" @click.stop>
+                  <q-menu anchor="bottom right" self="top right" transition-show="scale" transition-hide="scale">
                     <q-list style="width: 200px">
-                      <q-item
-                        clickable
-                        v-ripple
-                        v-close-popup
-                        @click.stop="router.get(route('admin.user.duplicate', props.row.id))"
-                      >
+                      <q-item clickable v-ripple v-close-popup
+                        @click.stop="router.get(route('admin.user.duplicate', props.row.id))">
                         <q-item-section avatar>
                           <q-icon name="file_copy" />
                         </q-item-section>
                         <q-item-section icon="copy"> Duplikat </q-item-section>
                       </q-item>
-                      <q-item
-                        clickable
-                        v-ripple
-                        v-close-popup
-                        @click.stop="router.get(route('admin.user.edit', props.row.id))"
-                      >
+                      <q-item clickable v-ripple v-close-popup
+                        @click.stop="router.get(route('admin.user.edit', props.row.id))">
                         <q-item-section avatar>
                           <q-icon name="edit" />
                         </q-item-section>
                         <q-item-section icon="edit">{{ $t("edit_user") }}</q-item-section>
                       </q-item>
-                      <q-item
-                        @click.stop="deleteItem(props.row)"
-                        clickable
-                        v-ripple
-                        v-close-popup
-                      >
+                      <q-item @click.stop="deleteItem(props.row)" clickable v-ripple v-close-popup>
                         <q-item-section avatar>
                           <q-icon name="delete_forever" />
                         </q-item-section>

@@ -1,6 +1,5 @@
 <script setup>
-import { validateUsername, validateEmail } from "@/helpers/validations";
-import { usePage } from "@inertiajs/vue3";
+import { router, usePage } from "@inertiajs/vue3";
 
 const page = usePage();
 const title = "Rincian Pengguna";
@@ -10,6 +9,13 @@ const title = "Rincian Pengguna";
   <i-head :title="title" />
   <authenticated-layout>
     <template #title>{{ title }}</template>
+    <template #right-button>
+      <div class="q-gutter-sm">
+        <q-btn icon="arrow_back" dense color="grey-7" @click="$goBack()" />
+        <q-btn icon="edit" dense color="primary"
+          @click="router.get(route('admin.user.edit', { id: page.props.data.id }))" />
+      </div>
+    </template>
     <div class="row justify-center">
       <div class="col col-lg-6 q-pa-sm">
         <div class="row">

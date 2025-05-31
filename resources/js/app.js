@@ -51,6 +51,15 @@ createInertiaApp({
     VueApp.config.globalProperties.$dayjs = dayjs;
     VueApp.config.globalProperties.$config = window.CONFIG;
     VueApp.config.globalProperties.$CONSTANTS = window.CONSTANTS;
+    VueApp.config.globalProperties.$goBack = () => {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        // import('@inertiajs/inertia').then(({ Inertia }) => {
+        //   Inertia.visit('/dashboard'); // Ganti fallback ini sesuai kebutuhan
+        // });
+      }
+    };
     VueApp.mount(el);
   },
   progress: {

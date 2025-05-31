@@ -56,8 +56,7 @@ const submit = () =>
             <q-card-section class="q-gutter-sm">
               <q-btn icon="save" type="submit" label="Simpan" color="primary" :disable="form.processing"
                 @click="submit" />
-              <q-btn icon="cancel" label="Batal" class="text-black" :disable="form.processing"
-                @click="router.get(route('admin.user.index'))" />
+              <q-btn icon="cancel" label="Batal" class="text-black" :disable="form.processing" @click="$goBack()" />
             </q-card-section>
           </q-card>
         </q-form>

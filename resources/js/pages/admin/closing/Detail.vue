@@ -1,5 +1,5 @@
 <script setup>
-import { usePage } from "@inertiajs/vue3";
+import { usePage, router } from "@inertiajs/vue3";
 import { formatNumber } from "@/helpers/utils";
 
 const page = usePage();
@@ -11,6 +11,13 @@ const title = "Rincian Closing";
   <i-head :title="title" />
   <authenticated-layout>
     <template #title>{{ title }}</template>
+    <template #right-button>
+      <div class="q-gutter-sm">
+        <q-btn icon="arrow_back" dense color="grey-7" @click="$goBack()" />
+        <q-btn icon="edit" dense color="primary"
+          @click="router.get(route('admin.closing.edit', { id: page.props.data.id }))" />
+      </div>
+    </template>
     <q-page class="row justify-center">
       <div class="col col-lg-6 q-pa-sm">
         <div class="row">
