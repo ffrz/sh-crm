@@ -23,7 +23,6 @@ class CustomerController extends Controller
                 'updated_by_user:id,username,name',
                 'services',
                 'services.service:id,name',
-
             ])->findOrFail($id),
         ]);
     }
@@ -34,7 +33,10 @@ class CustomerController extends Controller
         $orderType = $request->get('order_type', 'asc');
         $filter = $request->get('filter', []);
 
-        $q = Customer::query();
+        $q = Customer::with([
+            'services',
+            'services.service:id,name',
+        ]);
 
         if (!empty($filter['search'])) {
             $q->where(function ($q) use ($filter) {
@@ -75,7 +77,6 @@ class CustomerController extends Controller
         return inertia('admin/customer/Editor', [
             'data' => $item,
             'users' => User::where('active', true)->orderBy('username', 'asc')->get(),
-            // 'statuses' => Customer::Statuses,
         ]);
     }
 
@@ -109,7 +110,7 @@ class CustomerController extends Controller
         $item->delete();
 
         return response()->json([
-            'message' => "Pelanggan $item->name telah dihapus."
+            'message' => "Client $item->name telah dihapus."
         ]);
     }
 }

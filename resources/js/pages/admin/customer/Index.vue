@@ -53,6 +53,13 @@ const columns = [
     align: "left",
     sortable: false,
   },
+   {
+    name: "services",
+    label: "Layanan",
+    field: "services",
+    align: "left",
+    sortable: true,
+  },
   {
     name: "action",
     align: "right",
@@ -161,6 +168,9 @@ const computedColumns = computed(() => {
             </q-td>
             <q-td key="phone" :props="props">
               {{ props.row.phone }}
+            </q-td>
+            <q-td key="services" :props="props">
+              {{ props.row.services.filter(s => s.status === 'active').map(s => s.service.name).join(', ') }}
             </q-td>
             <q-td key="action" :props="props">
               <div class="flex justify-end">

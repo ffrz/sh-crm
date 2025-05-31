@@ -1,12 +1,13 @@
 <script setup>
+import { router, usePage } from "@inertiajs/vue3";
 import { computed, onMounted, reactive, ref } from "vue";
-import { router } from "@inertiajs/vue3";
 import { handleDelete, handleFetchItems } from "@/helpers/client-req-handler";
 import { check_role, getQueryParams } from "@/helpers/utils";
 import { useQuasar } from "quasar";
 
 const title = "Layanan Client";
 const $q = useQuasar();
+const page = usePage();
 const showFilter = ref(false);
 const rows = ref([]);
 const loading = ref(true);
@@ -87,6 +88,22 @@ const statuses = [
   })),
 ];
 
+const services = [
+  { value: "all", label: "Semua" },
+  ...page.props.services.map((service) => ({
+    value: service.id,
+    label: service.name,
+  })),
+];
+
+const customers = [
+  { value: "all", label: "Semua" },
+  ...page.props.customers.map((c) => ({
+    value: c.id,
+    label: c.name,
+  })),
+];
+
 onMounted(() => {
   fetchItems();
 });
@@ -133,11 +150,11 @@ const computedColumns = computed(() => {
           <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.status"
             :options="statuses" label="Status" dense map-options emit-value outlined
             @update:model-value="onFilterChange" />
-          <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.engagement_level"
-            :options="engagement_levels" label="Engagement Level" dense map-options emit-value outlined
+          <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.customers"
+            :options="customers" label="Client" dense map-options emit-value outlined
             @update:model-value="onFilterChange" />
-          <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.type"
-            :options="types" label="Type" dense map-options emit-value outlined @update:model-value="onFilterChange" />
+          <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.services"
+            :options="services" label="Layanan" dense map-options emit-value outlined @update:model-value="onFilterChange" />
           <q-input class="col" outlined dense debounce="300" v-model="filter.search" placeholder="Cari" clearable>
             <template v-slot:append>
               <q-icon name="search" />
