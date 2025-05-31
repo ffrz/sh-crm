@@ -1,8 +1,8 @@
 # Shiftech CRM – Sistem Manajemen CRM dan Pelacakan Kunjungan Tim Marketing
 
-MarketerCRM adalah aplikasi berbasis web untuk membantu tim marketing dalam mengelola pelanggan, menjadwalkan dan merekam kunjungan, serta memonitor progress pemasaran secara terstruktur dan terukur.
+Shiftech CRM adalah aplikasi berbasis web untuk membantu tim salesman dalam mengelola client, menjadwalkan dan merekam interaksi, serta memonitor progress pemasaran secara terstruktur dan terukur.
 
-Sistem ini memudahkan manajemen dalam mengawasi aktivitas marketing, melihat performa tiap marketer, dan menganalisis status prospek hingga closing.
+Sistem ini memudahkan manajemen dalam mengawasi aktivitas salesman, melihat performa tiap salesman, dan menganalisis status prospek hingga closing.
 
 ---
 
