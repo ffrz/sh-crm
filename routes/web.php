@@ -80,7 +80,7 @@ Route::middleware([Auth::class])->group(function () {
             Route::get('detail/{id}', [InteractionController::class, 'detail'])->name('admin.interaction.detail');
             Route::post('save', [InteractionController::class, 'save'])->name('admin.interaction.save');
             Route::post('delete/{id}', [InteractionController::class, 'delete'])->name('admin.interaction.delete');
-            Route::get('export', [InteractionController::class, 'export'])->name('admin.interactions.export');
+            Route::get('export', [InteractionController::class, 'export'])->name('admin.interaction.export');
         });
 
         Route::prefix('closings')->group(function () {

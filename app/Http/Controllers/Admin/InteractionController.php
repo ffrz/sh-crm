@@ -7,9 +7,13 @@ use App\Models\Customer;
 use App\Models\Interaction;
 use App\Models\Service;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class InteractionController extends Controller
 {
@@ -35,6 +39,131 @@ class InteractionController extends Controller
     {
         $orderBy = $request->get('order_by', 'id');
         $orderType = $request->get('order_type', 'asc');
+        $items = $this->createQuery($request)
+            ->orderBy($orderBy, $orderType)
+            ->paginate($request->get('per_page', 10))->withQueryString();
+
+        return response()->json($items);
+    }
+
+    public function editor($id = 0)
+    {
+        $item = $id ? Interaction::findOrFail($id) : new Interaction([
+            'status' => Interaction::Status_Planned,
+            'user_id' => Auth::user()->id,
+            'interaction_date' => Carbon::now(),
+        ]);
+        return inertia('admin/interaction/Editor', [
+            'data' => $item,
+            'users' => User::where('active', true)->orderBy('username', 'asc')->get(),
+            'customers' => Customer::orderBy('name', 'asc')->get(),
+            'services' => Service::orderBy('name', 'asc')->get(),
+            'statuses' => Interaction::Statuses,
+        ]);
+    }
+
+    public function save(Request $request)
+    {
+        $validated =  $request->validate([
+            'user_id'          => 'required|exists:users,id',
+            'customer_id'      => 'required|exists:customers,id',
+            'service_id'       => 'required|exists:services,id',
+            'date'             => 'required|date',
+            'type'             => 'required|in:' . implode(',', array_keys(Interaction::Types)),
+            'engagement_level' => 'required|in:' . implode(',', array_keys(Interaction::EngagementLevels)),
+            'status'           => 'required|in:' . implode(',', array_keys(Interaction::Statuses)),
+            'subject'          => 'required|string|max:255',
+            'summary'          => 'nullable|string|max:500',
+            'notes'            => 'nullable|string|max:500',
+        ]);
+
+        $item = !$request->id ? new Interaction() : Interaction::findOrFail($request->post('id', 0));
+        $item->fill($validated);
+        $item->save();
+
+        return redirect(route('admin.interaction.index'))->with('success', "Intearksi #$item->id telah disimpan.");
+    }
+
+    public function delete($id)
+    {
+        allowed_roles([User::Role_Admin]);
+
+        $item = Interaction::findOrFail($id);
+        $item->delete();
+
+        return response()->json([
+            'message' => "Interaction $item->name telah dihapus."
+        ]);
+    }
+
+    /**
+     * Mengekspor daftar pengguna ke dalam format PDF atau Excel.
+     */
+    public function export(Request $request)
+    {
+        $items = $this->createQuery($request)->orderBy('id', 'desc')->get();
+
+        $title = 'Daftar Interaksi';
+        $filename = $title . ' - ' . env('APP_NAME') . Carbon::now()->format('dmY_His');
+
+        if ($request->get('format') == 'pdf') {
+            $pdf = Pdf::loadView('export.interaction-list-pdf', compact('items', 'title'))
+                ->setPaper('A4', 'landscape');
+            return $pdf->download($filename . '.pdf');
+        }
+
+        if ($request->get('format') == 'excel') {
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+
+            // Tambahkan header
+            $sheet->setCellValue('A1', 'ID');
+            $sheet->setCellValue('B1', 'Tanggal');
+            $sheet->setCellValue('C1', 'Jenis');
+            $sheet->setCellValue('D1', 'Status');
+            $sheet->setCellValue('E1', 'Sales');
+            $sheet->setCellValue('F1', 'Client');
+            $sheet->setCellValue('G1', 'Layanan');
+            $sheet->setCellValue('H1', 'Engagement');
+            $sheet->setCellValue('I1', 'Subjek');
+            $sheet->setCellValue('J1', 'Summary');
+            $sheet->setCellValue('K1', 'Catatan');
+
+            // Tambahkan data ke Excel
+            $row = 2;
+            foreach ($items as $item) {
+                $sheet->setCellValue('A' . $row, $item->id);
+                $sheet->setCellValue('B' . $row, $item->date);
+                $sheet->setCellValue('C' . $row, Interaction::Types[$item->type]);
+                $sheet->setCellValue('D' . $row, Interaction::Statuses[$item->status]);
+                $sheet->setCellValue('E' . $row, $item->user->name .  ' (' . $item->user->username . ')');
+                $sheet->setCellValue('F' . $row, $item->customer->name . ' - ' . $item->customer->company . ' - ' . $item->customer->address);
+                $sheet->setCellValue('I' . $row, $item->service->name);
+                $sheet->setCellValue('G' . $row, Interaction::EngagementLevels[$item->engagement_level]);
+                $sheet->setCellValue('H' . $row, $item->subject);
+                $sheet->setCellValue('J' . $row, $item->summary);
+                $sheet->setCellValue('K' . $row, $item->notes);
+                $row++;
+            }
+
+            // Kirim ke memori tanpa menyimpan file
+            $response = new StreamedResponse(function () use ($spreadsheet) {
+                $writer = new Xlsx($spreadsheet);
+                $writer->save('php://output');
+            });
+
+            // Atur header response untuk download
+            $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '.xlsx"');
+
+            return $response;
+        }
+
+        return abort(400, 'Format tidak didukung');
+    }
+
+    protected function createQuery(Request $request)
+    {
         $filter = $request->get('filter', []);
 
         $q = Interaction::with([
@@ -98,60 +227,6 @@ class InteractionController extends Controller
             }
         }
 
-        $q->orderBy($orderBy, $orderType);
-
-        $items = $q->paginate($request->get('per_page', 10))->withQueryString();
-
-        return response()->json($items);
-    }
-
-    public function editor($id = 0)
-    {
-        $item = $id ? Interaction::findOrFail($id) : new Interaction([
-            'status' => Interaction::Status_Planned,
-            'user_id' => Auth::user()->id,
-            'interaction_date' => Carbon::now(),
-        ]);
-        return inertia('admin/interaction/Editor', [
-            'data' => $item,
-            'users' => User::where('active', true)->orderBy('username', 'asc')->get(),
-            'customers' => Customer::orderBy('name', 'asc')->get(),
-            'services' => Service::orderBy('name', 'asc')->get(),
-            'statuses' => Interaction::Statuses,
-        ]);
-    }
-
-    public function save(Request $request)
-    {
-        $validated =  $request->validate([
-            'user_id'          => 'required|exists:users,id',
-            'customer_id'      => 'required|exists:customers,id',
-            'service_id'       => 'required|exists:services,id',
-            'date'             => 'required|date',
-            'type'             => 'required|in:' . implode(',', array_keys(Interaction::Types)),
-            'engagement_level' => 'required|in:' . implode(',', array_keys(Interaction::EngagementLevels)),
-            'status'           => 'required|in:' . implode(',', array_keys(Interaction::Statuses)),
-            'subject'          => 'required|string|max:255',
-            'summary'          => 'nullable|string|max:500',
-            'notes'            => 'nullable|string|max:500',
-        ]);
-
-        $item = !$request->id ? new Interaction() : Interaction::findOrFail($request->post('id', 0));
-        $item->fill($validated);
-        $item->save();
-
-        return redirect(route('admin.interaction.index'))->with('success', "Intearksi #$item->id telah disimpan.");
-    }
-
-    public function delete($id)
-    {
-        allowed_roles([User::Role_Admin]);
-
-        $item = Interaction::findOrFail($id);
-        $item->delete();
-
-        return response()->json([
-            'message' => "Interaction $item->name telah dihapus."
-        ]);
+        return $q;
     }
 }
