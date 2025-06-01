@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\DB;
+
 class Interaction extends Model
 {
     protected $fillable = [
@@ -87,5 +89,69 @@ class Interaction extends Model
     public static function activePlanCount()
     {
         return self::where('status', self::Status_Planned)->count();
+    }
+
+    public static function interactionCount($start_date = null, $end_date = null)
+    {
+        $query = self::query();
+
+        if ($start_date) {
+            $query->where('date', '>=', $start_date);
+        }
+        if ($end_date) {
+            $query->where('date', '<=', $end_date);
+        }
+
+        return $query->count();
+    }
+
+    public static function interactionCountByStatus($start_date = null, $end_date = null)
+    {
+        $query = self::query();
+
+        if ($start_date) {
+            $query->where('date', '>=', $start_date);
+        }
+        if ($end_date) {
+            $query->where('date', '<=', $end_date);
+        }
+
+        $interactions = $query->selectRaw('status, count(*) as count')
+            ->groupBy('status')
+            ->pluck('count', 'status')
+            ->toArray();
+
+        return [
+            [
+                'name' => self::Statuses[self::Status_Planned],
+                'value' => $interactions[self::Status_Planned] ?? 0,
+            ],
+            [
+                'name' => self::Statuses[self::Status_Done],
+                'value' => $interactions[self::Status_Done] ?? 0,
+            ],
+            [
+                'name' => self::Statuses[self::Status_Cancelled],
+                'value' => $interactions[self::Status_Cancelled] ?? 0,
+            ]
+        ];
+    }
+
+    public static function getTopInteractions($start_date, $end_date, $limit = 5)
+    {
+        $items = DB::table('interactions as i')
+            ->join('users as u', 'i.user_id', '=', 'u.id')
+            ->select('u.name', DB::raw('COUNT(*) as total_interactions'))
+            ->whereBetween('i.date', [$start_date, $end_date])
+            ->where('i.status', 'done')
+            ->groupBy('i.user_id', 'u.name')
+            ->orderByDesc('total_interactions')
+            ->limit($limit)
+            ->get();
+
+        return [
+            'labels' => $items->pluck('name')->toArray(),
+            'data' => $items->pluck('total_interactions')->toArray(),
+        ];
     }
 }

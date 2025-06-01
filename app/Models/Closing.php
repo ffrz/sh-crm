@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\DB;
+
 class Closing extends Model
 {
     protected $fillable = [
@@ -23,7 +25,7 @@ class Closing extends Model
     {
         return $this->belongsTo(User::class, 'updated_by_uid');
     }
-    
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -69,5 +71,50 @@ class Closing extends Model
                 $item->customerService->delete();
             }
         });
+    }
+
+    public static function closingCount($start_date = null, $end_date = null)
+    {
+        $query = self::query();
+
+        if ($start_date) {
+            $query->where('date', '>=', $start_date);
+        }
+        if ($end_date) {
+            $query->where('date', '<=', $end_date);
+        }
+
+        return $query->count();
+    }
+
+    public static function closingAmount($start_date = null, $end_date = null)
+    {
+        $query = self::query();
+
+        if ($start_date) {
+            $query->where('date', '>=', $start_date);
+        }
+        if ($end_date) {
+            $query->where('date', '<=', $end_date);
+        }
+
+        return $query->sum('amount');
+    }
+
+    public static function getTop5SalesClosings($start_date, $end_date, $limit = 5)
+    {
+        $items = DB::table('closings as c')
+            ->join('users as u', 'c.user_id', '=', 'u.id')
+            ->select('u.name', DB::raw('SUM(c.amount) as total_amount'))
+            ->whereBetween('c.date', [$start_date, $end_date])
+            ->groupBy('c.user_id', 'u.name')
+            ->orderByDesc('total_amount')
+            ->limit($limit)
+            ->get();
+
+        return [
+            'labels' => $items->pluck('name')->toArray(),
+            'data' => $items->pluck('total_amount')->toArray(),
+        ];
     }
 }

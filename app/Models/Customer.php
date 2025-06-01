@@ -48,4 +48,12 @@ class Customer extends Model
     {
         return $this->hasMany(CustomerService::class);
     }
+
+    public static function newCustomerCount($start_date, $end_date)
+    {
+        return DB::select(
+            "select count(0) as count from customers where created_datetime >= ? and created_datetime <= ?",
+            [$start_date, $end_date]
+        )[0]->count;
+    }
 }

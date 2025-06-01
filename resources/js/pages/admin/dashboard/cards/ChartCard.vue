@@ -1,38 +1,47 @@
 <template>
   <div class="row q-col-gutter-sm">
-    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-card
-        square
-        class="no-shadow"
-        bordered
-        style="background-color: #fff"
-      >
+    <!-- Interaksi vs Closing vs Customer Baru -->
+    <div class="col-lg-6 col-md-12">
+      <q-card square bordered class="no-shadow bg-white">
         <q-card-section class="q-pa-none">
-          <ECharts
-            :option="monthly_orders_chart"
-            class="q-mt-md"
-            :resizable="true"
-            autoresize
-            style="height: 250px"
-          />
+          <ECharts :option="chartInteractionClosingCustomer" class="q-mt-md" :resizable="true" autoresize
+            style="height: 250px" />
         </q-card-section>
       </q-card>
     </div>
-    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-      <q-card
-        class="no-shadow"
-        square
-        bordered
-        style="background-color: #fff"
-      >
+
+    <!-- Closing -->
+    <div class="col-lg-6 col-md-12">
+      <q-card square bordered class="no-shadow bg-white">
         <q-card-section class="q-pa-none">
-          <ECharts
-            :option="monthly_closed_orders_chart"
-            class="q-mt-md"
-            :resizable="true"
-            autoresize
-            style="height: 250px"
-          />
+          <ECharts :option="chartRevenue" autoresize style="height: 250px;" />
+        </q-card-section>
+      </q-card>
+    </div>
+
+    <!-- Donut Chart Status Interaksi -->
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <q-card square bordered class="no-shadow bg-white">
+        <q-card-section class="q-pa-none">
+          <ECharts :option="interactions_chart_data" autoresize style="height: 250px" />
+        </q-card-section>
+      </q-card>
+    </div>
+
+    <!-- Top 5 Sales Interaksi -->
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <q-card square bordered class="no-shadow bg-white">
+        <q-card-section class="q-pa-none">
+          <ECharts :option="chartTopInteraction" autoresize style="height: 250px" />
+        </q-card-section>
+      </q-card>
+    </div>
+
+    <!-- Top 5 Sales Closing -->
+    <div class="col-lg-4 col-md-12 col-sm-12">
+      <q-card square bordered class="no-shadow bg-white">
+        <q-card-section class="q-pa-none">
+          <ECharts :option="chartTopClosing" autoresize style="height: 250px" />
         </q-card-section>
       </q-card>
     </div>
@@ -40,131 +49,123 @@
 </template>
 
 <script setup>
-import * as echarts from "echarts";
-import ECharts from "vue-echarts";
-import { usePage } from "@inertiajs/vue3";
-
+import { usePage } from '@inertiajs/vue3';
+import ECharts from 'vue-echarts';
+import * as echarts from 'echarts';
 const page = usePage();
-const monthly_orders_chart = {
+
+const chartInteractionClosingCustomer = {
+  title: { text: 'Interaksi, Closing, Customer Baru', left: 'center', textStyle: { color: '#444' } },
   tooltip: { show: true },
-  title: {
-    text: "Pesanan Diterima vs Selesai",
-    textStyle: { color: "#444" },
-    left: "center",
-  },
-  legend: {
-    top: "10%",
-    data: [
-      page.props.data.chart1_data.data[0].label,
-      page.props.data.chart1_data.data[1].label,
-    ],
-  },
-  grid: { containLabel: true, left: "5px", bottom: "5px", right: "5px" },
+  legend: { top: '10%', data: ['Interaksi', 'Closing', 'Customer Baru'] },
+  grid: { containLabel: true, left: '5px', bottom: '5px', right: '5px' },
   xAxis: {
-    show: true,
-    type: "category",
-    data: page.props.data.chart1_data.x_axis_label_data,
-    axisLine: { lineStyle: { color: "#555", type: "dashed" } },
-    axisTick: {
-      show: true,
-      alignWithLabel: true,
-      lineStyle: { show: true, color: "#ccc", type: "dashed" },
-    },
-    axisLabel: { show: true },
-    boundaryGap: true,
+    type: 'category',
+    data: page.props.chart_data.labels,
+    axisLine: { lineStyle: { color: '#555', type: 'dashed' } },
+    axisTick: { alignWithLabel: true, lineStyle: { color: '#ccc', type: 'dashed' } },
+    axisLabel: { show: true }
   },
   yAxis: {
-    show: true,
-    type: "value",
-    axisLine: { lineStyle: { color: "#555", type: "dashed" } },
-    axisLabel: { show: true },
-    splitLine: {
-      lineStyle: { type: "dashed", color: "#ccc" },
-    },
-    axisTick: {
-      show: true,
-      lineStyle: { show: true, color: "#fff", type: "dashed" },
-    },
+    type: 'value',
+    axisLine: { lineStyle: { color: '#555', type: 'dashed' } },
+    splitLine: { lineStyle: { type: 'dashed', color: '#ccc' } }
   },
   series: [
-    {
-      name: page.props.data.chart1_data.data[0].label,
-      type: "line",
-      lineStyle: { color: "#007bff" },
-      itemStyle: { color: "#007bff" },
-      smooth: true,
-      data: page.props.data.chart1_data.data[0].data,
-    },
-    {
-      name: page.props.data.chart1_data.data[1].label,
-      type: "line",
-      lineStyle: { color: "#28a745" },
-      itemStyle: { color: "#28a745" },
-      smooth: true,
-      data: page.props.data.chart1_data.data[1].data,
-    },
-    {
-      name: page.props.data.chart1_data.data[2].label,
-      type: "line",
-      lineStyle: { color: "#dc3545" },
-      itemStyle: { color: "#dc3545" },
-      smooth: true,
-      data: page.props.data.chart1_data.data[2].data,
-    },
-  ],
-  color: ["white"],
+    { name: 'Interaksi', type: 'line', smooth: true, data: page.props.chart_data.count_interactions, lineStyle: { color: '#007bff' }, itemStyle: { color: '#007bff' } },
+    { name: 'Closing', type: 'line', smooth: true, data: page.props.chart_data.count_closings, lineStyle: { color: '#28a745' }, itemStyle: { color: '#28a745' } },
+    { name: 'Customer Baru', type: 'line', smooth: true, data: page.props.chart_data.count_new_customers, lineStyle: { color: '#dc3545' }, itemStyle: { color: '#dc3545' } },
+  ]
 };
 
-const monthly_closed_orders_chart = {
+const chartRevenue = {
+  title: { text: 'Pendapatan', left: 'center', textStyle: { color: '#444' } },
   tooltip: { show: true },
-  title: {
-    text: "Pendapatan Konveksi",
-    textStyle: { color: "#444" },
-    left: "center",
-  },
-  legend: {
-    top: "10%",
-    data: [
-      page.props.data.chart2_data.data[0].label,
-    ],
-  },
-  grid: { containLabel: true, left: "5px", bottom: "5px", right: "5px" },
+  legend: { top: '10%', data: ['Total Closing (Rp)'] },
+  grid: { containLabel: true, left: '5px', bottom: '5px', right: '5px' },
   xAxis: {
-    show: true,
-    type: "category",
-    data: page.props.data.chart1_data.x_axis_label_data,
-    axisLine: { lineStyle: { color: "#555", type: "dashed" } },
-    axisTick: {
-      show: true,
-      alignWithLabel: true,
-      lineStyle: { show: true, color: "#ccc", type: "dashed" },
-    },
-    axisLabel: { show: true },
-    boundaryGap: true,
+    type: 'category',
+    data: page.props.chart_data.labels,
+    axisLine: { lineStyle: { color: '#555', type: 'dashed' } },
+    axisTick: { alignWithLabel: true, lineStyle: { color: '#ccc', type: 'dashed' } },
+    axisLabel: { show: true }
   },
   yAxis: {
-    show: true,
-    type: "value",
-    axisLine: { lineStyle: { color: "#555", type: "dashed" } },
-    axisLabel: { show: true },
-    splitLine: {
-      lineStyle: { type: "dashed", color: "#ccc" },
-    },
-    axisTick: {
-      show: true,
-      lineStyle: { show: true, color: "#fff", type: "dashed" },
-    },
+    type: 'value',
+    axisLine: { lineStyle: { color: '#555', type: 'dashed' } },
+    splitLine: { lineStyle: { type: 'dashed', color: '#ccc' } }
   },
   series: [
     {
-      name: page.props.data.chart2_data.data[0].label,
-      type: "bar",
-      itemStyle: { color: "#007bff" },
-      smooth: true,
-      data: page.props.data.chart2_data.data[0].data,
+      name: 'Total Closing (Rp)',
+      type: 'bar',
+      data: page.props.chart_data.total_closings,
+      itemStyle: { color: '#007bff' }
     }
-  ],
-  color: ["white"],
+  ]
+};
+
+const interactions_chart_data = {
+  title: { text: 'Status Interaksi', left: 'center', textStyle: { color: '#444' } },
+  tooltip: { trigger: 'item' },
+  legend: {
+    orient: 'vertical',
+    left: 'left',
+    textStyle: { color: '#444' }
+  },
+  series: [
+    {
+      name: 'Status',
+      type: 'pie',
+      radius: '50%',
+      data: page.props.chart_data.interactions,
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    }
+  ]
+};
+
+const chartTopInteraction = {
+  title: { text: 'Top 5 Sales Interaksi', left: 'center', textStyle: { color: '#444' } },
+  tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+  xAxis: { type: 'value' },
+  yAxis: {
+    type: 'category',
+    inverse: true,
+    data: page.props.chart_data.top_interactions.labels
+  },
+  series: [
+    {
+      name: 'Interaksi',
+      type: 'bar',
+      data: page.props.chart_data.top_interactions.data,
+      itemStyle: { color: '#17a2b8' }
+    }
+  ]
+};
+
+const chartTopClosing = {
+  title: { text: 'Top 5 Sales Closing', left: 'center', textStyle: { color: '#444' } },
+  tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+  xAxis: { type: 'value' },
+  yAxis: {
+    type: 'category',
+    inverse: true,
+    data: page.props.chart_data.top_sales_closings.labels,
+  },
+  series: [
+    {
+      name: 'Closing',
+      type: 'bar',
+      data: page.props.chart_data.top_sales_closings.data,
+      itemStyle: { color: '#ffc107' }
+    }
+  ]
 };
 </script>
 

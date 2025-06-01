@@ -1,8 +1,8 @@
 <script setup>
-import SummaryCard from "./cards/SummaryCard.vue";
+import CurrentStatCards from "./cards/CurrentStatCards.vue";
+import StatCards from "./cards/StatCards.vue";
 import ChartCard from "./cards/ChartCard.vue";
 import TopCard from "./cards/TopCard.vue";
-import TopCard2 from "./cards/TopCard2.vue";
 import { router } from "@inertiajs/vue3";
 
 import { ref } from "vue";
@@ -21,8 +21,8 @@ const period_options = ref([
   { value: "last_month", label: "Bulan Lalu" },
   { value: "this_year", label: "Tahun Ini" },
   { value: "last_year", label: "Tahun Lalu" },
-  { value: "this_week", label: "7 Hari Terakhir" },
-  { value: "this_month", label: "30 Hari Terakhir" },
+  { value: "last_7_days", label: "7 Hari Terakhir" },
+  { value: "last_30_days", label: "30 Hari Terakhir" },
   { value: "all_time", label: "Seluruh Waktu" },
 ]);
 const onFilterChange = () => {
@@ -50,15 +50,15 @@ const onFilterChange = () => {
     <div class="q-pa-sm">
       <div>
         <div class="text-subtitle1 text-bold text-grey-8">Statistik Aktual</div>
-        <summary-card class="q-py-none" />
+        <current-stat-cards class="q-py-none" />
       </div>
       <div class="q-pt-md">
         <div class="text-subtitle1 text-bold text-grey-8">
-          Statistik
-          {{period_options.find((a) => a.value == selected_period).label}}
+          Statistik {{period_options.find((a) => a.value == selected_period).label}}
         </div>
+        <stat-cards class="q-py-none" />
       </div>
-      <div class="q-pt-sm">
+      <div class="q-pt-sm" v-if="false">
         <div class="row q-col-gutter-sm">
           <div class="col-md-6 col-12">
             <top-card class="full-width full-height" :items="[
@@ -80,8 +80,8 @@ const onFilterChange = () => {
           </div>
         </div>
       </div>
-      <div v-if="0">
-        <chart-card class="q-py-none q-pt-sm" />
+      <div v-if="1">
+        <chart-card class="q-py-none q-pt-lg" />
       </div>
     </div>
   </authenticated-layout>

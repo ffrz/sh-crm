@@ -10,6 +10,7 @@ const $q = useQuasar();
 const showFilter = ref(false);
 const rows = ref([]);
 const loading = ref(true);
+
 const filter = reactive({
   search: "",
   status: "all",
@@ -25,100 +26,6 @@ const period_options = [
   { value: "last_month", label: "Bulan Lalu" },
   { value: "this_year", label: "Tahun Ini" },
   { value: "last_year", label: "Tahun Lalu" },
-];
-
-const type_colors = {
-  visit: "red",
-  chat: "orange",
-  call: "green",
-  email: "blue",
-  other: "black",
-};
-const status_colors = {
-  planned: "grey",
-  done: "blue",
-  cancelled: "red",
-};
-
-const engagement_level_colors = {
-  none: "grey",
-  cold: "blue",
-  warm: "yellow-8",
-  hot: "orange",
-  converted: "green",
-  churned: "red",
-  lost: "black",
-};
-
-const pagination = ref({
-  page: 1,
-  rowsPerPage: 10,
-  rowsNumber: 10,
-  sortBy: "id",
-  descending: true,
-});
-
-const columns = [
-  {
-    name: "id",
-    label: "#",
-    field: "id",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "date",
-    label: "Tanggal",
-    field: "date",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "type",
-    label: "Jenis",
-    field: "type",
-    align: "left",
-    sortable: false,
-  },
-  {
-    name: "sales",
-    label: "Sales",
-    field: "sales",
-    align: "left",
-    sortable: false,
-  },
-  {
-    name: "customer",
-    label: "Client",
-    field: "customer",
-    align: "left",
-    sortable: false,
-  },
-  {
-    name: "service",
-    label: "Layanan",
-    field: "service",
-    align: "left",
-    sortable: false,
-  },
-  {
-    name: "subject",
-    label: "Subjek",
-    field: "subject",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "engagement_level",
-    label: "Engagement",
-    field: "engagement_level",
-    align: "center",
-    sortable: false,
-  },
-  {
-    name: "action",
-    align: "right",
-  },
 ];
 
 const statuses = [
@@ -144,35 +51,77 @@ const types = [
     label: value,
   })),
 ];
-onMounted(() => {
-  fetchItems();
-});
 
-const deleteItem = (row) =>
-  handleDelete({
-    message: `Hapus interaksi ${row.name}?`,
-    url: route("admin.interaction.delete", row.id),
-    fetchItemsCallback: fetchItems,
-    loading,
-  });
-
-const fetchItems = (props = null) => {
-  handleFetchItems({
-    pagination,
-    filter,
-    props,
-    rows,
-    url: route("admin.interaction.data"),
-    loading,
-  });
+const type_colors = {
+  visit: "red",
+  chat: "orange",
+  call: "green",
+  email: "blue",
+  other: "black",
 };
 
-const onFilterChange = () => fetchItems();
-const onRowClicked = (row) => router.get(route('admin.interaction.detail', { id: row.id }));
-const computedColumns = computed(() => {
-  if ($q.screen.gt.sm) return columns;
-  return columns.filter((col) => col.name === "id" || col.name === "action");
+const status_colors = {
+  planned: "grey",
+  done: "blue",
+  cancelled: "red",
+};
+
+const engagement_level_colors = {
+  none: "grey",
+  cold: "blue",
+  warm: "yellow-8",
+  hot: "orange",
+  converted: "green",
+  churned: "red",
+  lost: "black",
+};
+
+const pagination = ref({
+  page: 1,
+  rowsPerPage: 10,
+  rowsNumber: 10,
+  sortBy: "id",
+  descending: true,
 });
+
+const columns = [
+  { name: "id", label: "#", field: "id", align: "left", sortable: true },
+  { name: "date", label: "Tanggal", field: "date", align: "left", sortable: true },
+  { name: "type", label: "Jenis", field: "type", align: "left" },
+  { name: "sales", label: "Sales", field: "sales", align: "left" },
+  { name: "customer", label: "Client", field: "customer", align: "left" },
+  { name: "service", label: "Layanan", field: "service", align: "left" },
+  { name: "subject", label: "Subjek", field: "subject", align: "left" },
+  { name: "engagement_level", label: "Engagement", field: "engagement_level", align: "center" },
+  { name: "action", align: "right" },
+];
+
+onMounted(() => fetchItems());
+
+const deleteItem = (row) => handleDelete({
+  message: `Hapus interaksi ${row.name}?`,
+  url: route("admin.interaction.delete", row.id),
+  fetchItemsCallback: fetchItems,
+  loading,
+});
+
+const fetchItems = (props = null) => handleFetchItems({
+  pagination,
+  filter,
+  props,
+  rows,
+  url: route("admin.interaction.data"),
+  loading,
+});
+
+const onFilterChange = () => fetchItems();
+
+const onRowClicked = (row) => router.get(route("admin.interaction.detail", { id: row.id }));
+
+const computedColumns = computed(() =>
+  $q.screen.gt.sm ? columns : columns.filter((col) => ["id", "action"].includes(col.name))
+);
+
 </script>
 
 <template>
@@ -186,13 +135,15 @@ const computedColumns = computed(() => {
       <q-btn icon="file_export" dense class="q-ml-sm" color="grey" style="" @click.stop>
         <q-menu anchor="bottom right" self="top right" transition-show="scale" transition-hide="scale">
           <q-list style="width: 200px">
-            <q-item clickable v-ripple v-close-popup :href="route('admin.interaction.export', { format: 'pdf', filter: filter })">
+            <q-item clickable v-ripple v-close-popup
+              :href="route('admin.interaction.export', { format: 'pdf', filter: filter })">
               <q-item-section avatar>
                 <q-icon name="picture_as_pdf" color="red-9" />
               </q-item-section>
               <q-item-section>Export PDF</q-item-section>
             </q-item>
-            <q-item clickable v-ripple v-close-popup :href="route('admin.interaction.export', { format: 'excel', filter: filter })">
+            <q-item clickable v-ripple v-close-popup
+              :href="route('admin.interaction.export', { format: 'excel', filter: filter })">
               <q-item-section avatar>
                 <q-icon name="csv" color="green-9" />
               </q-item-section>

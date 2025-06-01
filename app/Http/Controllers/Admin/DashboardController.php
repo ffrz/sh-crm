@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Closing;
 use App\Models\Customer;
 use App\Models\CustomerService;
 use App\Models\Interaction;
@@ -18,91 +19,162 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        // $month = $request->get('month', 'this_month');
-        // $start_date = new Carbon(date('Y-m-01'));
-        // if ($month === 'prev_month') {
-        //     $start_date = $start_date->copy()->subMonth()->startOfMonth();
-        // }
-        // else if ($month === 'prev_2month') {
-        //     $start_date = $start_date->copy()->subMonth(2)->startOfMonth();
-        // }
-        // else if ($month === 'prev_3month') {
-        //     $start_date = $start_date->copy()->subMonth(3)->startOfMonth();
-        // }
-        // $end_date = $start_date->copy()->endOfMonth();
+        $period = $request->get('period', 'this_month');
+        $today = Carbon::today();
+        $now = Carbon::now();
 
-        // $days = [];
-        // for ($i = 1; $i <= substr($end_date, 8, 2); $i++) {
-        //     $days[(int)$i] = 0;
-        // }
+        $start_date = null;
+        $end_date = null;
 
-        // $openedOrders = ServiceOrder::openedOrderByPeriod($start_date, $end_date);
-        // $monthly_opened_orders = $days;
-        // foreach ($openedOrders as $order) {
-        //     $monthly_opened_orders[(int)substr($order->order_date, 8, 2)] = $order->total_order;
-        // }
+        switch ($period) {
+            case 'today':
+                $start_date = $today;
+                $end_date = $today->copy()->endOfDay();
+                break;
 
-        // $successfullServices = ServiceOrder::successOrderByPeriod($start_date, $end_date);
-        // $monthly_successfull_services = $days;
-        // foreach ($successfullServices as $order) {
-        //     $monthly_successfull_services[(int)substr($order->order_date, 8, 2)] = $order->total_order;
-        // }
+            case 'yesterday':
+                $start_date = $today->copy()->subDay();
+                $end_date = $start_date->copy()->endOfDay();
+                break;
 
-        // $failedServices = ServiceOrder::failedOrderByPeriod($start_date, $end_date);
-        // $monthly_failed_services = $days;
-        // foreach ($failedServices as $order) {
-        //     $monthly_failed_services[(int)substr($order->order_date, 8, 2)] = $order->total_order;
-        // }
+            case 'this_week':
+                $start_date = $today->copy()->startOfWeek();
+                $end_date = $now; // sampai hari ini (no overflow)
+                break;
 
-        // $closedOrders = ServiceOrder::closedOrderByPeriod($start_date, $end_date);
-        // $monthly_closed_orders = $days;
-        // foreach ($closedOrders as $order) {
-        //     $monthly_closed_orders[(int)substr($order->order_date, 8, 2)] = $order->total_order;
-        // }
+            case 'last_week':
+                $start_date = $today->copy()->subWeek()->startOfWeek();
+                $end_date = $start_date->copy()->endOfWeek(); // tetap 1 minggu penuh
+                break;
+
+            case 'this_month':
+                $start_date = $today->copy()->startOfMonth();
+                $end_date = $now; // sampai hari ini (no overflow)
+                break;
+
+            case 'last_month':
+                $start_date = $today->copy()->subMonthNoOverflow()->startOfMonth();
+                $end_date = $start_date->copy()->endOfMonth();
+                break;
+
+            case 'this_year':
+                $start_date = $today->copy()->startOfYear();
+                $end_date = $now;
+                break;
+
+            case 'last_year':
+                $start_date = $today->copy()->subYear()->startOfYear();
+                $end_date = $start_date->copy()->endOfYear();
+                break;
+
+            case 'last_7_days':
+                $start_date = $today->copy()->subDays(6);
+                $end_date = $now;
+                break;
+
+            case 'last_30_days':
+                $start_date = $today->copy()->subDays(29);
+                $end_date = $now;
+                break;
+
+            case 'all_time':
+            default:
+                $start_date = null;
+                $end_date = null;
+                break;
+        }
+
+        $labels = [];
+        $count_interactions = [];
+        $count_closings = [];
+        $count_new_customers = [];
+        $total_closings = [];
+
+        $start = $start_date ? Carbon::parse($start_date) : Carbon::createFromDate(2000, 1, 1);
+        $end = $end_date ? Carbon::parse($end_date) : Carbon::now();
+
+        if (in_array($period, ['all_time', 'this_year', 'last_year'])) {
+            // BULANAN
+            $current = $start->copy();
+
+            while ($current->lessThanOrEqualTo($end)) {
+                $labels[] = $current->format('F Y'); // e.g., January 2024
+
+                $monthStart = $current->copy()->startOfMonth();
+                $monthEnd = $current->copy()->endOfMonth();
+
+                $countInteraction = Interaction::where('status', 'done')
+                    ->whereBetween('date', [$monthStart, $monthEnd])
+                    ->count();
+
+                $countClosing = Closing::whereBetween('date', [$monthStart, $monthEnd])
+                    ->count();
+
+                $countNewCustomer = Customer::whereBetween('created_datetime', [$monthStart, $monthEnd])
+                    ->count();
+
+                $sum_closing = Closing::whereBetween('date', [$monthStart, $monthEnd])
+                    ->sum('amount');
+
+                $count_interactions[]  = $countInteraction;
+                $count_closings[]      = $countClosing;
+                $count_new_customers[] = $countNewCustomer;
+                $total_closings[]      = $sum_closing;
+
+                $current->addMonth();
+            }
+        } else {
+            // HARIAN
+            $current = $start->copy();
+
+            while ($current->lessThanOrEqualTo($end)) {
+                $labels[] = $current->format('d'); // e.g., 01, 02, ..., 31
+
+                $countInteraction = Interaction::where('status', 'done')
+                    ->whereDate('date', $current->format('Y-m-d'))
+                    ->count();
+
+                $countClosing = Closing::whereDate('date', $current->format('Y-m-d'))
+                    ->count();
+                    
+                $countNewCustomer = Customer::whereDate('created_datetime', $current->format('Y-m-d'))
+                    ->count();
+
+                $sum_closing = Closing::whereDate('date', $current->format('Y-m-d'))
+                    ->sum('amount');
+
+                $count_interactions[]  = $countInteraction;
+                $count_closings[]      = $countClosing;
+                $count_new_customers[] = $countNewCustomer;
+                $total_closings[]        = $sum_closing;
+
+                $current->addDay();
+            }
+        }
 
         return inertia('admin/dashboard/Index', [
+            'chart_data' => [
+                'labels' => $labels,
+                'count_interactions' => $count_interactions,
+                'count_closings' => $count_closings,
+                'count_new_customers' => $count_new_customers,
+                'total_closings' => $total_closings,
+                'interactions' => Interaction::interactionCountByStatus($start_date, $end_date),
+                'top_interactions'  => Interaction::getTopInteractions($start_date, $end_date, 5),
+                'top_sales_closings'  => Closing::getTop5SalesClosings($start_date, $end_date, 5),
+            ],
             'data' => [
-                // 'active_order_count' => ServiceOrder::activeOrderCount(),
-                // 'received_order_count' => ServiceOrder::receivedOrderCount(),
-                // 'in_progress_order_count' => ServiceOrder::inProgressCount(),
-                // 'pickable_order_count' => ServiceOrder::pickableOrderCount(),
-                // 'total_billable_order' => ServiceOrder::totalBillable(),
-                // 'total_active_bill' => ServiceOrder::totalActiveBill(),
-                // 'total_active_downpayment' => ServiceOrder::totalActiveDownPayment(),
                 'active_interaction_plan_count' => Interaction::activePlanCount(),
                 'active_customer_service_count' => CustomerService::activeCustomerServiceCount(),
                 'active_customer_count' => Customer::activeCustomerCount(),
                 'active_sales_count' => User::activeSalesCount(),
                 'active_user_count' => User::activeUserCount(),
                 'active_service_count' => Service::activeServiceCount(),
-                // 'top_customers' => ServiceOrder::topCustomers($start_date, $end_date),
-                // 'top_technicians' => ServiceOrder::topTechnicians($start_date, $end_date),
-                // 'chart1_data' => [
-                //     'x_axis_label_data' => array_keys($monthly_opened_orders),
-                //     'data' => [
-                //         [
-                //             'label' => 'Diterima',
-                //             'data' => array_values($monthly_opened_orders),
-                //         ],
-                //         [
-                //             'label' => 'Sukses',
-                //             'data' => array_values($monthly_successfull_services),
-                //         ],
-                //         [
-                //             'label' => 'Gagal',
-                //             'data' => array_values($monthly_failed_services),
-                //         ]
-                //     ]
-                // ],
-                // 'chart2_data' => [
-                //     'x_axis_label_data' => array_keys($monthly_opened_orders),
-                //     'data' => [
-                //         [
-                //             'label' => 'Closing',
-                //             'data' => array_values($monthly_closed_orders),
-                //         ],
-                //     ]
-                // ],
+
+                'interaction_count' => Interaction::interactionCount($start_date, $end_date),
+                'new_customer_count' => Customer::newCustomerCount($start_date, $end_date),
+                'closing_count' => Closing::closingCount($start_date, $end_date),
+                'closing_amount' => Closing::closingAmount($start_date, $end_date),
             ]
         ]);
     }
