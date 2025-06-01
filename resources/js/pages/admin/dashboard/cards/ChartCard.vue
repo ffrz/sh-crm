@@ -1,7 +1,7 @@
 <template>
   <div class="row q-col-gutter-sm">
     <!-- Interaksi vs Closing vs Customer Baru -->
-    <div class="col-lg-6 col-md-12">
+    <div class="col-lg-6 col-md-12 card-container">
       <q-card square bordered class="no-shadow bg-white">
         <q-card-section class="q-pa-none">
           <ECharts :option="chartInteractionClosingCustomer" class="q-mt-md" :resizable="true" autoresize
@@ -11,7 +11,7 @@
     </div>
 
     <!-- Closing -->
-    <div class="col-lg-6 col-md-12">
+    <div class="col-lg-6 col-md-12 card-container">
       <q-card square bordered class="no-shadow bg-white">
         <q-card-section class="q-pa-none">
           <ECharts :option="chartRevenue" autoresize style="height: 250px;" />
@@ -20,7 +20,7 @@
     </div>
 
     <!-- Donut Chart Status Interaksi -->
-    <div class="col-lg-4 col-md-6 col-sm-12">
+    <div class="col-lg-4 col-md-6 col-sm-12 card-container">
       <q-card square bordered class="no-shadow bg-white">
         <q-card-section class="q-pa-none">
           <ECharts :option="interactions_chart_data" autoresize style="height: 250px" />
@@ -29,7 +29,7 @@
     </div>
 
     <!-- Top 5 Sales Interaksi -->
-    <div class="col-lg-4 col-md-6 col-sm-12">
+    <div class="col-lg-4 col-md-6 col-sm-12 card-container">
       <q-card square bordered class="no-shadow bg-white">
         <q-card-section class="q-pa-none">
           <ECharts :option="chartTopInteraction" autoresize style="height: 250px" />
@@ -38,7 +38,7 @@
     </div>
 
     <!-- Top 5 Sales Closing -->
-    <div class="col-lg-4 col-md-12 col-sm-12">
+    <div class="col-lg-4 col-md-12 col-sm-12 card-container">
       <q-card square bordered class="no-shadow bg-white">
         <q-card-section class="q-pa-none">
           <ECharts :option="chartTopClosing" autoresize style="height: 250px" />
@@ -172,5 +172,11 @@ const chartTopClosing = {
 <style scoped>
 .q-card {
   width: 100%;
+}
+
+@media (max-width: 992px) {
+  .card-container {
+    width: 100% !important;
+  }
 }
 </style>
