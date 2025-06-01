@@ -4,8 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\Service;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CustomerController extends Controller
 {
@@ -112,5 +118,69 @@ class CustomerController extends Controller
         return response()->json([
             'message' => "Client $item->name telah dihapus."
         ]);
+    }
+
+    /**
+     * Mengekspor daftar client ke dalam format PDF atau Excel.
+     */
+    public function export(Request $request)
+    {
+        $items = Customer::orderBy('id', 'asc')->get();
+
+        $title = 'Daftar Client';
+        $filename = $title . ' - ' . env('APP_NAME') . Carbon::now()->format('dmY_His');
+
+        if ($request->get('format') == 'pdf') {
+            $pdf = Pdf::loadView('export.customer-list-pdf', compact('items', 'title'))
+                ->setPaper('a4', 'landscape');
+            return $pdf->download($filename . '.pdf');
+        }
+
+        if ($request->get('format') == 'excel') {
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+
+            // Tambahkan header
+            $sheet->setCellValue('A1', 'ID');
+            $sheet->setCellValue('B1', 'Nama');
+            $sheet->setCellValue('C1', 'Telepon');
+            $sheet->setCellValue('D1', 'Email');
+            $sheet->setCellValue('E1', 'Alamat');
+            $sheet->setCellValue('F1', 'Nama Perusahaan');
+            $sheet->setCellValue('G1', 'Jenis Usaha');
+            $sheet->setCellValue('H1', 'Source');
+            $sheet->setCellValue('I1', 'Status');
+            $sheet->setCellValue('J1', 'Catatan');
+
+            // Tambahkan data ke Excel
+            $row = 2;
+            foreach ($items as $item) {
+                $sheet->setCellValue('A' . $row, $item->id);
+                $sheet->setCellValue('B' . $row, $item->name);
+                $sheet->setCellValue('C' . $row, $item->phone);
+                $sheet->setCellValue('D' . $row, $item->email);
+                $sheet->setCellValue('E' . $row, $item->address);
+                $sheet->setCellValue('F' . $row, $item->company);
+                $sheet->setCellValue('G' . $row, $item->business_type);
+                $sheet->setCellValue('H' . $row, $item->source);
+                $sheet->setCellValue('I' . $row, $item->active ? 'Aktif' : 'Tidak Aktif');
+                $sheet->setCellValue('J' . $row, $item->notes);
+                $row++;
+            }
+
+            // Kirim ke memori tanpa menyimpan file
+            $response = new StreamedResponse(function () use ($spreadsheet) {
+                $writer = new Xlsx($spreadsheet);
+                $writer->save('php://output');
+            });
+
+            // Atur header response untuk download
+            $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '.xlsx"');
+
+            return $response;
+        }
+
+        return abort(400, 'Format tidak didukung');
     }
 }
