@@ -57,6 +57,7 @@ Route::middleware([Auth::class])->group(function () {
             Route::get('detail/{id}', [ServiceController::class, 'detail'])->name('admin.service.detail');
             Route::post('save', [ServiceController::class, 'save'])->name('admin.service.save');
             Route::post('delete/{id}', [ServiceController::class, 'delete'])->name('admin.service.delete');
+            Route::get('export', [ServiceController::class, 'export'])->name('admin.service.export');
         });
 
         Route::prefix('customers')->group(function () {
@@ -68,6 +69,7 @@ Route::middleware([Auth::class])->group(function () {
             Route::get('detail/{id}', [CustomerController::class, 'detail'])->name('admin.customer.detail');
             Route::post('save', [CustomerController::class, 'save'])->name('admin.customer.save');
             Route::post('delete/{id}', [CustomerController::class, 'delete'])->name('admin.customer.delete');
+            Route::get('export', [CustomerController::class, 'export'])->name('admin.customer.export');
         });
 
         Route::prefix('interactions')->group(function () {
@@ -78,6 +80,7 @@ Route::middleware([Auth::class])->group(function () {
             Route::get('detail/{id}', [InteractionController::class, 'detail'])->name('admin.interaction.detail');
             Route::post('save', [InteractionController::class, 'save'])->name('admin.interaction.save');
             Route::post('delete/{id}', [InteractionController::class, 'delete'])->name('admin.interaction.delete');
+            Route::get('export', [InteractionController::class, 'export'])->name('admin.interactions.export');
         });
 
         Route::prefix('closings')->group(function () {
@@ -88,6 +91,7 @@ Route::middleware([Auth::class])->group(function () {
             Route::get('detail/{id}', [ClosingController::class, 'detail'])->name('admin.closing.detail');
             Route::post('save', [ClosingController::class, 'save'])->name('admin.closing.save');
             Route::post('delete/{id}', [ClosingController::class, 'delete'])->name('admin.closing.delete');
+            Route::get('export', [ClosingController::class, 'export'])->name('admin.closing.export');
         });
 
         Route::prefix('customer-services')->group(function () {
@@ -98,6 +102,7 @@ Route::middleware([Auth::class])->group(function () {
             Route::get('detail/{id}', [CustomerServiceController::class, 'detail'])->name('admin.customer-service.detail');
             Route::post('save', [CustomerServiceController::class, 'save'])->name('admin.customer-service.save');
             Route::post('delete/{id}', [CustomerServiceController::class, 'delete'])->name('admin.customer-service.delete');
+            Route::get('export', [CustomerServiceController::class, 'export'])->name('admin.customer-service.export');
         });
 
         Route::prefix('settings')->group(function () {
@@ -117,6 +122,7 @@ Route::middleware([Auth::class])->group(function () {
                 Route::post('save', [UserController::class, 'save'])->name('admin.user.save');
                 Route::post('delete/{id}', [UserController::class, 'delete'])->name('admin.user.delete');
                 Route::get('detail/{id}', [UserController::class, 'detail'])->name('admin.user.detail');
+                Route::get('export', [UserController::class, 'export'])->name('admin.user.export');
             });
         });
     });
