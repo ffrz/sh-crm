@@ -206,7 +206,7 @@ const computedColumns = computed(() => {
       <q-toolbar class="filter-bar">
         <div class="row q-col-gutter-xs items-center q-pa-sm full-width">
           <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.period"
-            :options="period_options" label="Kurun Waktu" dense map-options emit-value outlined
+            :options="period_options" label="Periode" dense map-options emit-value outlined
             @update:model-value="onFilterChange" />
           <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.status"
             :options="statuses" label="Status" dense map-options emit-value outlined

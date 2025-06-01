@@ -39,9 +39,11 @@ class InteractionController extends Controller
     {
         $orderBy = $request->get('order_by', 'id');
         $orderType = $request->get('order_type', 'asc');
+        
         $items = $this->createQuery($request)
             ->orderBy($orderBy, $orderType)
-            ->paginate($request->get('per_page', 10))->withQueryString();
+            ->paginate($request->get('per_page', 10))
+            ->withQueryString();
 
         return response()->json($items);
     }
@@ -97,7 +99,7 @@ class InteractionController extends Controller
     }
 
     /**
-     * Mengekspor daftar pengguna ke dalam format PDF atau Excel.
+     * Mengekspor daftar interaksi ke dalam format PDF atau Excel.
      */
     public function export(Request $request)
     {

@@ -13,13 +13,13 @@ const rows = ref([]);
 const loading = ref(true);
 const filter = reactive({
   search: "",
-  date: "all",
+  period: "all",
   user_id: "all",
   service_id: "all",
   ...getQueryParams(),
 });
 
-const date_options = [
+const period_options = [
   { value: "all", label: "Semua" },
   { value: "this_month", label: "Bulan Ini" },
   { value: "last_month", label: "Bulan Lalu" },
@@ -142,13 +142,13 @@ const computedColumns = computed(() => {
       <q-btn icon="file_export" dense class="q-ml-sm" color="grey" style="" @click.stop>
         <q-menu anchor="bottom right" self="top right" transition-show="scale" transition-hide="scale">
           <q-list style="width: 200px">
-            <q-item clickable v-ripple v-close-popup @click.stop="$q.notify({ message: 'Fitur ini belum tersedia!' });">
+            <q-item clickable v-ripple v-close-popup :href="route('admin.closing.export', { format: 'pdf', filter: filter })">
               <q-item-section avatar>
                 <q-icon name="picture_as_pdf" color="red-9" />
               </q-item-section>
               <q-item-section>Export PDF</q-item-section>
             </q-item>
-            <q-item clickable v-ripple v-close-popup @click.stop="$q.notify({ message: 'Fitur ini belum tersedia!' });">
+            <q-item clickable v-ripple v-close-popup :href="route('admin.closing.export', { format: 'excel', filter: filter })">
               <q-item-section avatar>
                 <q-icon name="csv" color="green-9" />
               </q-item-section>
@@ -161,8 +161,8 @@ const computedColumns = computed(() => {
     <template #header v-if="showFilter">
       <q-toolbar class="filter-bar">
         <div class="row q-col-gutter-xs items-center q-pa-sm full-width">
-          <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.date"
-            :options="date_options" label="Kurun Waktu" dense map-options emit-value outlined
+          <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.period"
+            :options="period_options" label="Periode" dense map-options emit-value outlined
             @update:model-value="onFilterChange" />
           <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.user_id"
             :options="users" label="Sales" dense map-options emit-value outlined @update:model-value="onFilterChange" />
