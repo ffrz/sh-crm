@@ -43,7 +43,7 @@ class ServiceController extends Controller
         }
 
         if (!empty($filter['status']) && ($filter['status'] != 'all')) {
-            $q->where('active', '=', $filter['status']);
+            $q->where('active', '=', $filter['status'] == 'active' ? true : false);
         }
 
         $q->orderBy($orderBy, $orderType);

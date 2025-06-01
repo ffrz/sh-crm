@@ -4,14 +4,15 @@ import ChartCard from "./cards/ChartCard.vue";
 import TopCard from "./cards/TopCard.vue";
 import TopCard2 from "./cards/TopCard2.vue";
 import { router } from "@inertiajs/vue3";
+
 import { ref } from "vue";
 import { getQueryParams } from "@/helpers/utils";
 
 const title = "Dashboard";
 const showFilter = ref(true);
-const selected_month = ref(getQueryParams()["month"] ?? "this_month");
+const selected_period = ref(getQueryParams()["period"] ?? "this_month");
 
-const month_options = ref([
+const period_options = ref([
   { value: "today", label: "Hari Ini" },
   { value: "yesterday", label: "Kemarin" },
   { value: "this_week", label: "Minggu Ini" },
@@ -25,7 +26,7 @@ const month_options = ref([
   { value: "all_time", label: "Seluruh Waktu" },
 ]);
 const onFilterChange = () => {
-  router.visit(route("admin.dashboard", { month: selected_month.value }));
+  router.visit(route("admin.dashboard", { period: selected_period.value }));
 };
 </script>
 
@@ -40,8 +41,8 @@ const onFilterChange = () => {
     <template #header v-if="showFilter">
       <q-toolbar class="filter-bar">
         <div class="row q-col-gutter-xs items-center q-pa-sm full-width">
-          <q-select class="custom-select col-12" style="min-width: 150px" v-model="selected_month"
-            :options="month_options" label="Bulan" dense map-options emit-value outlined
+          <q-select class="custom-select col-12" style="min-width: 150px" v-model="selected_period"
+            :options="period_options" label="Bulan" dense map-options emit-value outlined
             @update:model-value="onFilterChange" />
         </div>
       </q-toolbar>
@@ -54,7 +55,7 @@ const onFilterChange = () => {
       <div class="q-pt-md">
         <div class="text-subtitle1 text-bold text-grey-8">
           Statistik
-          {{month_options.find((a) => a.value == selected_month).label}}
+          {{period_options.find((a) => a.value == selected_period).label}}
         </div>
       </div>
       <div class="q-pt-sm">

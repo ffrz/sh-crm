@@ -47,8 +47,8 @@ const columns = [
 
 const statuses = [
   { value: "all", label: "Semua" },
-  { value: 1, label: "Aktif" },
-  { value: 0, label: "Tidak Aktif" },
+  { value: "active", label: "Aktif" },
+  { value: "inactive", label: "Tidak Aktif" },
 ];
 
 onMounted(() => {

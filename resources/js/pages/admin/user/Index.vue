@@ -2,7 +2,7 @@
 import { computed, onMounted, reactive, ref } from "vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { handleFetchItems, handleDelete } from "@/helpers/client-req-handler";
-import { create_options } from "@/helpers/utils";
+import { create_options, getQueryParams } from "@/helpers/utils";
 import i18n from "@/i18n";
 import { useQuasar } from "quasar";
 
@@ -28,6 +28,7 @@ const filter = reactive({
   role: "all",
   status: "active",
   search: "",
+  ...getQueryParams(),
 });
 
 const pagination = ref({
