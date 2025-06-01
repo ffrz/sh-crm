@@ -51,7 +51,7 @@ class InteractionController extends Controller
         $item = $id ? Interaction::findOrFail($id) : new Interaction([
             'status' => Interaction::Status_Planned,
             'user_id' => Auth::user()->id,
-            'interaction_date' => Carbon::now(),
+            'date' => Carbon::now(),
         ]);
         return inertia('admin/interaction/Editor', [
             'data' => $item,
@@ -199,27 +199,27 @@ class InteractionController extends Controller
             $q->where('engagement_level', '=', $filter['engagement_level']);
         }
 
-        if (!empty($filter['date']) && ($filter['date'] != 'all')) {
-            if ($filter['date'] == 'this_month') {
+        if (!empty($filter['period']) && ($filter['period'] != 'all')) {
+            if ($filter['period'] == 'this_month') {
                 $start = Carbon::now()->startOfMonth();
                 $end = Carbon::now()->endOfMonth();
                 $q->whereBetween('date', [$start, $end]);
-            } elseif ($filter['date'] == 'last_month') {
+            } elseif ($filter['period'] == 'last_month') {
                 $start = Carbon::now()->subMonthNoOverflow()->startOfMonth();
                 $end = Carbon::now()->subMonthNoOverflow()->endOfMonth();
                 $q->whereBetween('date', [$start, $end]);
-            } elseif ($filter['date'] == 'this_year') {
+            } elseif ($filter['period'] == 'this_year') {
                 $start = Carbon::now()->startOfYear();
                 $end = Carbon::now()->endOfYear();
                 $q->whereBetween('date', [$start, $end]);
-            } elseif ($filter['date'] == 'last_year') {
+            } elseif ($filter['period'] == 'last_year') {
                 $start = Carbon::now()->subYear()->startOfYear();
                 $end = Carbon::now()->subYear()->endOfYear();
                 $q->whereBetween('date', [$start, $end]);
             } else {
-                // Asumsikan filter['date'] dalam format YYYY-MM-DD
+                // Asumsikan filter['period'] dalam format YYYY-MM-DD
                 try {
-                    $date = Carbon::parse($filter['date']);
+                    $date = Carbon::parse($filter['period']);
                     $q->whereDate('date', $date);
                 } catch (\Exception $e) {
                     // Handle kesalahan parsing tanggal jika perlu
