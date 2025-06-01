@@ -15,7 +15,7 @@
       </tr>
     </thead>
     <tbody>
-      @foreach ($items as $index => $item)
+      @forelse ($items as $index => $item)
         <tr>
           <td align="right">{{ $index + 1 }}</td>
           <td>{{ $item->id }}</td>
@@ -24,7 +24,11 @@
           <td>{{ \App\Models\User::Roles[$item->role] }}</td>
           <td>{{ $item->active ? 'Aktif' : 'Non Aktif' }}</td>
         </tr>
-      @endforeach
+      @empty
+        <tr>
+          <td colspan="6" align="center">Tidak ada data</td>
+        </tr>
+      @endforelse
     </tbody>
   </table>
 @endsection
