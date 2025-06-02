@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\CustomerServiceController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\InteractionController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VisitController;
@@ -47,6 +48,10 @@ Route::middleware([Auth::class])->group(function () {
         Route::get('about', function () {
             return inertia('admin/About');
         })->name('admin.about');
+
+        Route::prefix('reports')->group(function() {
+            Route::get('', [ReportController::class, 'index'])->name('admin.report.index');
+        });
 
         Route::prefix('services')->group(function () {
             Route::get('', [ServiceController::class, 'index'])->name('admin.service.index');

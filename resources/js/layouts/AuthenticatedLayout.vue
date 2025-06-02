@@ -121,7 +121,7 @@ onMounted(() => {
           </q-item>
 
           <q-item clickable v-ripple :active="$page.url.startsWith('/admin/reports')"
-            @click="router.get(route('admin.dashboard'))">
+            @click="router.get(route('admin.report.index'))">
             <q-item-section avatar>
               <q-icon name="docs" />
             </q-item-section>
@@ -209,7 +209,7 @@ onMounted(() => {
           </q-item>
 
           <q-separator />
-          
+
           <q-item clickable v-close-popup v-ripple style="color: inherit" :href="route('admin.auth.logout')">
             <q-item-section>
               <q-item-label><q-icon name="logout" class="q-mr-sm" />Keluar</q-item-label>
