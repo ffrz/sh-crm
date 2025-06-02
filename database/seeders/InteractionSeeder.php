@@ -4,13 +4,13 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-class CustomerSeeder extends Seeder
+class InteractionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        \App\Models\Customer::factory(291)->create();
+        \App\Models\Interaction::factory(522)->create();
     }
 }

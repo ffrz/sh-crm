@@ -15,8 +15,10 @@ class DatabaseSeeder extends Seeder
         DB::transaction(function () {
             $this->call([
                 UserSeeder::class,
-                // CustomerSeeder::class,
                 ServiceSeeder::class,
+                CustomerSeeder::class,
+                InteractionSeeder::class,
+                ClosingSeeder::class,
             ]);
         });
     }

@@ -27,6 +27,18 @@ class UserSeeder extends Seeder
             'role' => User::Role_Sales,
             'active' => 1,
         ]);
+        User::factory()->create([
+            'username' => 'anto',
+            'name' => 'Anto',
+            'role' => User::Role_Sales,
+            'active' => 1,
+        ]);
+        User::factory()->create([
+            'username' => 'wildan',
+            'name' => 'Wildan',
+            'role' => User::Role_Sales,
+            'active' => 1,
+        ]);
         // User::factory(10)->create();
     }
 }
