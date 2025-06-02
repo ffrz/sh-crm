@@ -166,6 +166,7 @@ class DashboardController extends Controller
             'data' => [
                 'recent_interactions' => Interaction::recentInteractions(5),
                 'recent_closings' => Closing::recentClosings(5),
+                'recent_customers' => Customer::recentCustomers(5),
                 'active_interaction_plan_count' => Interaction::activePlanCount(),
                 'active_customer_service_count' => CustomerService::activeCustomerServiceCount(),
                 'active_customer_count' => Customer::activeCustomerCount(),

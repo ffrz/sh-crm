@@ -8,8 +8,8 @@ const $q = useQuasar();
 const page = usePage();
 const rows = page.props.data.recent_closings;
 const columns = [
-  { name: "id", label: "#", field: "id", align: "left", sortable: true },
-  { name: "date", label: "Tanggal", field: "date", align: "left", sortable: true },
+  { name: "id", label: "#", field: "id", align: "left" },
+  { name: "date", label: "Tanggal", field: "date", align: "left"},
   { name: "sales", label: "Sales", field: "sales", align: "left" },
   { name: "customer", label: "Client", field: "customer", align: "left" },
   { name: "service", label: "Layanan", field: "service", align: "left" },
@@ -51,7 +51,7 @@ const computedColumns = computed(() =>
 <template>
   <div class="col-lg-6 col-12 card-container">
     <div class="text-subtitle2 text-bold text-grey-8">
-      Recent Closings
+      Closing Terbaru
     </div>
     <q-card square bordered class="no-shadow bg-white" style="width:100%;">
       <q-card-section class="q-pa-none">
@@ -77,7 +77,7 @@ const computedColumns = computed(() =>
                 <div>
                   {{ props.row.id }}
                   <template v-if="$q.screen.lt.md">
-                    - <span><q-icon name="history" /> {{ $dayjs(props.row.date).format('DD MMMM YYYY') }}</span>
+                    - <span><q-icon name="history" /> {{ $dayjs(props.row.date).format('D MMMM YYYY') }}</span>
                   </template>
                 </div>
                 <template v-if="$q.screen.lt.md">
@@ -98,7 +98,7 @@ const computedColumns = computed(() =>
                 </template>
               </q-td>
               <q-td key="date" :props="props" class="wrap-column">
-                {{ $dayjs(props.row.date).format('DD MMMM YYYY') }}
+                {{ $dayjs(props.row.date).format('D MMMM YYYY') }}
               </q-td>
               <q-td key="sales" :props="props">
                 {{ props.row.user.username }}

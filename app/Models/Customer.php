@@ -52,8 +52,17 @@ class Customer extends Model
     public static function newCustomerCount($start_date, $end_date)
     {
         return DB::select(
-            "select count(0) as count from customers where created_datetime >= ? and created_datetime <= ?",
+            "select count(0) as count from customers where created_datetime >= ? and created_datetime <= ? and active=1",
             [$start_date, $end_date]
         )[0]->count;
+    }
+
+    public static function recentCustomers($limit = 5)
+    {
+        return self::query()
+            ->where('active', '=', 1)
+            ->limit($limit)
+            ->orderByDesc('created_datetime')
+            ->get();
     }
 }

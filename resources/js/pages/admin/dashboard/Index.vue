@@ -2,9 +2,9 @@
 import CurrentStatCards from "./cards/CurrentStatCards.vue";
 import StatCards from "./cards/StatCards.vue";
 import ChartCard from "./cards/ChartCard.vue";
-import TopCard from "./cards/TopCard.vue";
 import RecentInteractionsCard from './cards/RecentInteractionsCard.vue';
 import RecentClosingsCard from './cards/RecentClosingsCard.vue';
+import RecentCustomersCard from './cards/RecentCustomersCard.vue';
 import { router, usePage } from "@inertiajs/vue3";
 
 import { ref } from "vue";
@@ -57,6 +57,7 @@ const onFilterChange = () => {
         <current-stat-cards class="q-py-none" />
         <div class="row q-col-gutter-sm q-pt-sm">
           <recent-interactions-card class="q-my-xs" />
+          <recent-customers-card class="q-my-xs" />
           <recent-closings-card class="q-my-xs" />
         </div>
       </div>

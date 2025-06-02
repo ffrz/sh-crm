@@ -25,45 +25,12 @@ const pagination = ref({
 });
 
 const columns = [
-  {
-    name: "id",
-    label: "#",
-    field: "id",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "name",
-    label: "Nama",
-    field: "name",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "company",
-    label: "Perusahaan",
-    field: "company",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "phone",
-    label: "No HP",
-    field: "phone",
-    align: "left",
-    sortable: false,
-  },
-  {
-    name: "services",
-    label: "Layanan",
-    field: "services",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "action",
-    align: "right",
-  },
+  { name: "id", label: "#", field: "id", align: "left", sortable: true },
+  { name: "name", label: "Nama", field: "name", align: "left", sortable: true },
+  { name: "company", label: "Perusahaan", field: "company", align: "left", sortable: true },
+  { name: "phone", label: "No HP", field: "phone", align: "left" },
+  { name: "services", label: "Layanan", field: "services", align: "left" },
+  { name: "action", align: "right" },
 ];
 
 const statuses = [
