@@ -1,6 +1,6 @@
 <template>
   <div class="row q-col-gutter-sm">
-    <!-- Interaksi vs Closing vs Customer Baru -->
+    <!-- Interaksi vs Closing vs Client Baru -->
     <div class="col-lg-6 col-md-12 card-container">
       <q-card square bordered class="no-shadow bg-white">
         <q-card-section class="q-pa-none">
@@ -55,9 +55,9 @@ import * as echarts from 'echarts';
 const page = usePage();
 
 const chartInteractionClosingCustomer = {
-  title: { text: 'Interaksi, Closing, Customer Baru', left: 'center', textStyle: { color: '#444' } },
+  title: { text: 'Interaksi, Closing, Client Baru', left: 'center', textStyle: { color: '#444' } },
   tooltip: { show: true },
-  legend: { top: '10%', data: ['Interaksi', 'Closing', 'Customer Baru'] },
+  legend: { top: '10%', data: ['Interaksi', 'Closing', 'Client Baru'] },
   grid: { containLabel: true, left: '5px', bottom: '5px', right: '5px' },
   xAxis: {
     type: 'category',

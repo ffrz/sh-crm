@@ -50,59 +50,17 @@ const pagination = ref({
 });
 
 const columns = [
-  {
-    name: "id",
-    label: "#",
-    field: "id",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "date",
-    label: "Tanggal",
-    field: "date",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "sales",
-    label: "Sales",
-    field: "sales",
-    align: "left",
-  },
-  {
-    name: "customer",
-    label: "Client",
-    field: "customer",
-    align: "left",
-  },
-  {
-    name: "service",
-    label: "Layanan",
-    field: "service",
-    align: "left",
-  },
-  {
-    name: "description",
-    label: "Deskripsi",
-    field: "description",
-    align: "left",
-  },
-  {
-    name: "amount",
-    label: "Jumlah (Rp)",
-    field: "amount",
-    align: "right",
-  },
-  {
-    name: "action",
-    align: "right",
-  },
+  { name: "id", label: "#", field: "id", align: "left", sortable: true },
+  { name: "date", label: "Tanggal", field: "date", align: "left", sortable: true },
+  { name: "sales", label: "Sales", field: "sales", align: "left" },
+  { name: "customer", label: "Client", field: "customer", align: "left" },
+  { name: "service", label: "Layanan", field: "service", align: "left" },
+  { name: "description", label: "Deskripsi", field: "description", align: "left" },
+  { name: "amount", label: "Jumlah (Rp)", field: "amount", align: "right" },
+  { name: "action", align: "right" },
 ];
 
-onMounted(() => {
-  fetchItems();
-});
+onMounted(() => fetchItems());
 
 const deleteItem = (row) =>
   handleDelete({
@@ -112,7 +70,7 @@ const deleteItem = (row) =>
     loading,
   });
 
-const fetchItems = (props = null) => {
+const fetchItems = (props = null) =>
   handleFetchItems({
     pagination,
     filter,
@@ -121,14 +79,13 @@ const fetchItems = (props = null) => {
     url: route("admin.closing.data"),
     loading,
   });
-};
 
 const onFilterChange = () => fetchItems();
 const onRowClicked = (row) => router.get(route('admin.closing.detail', { id: row.id }));
-const computedColumns = computed(() => {
-  if ($q.screen.gt.sm) return columns;
-  return columns.filter((col) => col.name === "id" || col.name === "action");
-});
+const computedColumns = computed(() =>
+  $q.screen.gt.sm ? columns : columns.filter((col) => ["id", "action"].includes(col.name))
+);
+
 </script>
 
 <template>
@@ -142,13 +99,15 @@ const computedColumns = computed(() => {
       <q-btn icon="file_export" dense class="q-ml-sm" color="grey" style="" @click.stop>
         <q-menu anchor="bottom right" self="top right" transition-show="scale" transition-hide="scale">
           <q-list style="width: 200px">
-            <q-item clickable v-ripple v-close-popup :href="route('admin.closing.export', { format: 'pdf', filter: filter })">
+            <q-item clickable v-ripple v-close-popup
+              :href="route('admin.closing.export', { format: 'pdf', filter: filter })">
               <q-item-section avatar>
                 <q-icon name="picture_as_pdf" color="red-9" />
               </q-item-section>
               <q-item-section>Export PDF</q-item-section>
             </q-item>
-            <q-item clickable v-ripple v-close-popup :href="route('admin.closing.export', { format: 'excel', filter: filter })">
+            <q-item clickable v-ripple v-close-popup
+              :href="route('admin.closing.export', { format: 'excel', filter: filter })">
               <q-item-section avatar>
                 <q-icon name="csv" color="green-9" />
               </q-item-section>

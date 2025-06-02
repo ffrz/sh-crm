@@ -136,7 +136,7 @@ class DashboardController extends Controller
 
                 $countClosing = Closing::whereDate('date', $current->format('Y-m-d'))
                     ->count();
-                    
+
                 $countNewCustomer = Customer::whereDate('created_datetime', $current->format('Y-m-d'))
                     ->count();
 
@@ -164,6 +164,8 @@ class DashboardController extends Controller
                 'top_sales_closings'  => Closing::getTop5SalesClosings($start_date, $end_date, 5),
             ],
             'data' => [
+                'recent_interactions' => Interaction::recentInteractions(5),
+                'recent_closings' => Closing::recentClosings(5),
                 'active_interaction_plan_count' => Interaction::activePlanCount(),
                 'active_customer_service_count' => CustomerService::activeCustomerServiceCount(),
                 'active_customer_count' => Customer::activeCustomerCount(),

@@ -75,30 +75,30 @@ class Closing extends Model
 
     public static function closingCount($start_date = null, $end_date = null)
     {
-        $query = self::query();
+        $q = self::query();
 
         if ($start_date) {
-            $query->where('date', '>=', $start_date);
+            $q->where('date', '>=', $start_date);
         }
         if ($end_date) {
-            $query->where('date', '<=', $end_date);
+            $q->where('date', '<=', $end_date);
         }
 
-        return $query->count();
+        return $q->count();
     }
 
     public static function closingAmount($start_date = null, $end_date = null)
     {
-        $query = self::query();
+        $q = self::query();
 
         if ($start_date) {
-            $query->where('date', '>=', $start_date);
+            $q->where('date', '>=', $start_date);
         }
         if ($end_date) {
-            $query->where('date', '<=', $end_date);
+            $q->where('date', '<=', $end_date);
         }
 
-        return $query->sum('amount');
+        return $q->sum('amount');
     }
 
     public static function getTop5SalesClosings($start_date, $end_date, $limit = 5)
@@ -116,5 +116,18 @@ class Closing extends Model
             'labels' => $items->pluck('name')->toArray(),
             'data' => $items->pluck('total_amount')->toArray(),
         ];
+    }
+
+    public static function recentClosings($limit)
+    {
+        $q = self::with([
+            'customer',
+            'service',
+            'user'
+        ]);
+
+        return $q->limit($limit)
+            ->orderByDesc('date')
+            ->get();
     }
 }

@@ -154,4 +154,18 @@ class Interaction extends Model
             'data' => $items->pluck('total_interactions')->toArray(),
         ];
     }
+
+    public static function recentInteractions($limit)
+    {
+        $query = self::with([
+            'customer',
+            'service',
+            'user'
+        ]);
+
+        return $query->where('status', '=', self::Status_Done)
+            ->limit($limit)
+            ->orderByDesc('date')
+            ->get();
+    }
 }
