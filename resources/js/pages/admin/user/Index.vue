@@ -62,6 +62,13 @@ const columns = [
     sortable: true,
   },
   {
+    name: "active_customers_count",
+    label: "Client",
+    field: "active_customers_count",
+    align: "center",
+    sortable: true,
+  },
+  {
     name: "action",
     align: "right",
   },
@@ -172,6 +179,9 @@ const onRowClicked = (row) => router.get(route("admin.user.detail", row.id));
             </q-td>
             <q-td key="role" :props="props" align="center">
               <span>{{ $CONSTANTS.USER_ROLES[props.row.role] }}</span>
+            </q-td>
+            <q-td key="active_customers_count" :props="props">
+              {{ props.row.active_customers_count }}
             </q-td>
             <q-td key="action" :props="props">
               <div class="flex justify-end">

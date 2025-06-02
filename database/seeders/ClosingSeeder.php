@@ -21,7 +21,7 @@ class ClosingSeeder extends Seeder
                 'customer_id' => Customer::inRandomOrder()->value('id'),
                 'service_id' =>  Service::inRandomOrder()->value('id'),
                 'date' => fake()->dateTimeBetween('-1 year', 'now'),
-                'description' => fake()->paragraph(3),
+                'description' => fake()->word(),
                 'amount' => fake()->randomNumber(2) * 250000,
             ]);
         }

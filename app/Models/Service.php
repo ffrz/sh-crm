@@ -28,4 +28,17 @@ class Service extends Model
             'select count(0) as count from services where active = 1'
         )[0]->count;
     }
+
+    public function customers()
+    {
+        return $this->belongsToMany(Customer::class, 'customer_services')
+            ->withPivot('status') // jika kolom active ada di pivot
+            ->withTimestamps();   // opsional, jika kamu pakai timestamps di pivot
+    }
+
+    public function activeCustomers()
+    {
+        return $this->belongsToMany(Customer::class, 'customer_services')
+            ->wherePivot('status', CustomerService::Status_Active);
+    }
 }

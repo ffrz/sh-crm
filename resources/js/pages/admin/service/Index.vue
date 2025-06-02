@@ -40,6 +40,12 @@ const columns = [
     sortable: true,
   },
   {
+    name: "active_customers_count",
+    label: "Pelanggan Aktif",
+    field: "active_customers_count",
+    align: "right",
+  },
+  {
     name: "action",
     align: "right",
   },
@@ -51,28 +57,23 @@ const statuses = [
   { value: "inactive", label: "Tidak Aktif" },
 ];
 
-onMounted(() => {
-  fetchItems();
+onMounted(() => fetchItems());
+
+const deleteItem = (row) => handleDelete({
+  message: `Hapus layanan ${row.name}?`,
+  url: route("admin.service.delete", row.id),
+  fetchItemsCallback: fetchItems,
+  loading,
 });
 
-const deleteItem = (row) =>
-  handleDelete({
-    message: `Hapus layanan ${row.name}?`,
-    url: route("admin.service.delete", row.id),
-    fetchItemsCallback: fetchItems,
-    loading,
-  });
-
-const fetchItems = (props = null) => {
-  handleFetchItems({
-    pagination,
-    filter,
-    props,
-    rows,
-    url: route("admin.service.data"),
-    loading,
-  });
-};
+const fetchItems = (props = null) => handleFetchItems({
+  pagination,
+  filter,
+  props,
+  rows,
+  url: route("admin.service.data"),
+  loading,
+});
 
 const onFilterChange = () => fetchItems();
 const onRowClicked = (row) => router.get(route('admin.service.detail', { id: row.id }));
@@ -152,11 +153,8 @@ const computedColumns = computed(() => {
                 <div v-if="props.row.notes"><q-icon name="notes" /> {{ props.row.notes }}</div>
               </template>
             </q-td>
-            <q-td key="notes" :props="props">
-              {{ props.row.company }}
-            </q-td>
-            <q-td key="notes" :props="props">
-              {{ props.row.phone }}
+            <q-td key="active_customers_count" :props="props">
+              {{ props.row.active_customers_count }}
             </q-td>
             <q-td key="action" :props="props">
               <div class="flex justify-end">

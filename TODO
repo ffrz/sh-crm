@@ -1,4 +1,19 @@
-TODO DASHBOARD:
+GENERAL:
+- SEEDING BANYAK DATA: DONE
+- DETAIL PELANGGAN
+  - Interaksi
+  - Closing
+  - Layanan
+
+- DETAIL PENGGUNA
+  - Interaksi
+  - Closing
+  - Assigned Client
+
+- DETAIL LAYANAN
+  - Daftar Client Aktif
+
+DASHBOARD:
 ---------------
 - Tabel interaksi terbaru: done
 - Tabel closing terbaru: done

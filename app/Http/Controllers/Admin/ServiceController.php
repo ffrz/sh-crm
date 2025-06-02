@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\CustomerService;
 use App\Models\Service;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -26,9 +27,9 @@ class ServiceController extends Controller
             'data' => Service::with([
                 'created_by_user:id,username',
                 'updated_by_user:id,username',
-            ])->findOrFail($id),
-            // TODO: Implement active customer count when the relationship is defined
-            // 'active_customer_count' => Service::findOrFail($id)->customers()->where('active', true)->count(),
+            ])
+            ->withCount('activeCustomers')
+            ->findOrFail($id),
         ]);
     }
 
@@ -38,7 +39,7 @@ class ServiceController extends Controller
         $orderType = $request->get('order_type', 'asc');
         $filter = $request->get('filter', []);
 
-        $q = Service::query();
+        $q = Service::query()->withCount('activeCustomers');
 
         if (!empty($filter['search'])) {
             $q->where(function ($q) use ($filter) {

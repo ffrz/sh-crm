@@ -27,8 +27,9 @@ class UserController extends Controller
 
     public function detail($id = 0)
     {
+        // tambahkan jumlah client yang ditangani oleh user ini
         return inertia('admin/user/Detail', [
-            'data' => User::findOrFail($id),
+            'data' => User::withCount('activeCustomers')->findOrFail($id),
         ]);
     }
 
@@ -38,7 +39,8 @@ class UserController extends Controller
         $orderType = $request->get('order_type', 'asc');
         $filter = $request->get('filter', []);
 
-        $q = User::query();
+        // tambahkan jumlah client yang ditangani oleh user ini
+        $q = User::query()->withCount('activeCustomers');
         $q->orderBy($orderBy, $orderType);
 
         if (!empty($filter['role'] && $filter['role'] != 'all')) {

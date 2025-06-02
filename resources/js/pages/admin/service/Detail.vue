@@ -2,7 +2,7 @@
 import { router, usePage } from "@inertiajs/vue3";
 
 const page = usePage();
-const title = "Rincian Pelanggan";
+const title = "Rincian Layanan";
 
 </script>
 
@@ -48,7 +48,7 @@ const title = "Rincian Pelanggan";
                   <tr>
                     <td>Pelanggan Aktif</td>
                     <td>:</td>
-                    <td>{{ page.props.customer_count }}</td>
+                    <td>{{ page.props.data.active_customers_count }}</td>
                   </tr>
                   <tr v-if="page.props.data.created_datetime">
                     <td>Dibuat</td>

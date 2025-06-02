@@ -82,7 +82,17 @@ class User extends Authenticatable
     public static function activeSalesCount()
     {
         return DB::select(
-            'select count(0) as count from users where active = 1 and role = \''. self::Role_Sales . '\''
+            'select count(0) as count from users where active = 1 and role = \'' . self::Role_Sales . '\''
         )[0]->count;
+    }
+
+    public function customers()
+    {
+        return $this->hasMany(Customer::class, 'assigned_user_id');
+    }
+
+    public function activeCustomers()
+    {
+        return $this->hasMany(Customer::class, 'assigned_user_id')->where('active', true);
     }
 }
