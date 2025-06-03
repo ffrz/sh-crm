@@ -49,10 +49,14 @@ Route::middleware([Auth::class])->group(function () {
             return inertia('admin/About');
         })->name('admin.about');
 
-        Route::prefix('reports')->group(function() {
+        Route::prefix('reports')->group(function () {
             Route::get('', [ReportController::class, 'index'])->name('admin.report.index');
             Route::match(['get', 'post'], 'interaction', [ReportController::class, 'interaction'])->name('admin.report.interaction');
             Route::match(['get', 'post'], 'sales-activity', [ReportController::class, 'salesActivity'])->name('admin.report.sales-activity');
+
+            Route::match(['get', 'post'], 'closing-detail', [ReportController::class, 'closingDetail'])->name('admin.report.closing-detail');
+            Route::match(['get', 'post'], 'closing-by-sales', [ReportController::class, 'closingBySales'])->name('admin.report.closing-by-sales');
+            Route::match(['get', 'post'], 'closing-by-services', [ReportController::class, 'closingByServices'])->name('admin.report.closing-by-services');
         });
 
         Route::prefix('services')->group(function () {

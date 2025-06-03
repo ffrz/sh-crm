@@ -19,9 +19,9 @@ const title = 'Laporan';
 
           <div class="text-subtitle2 text-bold">Laporan Closing</div>
           <ul class="menu q-mt-xs">
-            <li><a href="#">Menu 1</a></li>
-            <li><a href="#">Menu 2</a></li>
-            <li><a href="#">Menu 3</a></li>
+            <li><my-link :href="route('admin.report.closing-detail')">Laporan Closing Penjualan</my-link></li>
+            <li><my-link :href="route('admin.report.closing-by-sales')">Laporan Rekap Closing Sales</my-link></li>
+            <li><my-link :href="route('admin.report.closing-by-services')">Laporan Rekap Closing Layanan</my-link></li>
           </ul>
         </q-card-section>
       </q-card>

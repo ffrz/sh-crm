@@ -1,5 +1,3 @@
-
-
 @extends('report.layout', [
     'title' => $title,
 ])

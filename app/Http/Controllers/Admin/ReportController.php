@@ -20,24 +20,7 @@ class ReportController extends Controller
     public function interaction(Request $request)
     {
         if ($request->isMethod('POST')) {
-            $validated = $request->validate([
-                'period' => 'required',
-                'user_id' => ['required', new UserIdOrAll()],
-                'start_date' => 'required|date',
-                'end_date' => 'required|date|after_or_equal:start_date',
-            ]);
-
-            [$start_date, $end_date] = resolve_period($validated['period'], $validated['start_date'], $validated['end_date']);
-
-            return response()->json([
-                'url' => route('admin.report.interaction'),
-                'params' => [
-                    'download' => 1,
-                    'user_id' => $validated['user_id'],
-                    'start_date' => $start_date,
-                    'end_date' => $end_date,
-                ]
-            ]);
+            return $this->validateRequest1($request, 'admin.report.interaction');
         }
 
         $filter = $request->only(['user_id', 'start_date', 'end_date']);
@@ -82,9 +65,10 @@ class ReportController extends Controller
                 'end_date' => $end_date,
             ];
 
-            return Pdf::loadView('report.interaction', $data)
-                ->setPaper('a4', 'landscape')
-                ->download($filename . '.pdf');
+            return view('report.interaction', $data);
+            // return Pdf::loadView('report.interaction', $data)
+            //     ->setPaper('a4', 'landscape')
+            //     ->download($filename . '.pdf');
         }
 
         return inertia('admin/report/interaction/Interaction', [
@@ -95,24 +79,7 @@ class ReportController extends Controller
     public function salesActivity(Request $request)
     {
         if ($request->isMethod('POST')) {
-            $validated = $request->validate([
-                'period' => 'required',
-                'user_id' => ['required', new UserIdOrAll()],
-                'start_date' => 'required|date',
-                'end_date' => 'required|date|after_or_equal:start_date',
-            ]);
-
-            [$start_date, $end_date] = resolve_period($validated['period'], $validated['start_date'], $validated['end_date']);
-
-            return response()->json([
-                'url' => route('admin.report.sales-activity'),
-                'params' => [
-                    'download' => 1,
-                    'user_id' => $validated['user_id'],
-                    'start_date' => $start_date,
-                    'end_date' => $end_date,
-                ]
-            ]);
+            return $this->validateRequest1($request, 'admin.report.sales-activity');
         }
 
         $filter = $request->only(['user_id', 'start_date', 'end_date']);
@@ -196,13 +163,173 @@ class ReportController extends Controller
                 'end_date' => $end_date,
             ];
 
-            return Pdf::loadView('report.sales-activity', $data)
-                ->setPaper('a4', 'landscape')
-                ->download($filename . '.pdf');
+            return view('report.sales-activity', $data);
+            // return Pdf::loadView('report.sales-activity', $data)
+            //     ->setPaper('a4', 'landscape')
+            //     ->download($filename . '.pdf');
         }
 
         return inertia('admin/report/interaction/SalesActivity', [
             'users' => $this->getUsers(),
+        ]);
+    }
+
+    public function closingDetail(Request $request)
+    {
+        if ($request->isMethod('POST')) {
+            return $this->validateRequest1($request, 'admin.report.closing-detail');
+        }
+
+        $filter = $request->only(['user_id', 'start_date', 'end_date']);
+        extract($filter);
+
+        if (isset($start_date, $end_date, $user_id)) {
+            $q = Interaction::with([
+                'user:id,username,name',
+                'customer:id,name,company,address,business_type',
+                'service:id,name'
+            ]);
+
+            if ($user_id !== 'all') {
+                $q->where('user_id', $user_id);
+            }
+
+            $items = DB::table('closings')
+                ->join('users', 'closings.user_id', '=', 'users.id')
+                ->join('services', 'closings.service_id', '=', 'services.id')
+                ->join('customers', 'closings.customer_id', '=', 'customers.id')
+                ->select(
+                    'closings.id',
+                    'closings.date',
+                    'users.name as sales_name',
+                    'customers.name as customer_name',
+                    'customers.company as company',
+                    'customers.address as address',
+                    'services.name as service_name',
+                    'closings.description',
+                    'closings.amount',
+                    'closings.notes'
+                )
+                ->whereBetween('closings.date', [$start_date, $end_date])
+                ->orderBy('closings.date', 'asc')
+                ->get();
+
+            $title = 'Laporan Detail Closing';
+            $subtitles = ['Periode ' . format_date($start_date) . ' s/d ' . format_date($end_date)];
+            $user = null;
+
+            if ($user_id !== 'all') {
+                $user = User::find($user_id);
+                $title .= " - $user->name ($user->username)";
+            } else {
+                $title .= ' - All Sales';
+            }
+
+            $filename = env('APP_NAME') . ' - ' . $title;
+
+            $data = [
+                'title' => $title,
+                'subtitles' => $subtitles,
+                'items' => $items,
+                'user' => $user,
+                'start_date' => $start_date,
+                'end_date' => $end_date,
+            ];
+
+            return view('report.closing-detail', $data);
+            // return Pdf::loadView('report.closing-detail', $data)
+            //     ->setPaper('a4', 'landscape')
+            //     ->download($filename . '.pdf');
+        }
+
+        return inertia('admin/report/closing/Detail', [
+            'users' => $this->getUsers(),
+        ]);
+    }
+
+    public function closingBySales(Request $request)
+    {
+        if ($request->isMethod('POST')) {
+            return $this->validateRequest2($request, 'admin.report.closing-by-sales');
+        }
+
+        $filter = $request->only(['start_date', 'end_date']);
+        extract($filter);
+
+        if (isset($start_date, $end_date)) {
+            $items = DB::table('closings')
+                ->join('users', 'closings.user_id', '=', 'users.id')
+                ->select(
+                    'users.id as sales_id',
+                    'users.name as sales_name',
+                    DB::raw('COUNT(*) as total_closings'),
+                    DB::raw('SUM(closings.amount) as total_amount')
+                )
+                ->whereBetween('closings.date', [$start_date, $end_date])
+                ->groupBy('users.id', 'users.name')
+                ->orderBy('total_closings', 'desc')
+                ->get();
+
+            $title = 'Laporan Rekap Closing per Sales';
+            $subtitles = ['Periode ' . format_date($start_date) . ' s/d ' . format_date($end_date)];
+            $filename = env('APP_NAME') . ' - ' . $title;
+
+            $data = [
+                'title' => $title,
+                'subtitles' => $subtitles,
+                'items' => $items,
+                'start_date' => $start_date,
+                'end_date' => $end_date,
+            ];
+
+            return view('report.closing-by-sales', $data);
+            // return Pdf::loadView('report.closing-by-sales', $data)
+            //     ->setPaper('a4', 'landscape')
+            //     ->download($filename . '.pdf');
+        }
+
+        return inertia('admin/report/closing/RecapBySales');
+    }
+
+    protected function validateRequest1(Request $request, $responseRoute)
+    {
+        $validated = $request->validate([
+            'period' => 'required',
+            'user_id' => ['required', new UserIdOrAll()],
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        [$start_date, $end_date] = resolve_period($validated['period'], $validated['start_date'], $validated['end_date']);
+
+        return response()->json([
+            'url' => route($responseRoute),
+            'params' => [
+                'download' => 1,
+                'user_id' => $validated['user_id'],
+                'start_date' => $start_date,
+                'end_date' => $end_date,
+            ]
+        ]);
+    }
+
+    protected function validateRequest2(Request $request, $responseRoute)
+    {
+        $validated = $request->validate([
+            'period' => 'required',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        [$start_date, $end_date] = resolve_period($validated['period'], $validated['start_date'], $validated['end_date']);
+
+        return response()->json([
+            'url' => route($responseRoute),
+            'params' => [
+                'download' => 1,
+                'start_date' => $start_date,
+                'end_date' => $end_date,
+            ]
         ]);
     }
 
