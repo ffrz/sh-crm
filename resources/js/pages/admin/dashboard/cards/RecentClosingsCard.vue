@@ -17,30 +17,6 @@ const columns = [
   { name: "amount", label: "Jumlah (Rp)", field: "amount", align: "right" },
 ];
 
-const type_colors = {
-  visit: "red",
-  chat: "orange",
-  call: "green",
-  email: "blue",
-  other: "black",
-};
-
-const status_colors = {
-  planned: "grey",
-  done: "blue",
-  cancelled: "red",
-};
-
-const engagement_level_colors = {
-  none: "grey",
-  cold: "blue",
-  warm: "yellow-8",
-  hot: "orange",
-  converted: "green",
-  churned: "red",
-  lost: "black",
-};
-
 const onRowClicked = (row) => router.get(route("admin.interaction.detail", { id: row.id }));
 
 const computedColumns = computed(() =>

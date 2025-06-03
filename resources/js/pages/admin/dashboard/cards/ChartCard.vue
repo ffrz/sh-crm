@@ -74,7 +74,7 @@ const chartInteractionClosingCustomer = {
   series: [
     { name: 'Interaksi', type: 'line', smooth: true, data: page.props.chart_data.count_interactions, lineStyle: { color: '#007bff' }, itemStyle: { color: '#007bff' } },
     { name: 'Closing', type: 'line', smooth: true, data: page.props.chart_data.count_closings, lineStyle: { color: '#28a745' }, itemStyle: { color: '#28a745' } },
-    { name: 'Customer Baru', type: 'line', smooth: true, data: page.props.chart_data.count_new_customers, lineStyle: { color: '#dc3545' }, itemStyle: { color: '#dc3545' } },
+    { name: 'Client Baru', type: 'line', smooth: true, data: page.props.chart_data.count_new_customers, lineStyle: { color: '#dc3545' }, itemStyle: { color: '#dc3545' } },
   ]
 };
 

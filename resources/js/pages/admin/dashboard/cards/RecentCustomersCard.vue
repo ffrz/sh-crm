@@ -2,7 +2,6 @@
 import { usePage, router } from '@inertiajs/vue3';
 import { useQuasar } from "quasar";
 import { computed } from 'vue';
-import { formatNumber } from "@/helpers/utils";
 
 const $q = useQuasar();
 const page = usePage();
@@ -28,9 +27,8 @@ const computedColumns = computed(() =>
     </div>
     <q-card square bordered class="no-shadow bg-white" style="width:100%;">
       <q-card-section class="q-pa-none">
-        <q-table ref="tableRef" flat bordered square color="primary" row-key="id"
-          virtual-scroll :columns="computedColumns" :rows="rows" :rows-per-page-options="[5]"
-          @request="fetchItems" binary-state-sort>
+        <q-table flat bordered square color="primary" row-key="id" virtual-scroll
+          :columns="computedColumns" :rows="rows" :rows-per-page-options="[5]">
           <template v-slot:loading>
             <q-inner-loading showing color="red" />
           </template>
@@ -59,13 +57,12 @@ const computedColumns = computed(() =>
                   <div><q-icon name="phone" /> {{ props.row.phone }}</div>
                   <div><q-icon name="home_pin" /> {{ props.row.address }}</div>
                   <div v-if="props.row.email"><q-icon name="email" /> {{ props.row.email }}</div>
-                  <!-- <div><q-badge :color="statusColors[props.row.status]">{{ props.row.status }}</q-badge></div> -->
                   <div v-if="props.row.notes"><q-icon name="notes" /> {{ props.row.notes }}</div>
                 </template>
               </q-td>
               <q-td key="company" :props="props">
                 {{ props.row.company }} <template v-if="props.row.business_type"> - {{ props.row.business_type
-                }}</template>
+                  }}</template>
               </q-td>
               <q-td key="phone" :props="props">
                 {{ props.row.phone }}
