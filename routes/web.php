@@ -51,6 +51,8 @@ Route::middleware([Auth::class])->group(function () {
 
         Route::prefix('reports')->group(function() {
             Route::get('', [ReportController::class, 'index'])->name('admin.report.index');
+            Route::match(['get', 'post'], 'interaction', [ReportController::class, 'interaction'])->name('admin.report.interaction');
+            Route::match(['get', 'post'], 'sales-activity', [ReportController::class, 'salesActivity'])->name('admin.report.sales-activity');
         });
 
         Route::prefix('services')->group(function () {

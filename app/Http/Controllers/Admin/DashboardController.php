@@ -17,69 +17,7 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $period = $request->get('period', 'this_month');
-        $today = Carbon::today();
-        $now = Carbon::now();
-
-        $start_date = null;
-        $end_date = null;
-
-        switch ($period) {
-            case 'today':
-                $start_date = $today;
-                $end_date = $today->copy()->endOfDay();
-                break;
-
-            case 'yesterday':
-                $start_date = $today->copy()->subDay();
-                $end_date = $start_date->copy()->endOfDay();
-                break;
-
-            case 'this_week':
-                $start_date = $today->copy()->startOfWeek();
-                $end_date = $now; // sampai hari ini (no overflow)
-                break;
-
-            case 'last_week':
-                $start_date = $today->copy()->subWeek()->startOfWeek();
-                $end_date = $start_date->copy()->endOfWeek(); // tetap 1 minggu penuh
-                break;
-
-            case 'this_month':
-                $start_date = $today->copy()->startOfMonth();
-                $end_date = $now; // sampai hari ini (no overflow)
-                break;
-
-            case 'last_month':
-                $start_date = $today->copy()->subMonthNoOverflow()->startOfMonth();
-                $end_date = $start_date->copy()->endOfMonth();
-                break;
-
-            case 'this_year':
-                $start_date = $today->copy()->startOfYear();
-                $end_date = $now;
-                break;
-
-            case 'last_year':
-                $start_date = $today->copy()->subYear()->startOfYear();
-                $end_date = $start_date->copy()->endOfYear();
-                break;
-
-            case 'last_7_days':
-                $start_date = $today->copy()->subDays(6);
-                $end_date = $now;
-                break;
-
-            case 'last_30_days':
-                $start_date = $today->copy()->subDays(29);
-                $end_date = $now;
-                break;
-
-            case 'all_time':
-            default:
-                $start_date = null;
-                $end_date = null;
-                break;
-        }
+        [$start_date, $end_date] = resolve_period($period);
 
         $labels = [];
         $count_interactions = [];
@@ -143,7 +81,7 @@ class DashboardController extends Controller
                 $count_interactions[]  = $countInteraction;
                 $count_closings[]      = $countClosing;
                 $count_new_customers[] = $countNewCustomer;
-                $total_closings[]        = $sum_closing;
+                $total_closings[]      = $sum_closing;
 
                 $current->addDay();
             }

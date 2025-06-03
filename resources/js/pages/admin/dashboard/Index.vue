@@ -46,7 +46,7 @@ const onFilterChange = () => {
       <q-toolbar class="filter-bar">
         <div class="row q-col-gutter-xs items-center q-pa-sm full-width">
           <q-select class="custom-select col-12" style="min-width: 150px" v-model="selected_period"
-            :options="period_options" label="Bulan" dense map-options emit-value outlined
+            :options="period_options" label="Periode" dense map-options emit-value outlined
             @update:model-value="onFilterChange" />
         </div>
       </q-toolbar>

@@ -9,6 +9,7 @@ return [
     'numeric' => ':attribute sudah digunakan.',
     'current_password' => ':attribute tidak valid.',
     'confirmed' => 'Konfirmasi :attribute tidak cocok.',
+    'after_or_equal' => ':attribute tidak valid.',
     'max' => [
         'string' => ':attribute terlalu panjang, maksimal :max karakter.',
     ],
@@ -47,5 +48,7 @@ return [
         'password' => 'Kata sandi',
         'current_password' => 'Kata sandi sekarang',
         'model' => 'Model',
+        'start_date' => 'Tanggal Awal',
+        'end_date' => 'Tanggal Akhir',
     ],
 ];

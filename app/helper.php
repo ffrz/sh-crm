@@ -28,7 +28,7 @@ function decrypt_id($string)
 
 function wa_me_url($phone, $message = '')
 {
-    if (empty($phone) || strlen($phone) > 15 ) {
+    if (empty($phone) || strlen($phone) > 15) {
         return '#';
     }
 
@@ -259,4 +259,76 @@ function month_names($month)
         case 12:
             return "Desember";
     }
+}
+
+function resolve_period(string $period, ?string $start = null, ?string $end = null): array
+{
+    $today = Carbon::today();
+    $now = Carbon::now();
+
+    switch ($period) {
+        case 'today':
+            $start_date = $today;
+            $end_date = $today->copy()->endOfDay();
+            break;
+
+        case 'yesterday':
+            $start_date = $today->copy()->subDay();
+            $end_date = $start_date->copy()->endOfDay();
+            break;
+
+        case 'this_week':
+            $start_date = $today->copy()->startOfWeek();
+            $end_date = $now;
+            break;
+
+        case 'last_week':
+            $start_date = $today->copy()->subWeek()->startOfWeek();
+            $end_date = $start_date->copy()->endOfWeek();
+            break;
+
+        case 'this_month':
+            $start_date = $today->copy()->startOfMonth();
+            $end_date = $now;
+            break;
+
+        case 'last_month':
+            $start_date = $today->copy()->subMonthNoOverflow()->startOfMonth();
+            $end_date = $start_date->copy()->endOfMonth();
+            break;
+
+        case 'this_year':
+            $start_date = $today->copy()->startOfYear();
+            $end_date = $now;
+            break;
+
+        case 'last_year':
+            $start_date = $today->copy()->subYear()->startOfYear();
+            $end_date = $start_date->copy()->endOfYear();
+            break;
+
+        case 'last_7_days':
+            $start_date = $today->copy()->subDays(6);
+            $end_date = $now;
+            break;
+
+        case 'last_30_days':
+            $start_date = $today->copy()->subDays(29);
+            $end_date = $now;
+            break;
+
+        case 'custom':
+            $start_date = $start ? Carbon::parse($start) : $today;
+            $end_date = $end ? Carbon::parse($end) : $now;
+            break;
+
+        case 'all_time':
+
+        default:
+            $start_date = null;
+            $end_date = null;
+            break;
+    }
+
+    return [$start_date->toDateString(), $end_date->toDateString()];
 }
