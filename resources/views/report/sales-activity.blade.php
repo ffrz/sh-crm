@@ -11,7 +11,7 @@
         <th>Sales</th>
         <th>Total Interaksi</th>
         <th>Total Closing</th>
-        <th>Total Cleint Baru</th>
+        <th>Total Client Baru</th>
       </tr>
     </thead>
     <tbody>

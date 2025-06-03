@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Customer;
 use App\Models\Interaction;
 use App\Models\User;
 use App\Rules\UserIdOrAll;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -43,9 +41,9 @@ class ReportController extends Controller
         }
 
         $filter = $request->only(['user_id', 'start_date', 'end_date']);
+        extract($filter);
 
-        if (isset($filter['start_date'], $end_date, $user_id)) {
-            extract($filter);
+        if (isset($start_date, $end_date, $user_id)) {
             $q = Interaction::with([
                 'user:id,username,name',
                 'customer:id,name,company,address,business_type',
@@ -129,6 +127,7 @@ class ReportController extends Controller
                     'user_id',
                     DB::raw('COUNT(*) as total_interactions')
                 )
+                ->where('status', 'done')
                 ->whereBetween('date', [$start_date, $end_date])
                 ->groupBy('date', 'user_id');
 
@@ -153,8 +152,8 @@ class ReportController extends Controller
                 ->groupBy('date', 'created_by_uid');
 
             // Gabungkan semua dengan LEFT JOIN
-            $items = DB::table(DB::raw("({$interactions->toSql()}) as i"))
-                ->mergeBindings($interactions)
+            $items = DB::query()
+                ->fromSub($interactions, 'i')
                 ->leftJoinSub($closings, 'c', function ($join) {
                     $join->on('i.date', '=', 'c.date')
                         ->on('i.user_id', '=', 'c.user_id');

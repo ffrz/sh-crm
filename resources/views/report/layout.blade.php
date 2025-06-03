@@ -35,15 +35,15 @@ if (!isset($subtitles)) $subtitles = [];
 </head>
 
 <body>
-  <h4 style="margin:0;text-align:center;">{{ env('APP_NAME') }}</h4>
+  <h4 style="margin:0;text-align:center;">{{ \App\Models\Setting::value('company_name', 'My Company') }}</h4>
   <h2 style="margin:0;text-align:center;">{{ $title }}</h2>
   @foreach ($subtitles as $subtitle)
   <h3 style="margin:0;text-align:center;">{{ $subtitle }}</h2>
   @endforeach
-  <div style="text-align:center;">
-    <small>Dibuat oleh <b>{{ Auth::user()->username }}</b>
+  <div style="text-align:center;font-size:10px;font-weight:normal;">
+    Dibuat oleh <b>{{ Auth::user()->username }}</b>
       pada {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y H:i:s') }}
-      - {{ env('APP_NAME') }} v{{ env('APP_VERSION_STR') }}</small>
+      - {{ env('APP_NAME') }} v{{ env('APP_VERSION_STR') }}
   </div>
   @yield('content')
 </body>
