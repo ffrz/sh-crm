@@ -27,8 +27,8 @@ const computedColumns = computed(() =>
     </div>
     <q-card square bordered class="no-shadow bg-white" style="width:100%;">
       <q-card-section class="q-pa-none">
-        <q-table flat bordered square color="primary" row-key="id" virtual-scroll
-          :columns="computedColumns" :rows="rows" :rows-per-page-options="[5]">
+        <q-table flat bordered square color="primary" row-key="id" virtual-scroll :columns="computedColumns"
+          :rows="rows" :rows-per-page-options="[5]">
           <template v-slot:loading>
             <q-inner-loading showing color="red" />
           </template>
@@ -47,9 +47,6 @@ const computedColumns = computed(() =>
               @click="onRowClicked(props.row)">
               <q-td key="created_datetime" :props="props" class="wrap-column">
                 <div>{{ $dayjs(props.row.created_datetime).format('D MMMM YYYY HH:mm') }}</div>
-              </q-td>
-              <q-td key="name" :props="props" class="wrap-column">
-                <div><q-icon name="person" v-if="$q.screen.lt.md" /> {{ props.row.name }}</div>
                 <template v-if="$q.screen.lt.md">
                   <div><q-icon name="domain" /> {{ props.row.company }}
                     <template v-if="props.row.business_type"> - {{ props.row.business_type }}</template>
@@ -60,9 +57,12 @@ const computedColumns = computed(() =>
                   <div v-if="props.row.notes"><q-icon name="notes" /> {{ props.row.notes }}</div>
                 </template>
               </q-td>
+              <q-td key="name" :props="props" class="wrap-column">
+                <div><q-icon name="person" v-if="$q.screen.lt.md" /> {{ props.row.name }}</div>
+              </q-td>
               <q-td key="company" :props="props">
                 {{ props.row.company }} <template v-if="props.row.business_type"> - {{ props.row.business_type
-                  }}</template>
+                }}</template>
               </q-td>
               <q-td key="phone" :props="props">
                 {{ props.row.phone }}
