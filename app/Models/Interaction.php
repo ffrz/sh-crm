@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 class Interaction extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'user_id',
         'customer_id',
@@ -172,5 +172,30 @@ class Interaction extends Model
             ->limit($limit)
             ->orderByDesc('date')
             ->get();
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($item) {
+            if ($item->image_path && file_exists(public_path($item->image_path))) {
+                @unlink(public_path($item->image_path));
+            }
+        });
+
+        static::updating(function ($item) {
+            $item->old_image_path = $item->getOriginal('image_path');
+        });
+
+        static::updated(function ($item) {
+            if (
+                isset($item->old_image_path) &&
+                $item->old_image_path !== $item->image_path &&
+                file_exists(public_path($item->old_image_path))
+            ) {
+                @unlink(public_path($item->old_image_path));
+            }
+        });
     }
 }

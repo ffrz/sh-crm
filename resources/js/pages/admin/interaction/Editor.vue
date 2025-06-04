@@ -61,7 +61,7 @@ const submit = () => handleSubmit({
 });
 
 const fileInput = ref(null)
-const preview = ref('')
+const imagePreview = ref('')
 
 function triggerInput() {
   fileInput.value.click()
@@ -71,7 +71,7 @@ function onFileChange(event) {
   const file = event.target.files[0]
   if (file) {
     form.image = file
-    preview.value = URL.createObjectURL(file)
+    imagePreview.value = URL.createObjectURL(file)
   }
 }
 
@@ -94,7 +94,18 @@ onMounted(() => {
   if (!form.location) {
     updateLocation();
   }
+
+  if (form.image_path) {
+    imagePreview.value = `/${form.image_path}`;
+  }
 })
+
+function clearImage() {
+  form.image = null
+  form.image_path = null
+  imagePreview.value = null
+  fileInput.value.value = null
+}
 
 </script>
 
@@ -111,6 +122,7 @@ onMounted(() => {
             </q-inner-loading>
             <q-card-section class="q-pt-none">
               <input type="hidden" name="id" v-model="form.id" />
+              <input type="hidden" name="image_path" v-model="form.image_path" />
               <date-picker v-model="form.date" label="Tanggal" :error="!!form.errors.date" :disable="form.processing"
                 :error-message="form.errors.date" />
               <q-select v-model="form.status" label="Status" :options="statuses" map-options emit-value
@@ -145,12 +157,19 @@ onMounted(() => {
                 lazy-rules :disable="form.processing" :error="!!form.errors.notes" :error-message="form.errors.notes"
                 :rules="[]" />
               <div>
-                <q-btn label="Ambil Foto" @click="triggerInput" color="secondary" icon="add_a_photo"
+                <q-btn label="Ambil Foto" size="sm" @click="triggerInput" color="secondary" icon="add_a_photo"
                   :disable="form.processing" />
+                <!-- Tombol buang -->
+                <q-btn class="q-ml-sm" size="sm" icon="close" label="Buang" :disable="form.processing || !imagePreview" color="red"
+                  @click="clearImage" />
                 <input type="file" ref="fileInput" accept="image/*" capture="environment" style="display: none"
                   @change="onFileChange" />
-                <q-img :src="preview" class="q-mt-md" style="max-height: 300px;"
-                  :style="{ border: '1px solid #ddd' }" />
+                <q-img v-if="imagePreview" :src="imagePreview" class="q-mt-md" style="max-width: 500px;"
+                  :style="{ border: '1px solid #ddd' }">
+                  <template v-slot:error>
+                    <div class="text-negative text-center q-pa-md">Gambar tidak tersedia</div>
+                  </template>
+                </q-img>
               </div>
               <div class="q-my-md">
                 <span class="text-subtitle2 text-bold text-grey-9">Lokasi:</span>
