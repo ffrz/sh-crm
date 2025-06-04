@@ -20,10 +20,12 @@ return new class extends Migration
             $table->enum('type', array_keys(Interaction::Types))->default(Interaction::Type_Visit);
             $table->enum('status', array_keys(Interaction::Statuses))->default(Interaction::Status_Planned);
             $table->enum('engagement_level', array_keys(Interaction::EngagementLevels))->default(Interaction::EngagementLevel_None);
+            $table->date('date');
             $table->text('subject')->nullable();
             $table->text('summary')->nullable();
             $table->text('notes')->nullable();
-            $table->date('date');
+            $table->string('location', 100)->nullable();
+            $table->text('image_path')->nullable();
 
             $table->datetime('created_datetime')->nullable();
             $table->datetime('updated_datetime')->nullable();

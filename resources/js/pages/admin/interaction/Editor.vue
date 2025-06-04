@@ -5,6 +5,7 @@ import { scrollToFirstErrorField } from "@/helpers/utils";
 import { useCustomerFilter } from "@/helpers/useCustomerFilter";
 import DatePicker from "@/components/DatePicker.vue";
 import dayjs from "dayjs";
+import { ref, onMounted } from 'vue'
 
 const page = usePage();
 const title = (!!page.props.data.id ? "Edit" : "Tambah") + " Interaksi";
@@ -36,7 +37,6 @@ const services = page.props.services.map(service => ({
   label: `${service.name} (#${service.id})`,
 }));
 
-
 const form = useForm({
   id: page.props.data.id,
   user_id: page.props.data.user_id ? Number(page.props.data.user_id) : null,
@@ -49,10 +49,52 @@ const form = useForm({
   subject: page.props.data.subject,
   summary: page.props.data.summary,
   notes: page.props.data.notes,
+  location: page.props.data.location,
+  image_path: page.props.data.image_path,
+  image: null,
 });
 
-const submit = () =>
-  handleSubmit({ form, url: route('admin.interaction.save') });
+const submit = () => handleSubmit({
+  form,
+  forceFormData: true,
+  url: route('admin.interaction.save')
+});
+
+const fileInput = ref(null)
+const preview = ref('')
+
+function triggerInput() {
+  fileInput.value.click()
+}
+
+function onFileChange(event) {
+  const file = event.target.files[0]
+  if (file) {
+    form.image = file
+    preview.value = URL.createObjectURL(file)
+  }
+}
+
+function updateLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        form.location = `${position.coords.latitude},${position.coords.longitude}`;
+      },
+      (error) => {
+        alert('Gagal mendapatkan lokasi: ' + error.message)
+      }
+    )
+  } else {
+    alert('Geolocation tidak didukung browser ini.')
+  }
+}
+
+onMounted(() => {
+  if (!form.location) {
+    updateLocation();
+  }
+})
 
 </script>
 
@@ -102,11 +144,31 @@ const submit = () =>
               <q-input v-model.trim="form.notes" type="textarea" autogrow counter maxlength="255" label="Catatan"
                 lazy-rules :disable="form.processing" :error="!!form.errors.notes" :error-message="form.errors.notes"
                 :rules="[]" />
+              <div>
+                <q-btn label="Ambil Foto" @click="triggerInput" color="secondary" icon="add_a_photo"
+                  :disable="form.processing" />
+                <input type="file" ref="fileInput" accept="image/*" capture="environment" style="display: none"
+                  @change="onFileChange" />
+                <q-img :src="preview" class="q-mt-md" style="max-height: 300px;"
+                  :style="{ border: '1px solid #ddd' }" />
+              </div>
+              <div class="q-my-md">
+                <span class="text-subtitle2 text-bold text-grey-9">Lokasi:</span>
+                <span class="q-mr-sm">
+                  <template v-if="form.location" class="q-mt-sm">
+                    ({{ form.location.split(',')[0] }}, {{ form.location.split(',')[1] }})
+                  </template>
+                  <template v-else>
+                    Belum tersedia
+                  </template>
+                </span>
+                <q-btn size="sm" label="Perbarui Lokasi" color="grey-8" :disable="form.processing"
+                  @click="updateLocation()" />
+              </div>
             </q-card-section>
             <q-card-section class="q-gutter-sm">
               <q-btn icon="save" type="submit" label="Simpan" color="primary" :disable="form.processing" />
-              <q-btn icon="cancel" label="Batal" :disable="form.processing"
-                @click="$goBack()" />
+              <q-btn icon="cancel" label="Batal" :disable="form.processing" @click="$goBack()" />
             </q-card-section>
           </q-card>
         </q-form>

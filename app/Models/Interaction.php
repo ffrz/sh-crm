@@ -19,6 +19,8 @@ class Interaction extends Model
         'engagement_level',
         'subject',
         'summary',
+        'location',
+        'image_path',
         'notes',
     ];
 

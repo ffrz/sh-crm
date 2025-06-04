@@ -28,7 +28,7 @@ Interaksi:
 REPORTING:
 ----------
 1. Laporan Kunjungan per Tim / User
-- Filter: tanggal, status kunjungan, wilayah
+- Filter: tanggal, status kunjungan, wilayah 
 - Kolom: nama user, jumlah kunjungan planned / done, total follow-up, rasio closing
 
 2. Laporan Follow-Up

@@ -39,7 +39,7 @@ class InteractionController extends Controller
     {
         $orderBy = $request->get('order_by', 'id');
         $orderType = $request->get('order_type', 'asc');
-        
+
         $items = $this->createQuery($request)
             ->orderBy($orderBy, $orderType)
             ->paginate($request->get('per_page', 10))
@@ -77,9 +77,28 @@ class InteractionController extends Controller
             'subject'          => 'required|string|max:255',
             'summary'          => 'nullable|string|max:500',
             'notes'            => 'nullable|string|max:500',
+            'location'         => 'nullable|string|max:100',
+            'image'            => 'nullable|image|max:5120',
         ]);
 
-        $item = !$request->id ? new Interaction() : Interaction::findOrFail($request->post('id', 0));
+        $item = !$request->id
+            ? new Interaction()
+            : Interaction::findOrFail($request->post('id', 0));
+
+        // Handle image upload jika ada
+        if ($request->hasFile('image')) {
+            // Hapus file lama jika ada
+            if ($item->image_path && file_exists(public_path($item->image_path))) {
+                @unlink(public_path($item->image_path)); // pakai @ untuk suppress error jika file tidak ada
+            }
+
+            // Simpan file baru
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads'), $filename);
+            $item->image_path = 'uploads/' . $filename;
+        }
+
         $item->fill($validated);
         $item->save();
 

@@ -97,6 +97,24 @@ const title = "Rincian Interaksi";
                     <td>:</td>
                     <td>{{ page.props.data.notes }}</td>
                   </tr>
+                  <tr v-if="page.props.data.location">
+                    <td>Lokasi</td>
+                    <td>:</td>
+                    <td>Koordinat: {{ page.props.data.location }}
+                      <div style="max-width:500px">
+                        <iframe
+                          :src="`https://www.google.com/maps?q=${encodeURIComponent(page.props.data.location)}&output=embed`"
+                          width="100%" height="300" style="border:1px solid #ddd; margin-top: 10px" allowfullscreen
+                          loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr v-if="page.props.data.image_path">
+                    <td>Foto</td>
+                    <td>:</td>
+                    <td><q-img :src="`/${page.props.data.image_path}`" class="q-mt-md" style="max-width: 500px;"
+                        :style="{ border: '1px solid #ddd' }" /></td>
+                  </tr>
                   <tr v-if="page.props.data.created_datetime">
                     <td>Dibuat</td>
                     <td>:</td>

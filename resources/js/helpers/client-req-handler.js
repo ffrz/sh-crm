@@ -17,12 +17,13 @@ const _scrollToFirstError = () => {
 };
 
 export function handleSubmit(data) {
-  const { form, url, onSuccess, onError, method } = data;
+  const { form, url, onSuccess, onError, method, forceFormData } = data;
 
   form.clearErrors();
   form[method ?? 'post' ](url,
     {
       preserveScroll: true,
+      forceFormData: forceFormData ?? false,
       onSuccess: (response) => {
         if (typeof onSuccess === 'function') {
           onSuccess(response);
