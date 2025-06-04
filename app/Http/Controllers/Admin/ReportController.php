@@ -291,6 +291,49 @@ class ReportController extends Controller
         return inertia('admin/report/closing/RecapBySales');
     }
 
+    public function closingByServices(Request $request)
+    {
+        if ($request->isMethod('POST')) {
+            return $this->validateRequest2($request, 'admin.report.closing-by-services');
+        }
+
+        $filter = $request->only(['start_date', 'end_date']);
+        extract($filter);
+
+        if (isset($start_date, $end_date)) {
+            $items = DB::table('closings')
+                ->join('services', 'closings.service_id', '=', 'services.id')
+                ->select(
+                    'services.name as service_name',
+                    DB::raw('COUNT(*) as total_closings'),
+                    DB::raw('SUM(closings.amount) as total_amount')
+                )
+                ->whereBetween('closings.date', [$start_date, $end_date])
+                ->groupBy('services.name')
+                ->orderBy('total_closings', 'desc')
+                ->get();
+
+            $title = 'Laporan Rekap Closing per Layanan';
+            $subtitles = ['Periode ' . format_date($start_date) . ' s/d ' . format_date($end_date)];
+            $filename = env('APP_NAME') . ' - ' . $title;
+
+            $data = [
+                'title' => $title,
+                'subtitles' => $subtitles,
+                'items' => $items,
+                'start_date' => $start_date,
+                'end_date' => $end_date,
+            ];
+
+            return view('report.closing-by-services', $data);
+            // return Pdf::loadView('report.closing-by-sales', $data)
+            //     ->setPaper('a4', 'landscape')
+            //     ->download($filename . '.pdf');
+        }
+
+        return inertia('admin/report/closing/RecapByServices');
+    }
+
     protected function validateRequest1(Request $request, $responseRoute)
     {
         $validated = $request->validate([

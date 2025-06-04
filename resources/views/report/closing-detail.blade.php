@@ -9,15 +9,13 @@
         <th>No</th>
         <th>ID</th>
         <th>Tanggal</th>
-        <th>Jenis</th>
-        @if (!$user)
-          <th>Sales</th>
-        @endif
-        <th>Client</th>
+        <th>Sales</th>
+        <th>Customer</th>
+        <th>Perusahaan</th>
+        <th>Alamat</th>
         <th>Layanan</th>
-        <th>Engagement</th>
-        <th>Subjek</th>
-        <th>Summary</th>
+        <th>Deskripsi</th>
+        <th>Jumlah</th>
         <th>Catatan</th>
       </tr>
     </thead>
@@ -27,31 +25,18 @@
           <td align="right">{{ $index + 1 }}</td>
           <td>{{ $item->id }}</td>
           <td>{{ $item->date }}</td>
-          <td>{{ \App\Models\Interaction::Types[$item->type] }}</td>
-          @if (!$user)
-            <td>{{ $item->user->name }} ({{ $item->user->username }})</td>
-          @endif
-          <td>
-            {{ $item->customer->name }}
-            @if ($item->customer->company)
-              - {{ $item->customer->company }}
-            @endif
-            @if ($item->customer->business_type)
-              - {{ $item->customer->business_type }}
-            @endif
-            @if ($item->customer->address)
-              <br>{{ $item->customer->address }}
-            @endif
-          </td>
-          <td>{{ $item->service->name }}</td>
-          <td>{{ \App\Models\Interaction::EngagementLevels[$item->engagement_level] }}</td>
-          <td>{{ $item->subject }}</td>
-          <td>{{ $item->summary }}</td>
+          <td>{{ $item->sales_name }}</td>
+          <td>{{ $item->customer_name }}</td>
+          <td>{{ $item->company }}</td>
+          <td>{{ $item->address }}</td>
+          <td>{{ $item->service_name }}</td>
+          <td>{{ $item->description }}</td>
+          <td style="text-align: right">{{ format_number($item->amount) }}</td>
           <td>{{ $item->notes }}</td>
         </tr>
       @empty
         <tr>
-          <td colspan="12" align="center">Tidak ada data</td>
+          <td colspan="11" align="center">Tidak ada data</td>
         </tr>
       @endforelse
     </tbody>
