@@ -12,25 +12,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ $title }}</title>
   <style>
-    @media screen {
-      .a4-landscape {
-        width: 1122px;
-        margin: 0 auto;
-        padding: 40px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        background-color: white;
-        overflow: hidden;
-        box-sizing: border-box;
-      }
-
-      body {
-        background: #ccc;
-        display: flex;
-        justify-content: center;
-        padding: 50px;
-      }
-    }
-
     body {
       font-family: sans-serif;
       font-size: 10pt;

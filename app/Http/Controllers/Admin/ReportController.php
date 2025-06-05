@@ -65,10 +65,10 @@ class ReportController extends Controller
                 'end_date' => $end_date,
             ];
 
-            return view('report.interaction', $data);
-            // return Pdf::loadView('report.interaction', $data)
-            //     ->setPaper('a4', 'landscape')
-            //     ->download($filename . '.pdf');
+            // return view('report.interaction', $data);
+            return Pdf::loadView('report.interaction', $data)
+                ->setPaper('a4', 'landscape')
+                ->download($filename . '.pdf');
         }
 
         return inertia('admin/report/interaction/Interaction', [
@@ -163,10 +163,10 @@ class ReportController extends Controller
                 'end_date' => $end_date,
             ];
 
-            return view('report.sales-activity', $data);
-            // return Pdf::loadView('report.sales-activity', $data)
-            //     ->setPaper('a4', 'landscape')
-            //     ->download($filename . '.pdf');
+            // return view('report.sales-activity', $data);
+            return Pdf::loadView('report.sales-activity', $data)
+                ->setPaper('a4', 'landscape')
+                ->download($filename . '.pdf');
         }
 
         return inertia('admin/report/interaction/SalesActivity', [
@@ -236,10 +236,10 @@ class ReportController extends Controller
                 'end_date' => $end_date,
             ];
 
-            return view('report.closing-detail', $data);
-            // return Pdf::loadView('report.closing-detail', $data)
-            //     ->setPaper('a4', 'landscape')
-            //     ->download($filename . '.pdf');
+            // return view('report.closing-detail', $data);
+            return Pdf::loadView('report.closing-detail', $data)
+                ->setPaper('a4', 'landscape')
+                ->download($filename . '.pdf');
         }
 
         return inertia('admin/report/closing/Detail', [
@@ -282,10 +282,10 @@ class ReportController extends Controller
                 'end_date' => $end_date,
             ];
 
-            return view('report.closing-by-sales', $data);
-            // return Pdf::loadView('report.closing-by-sales', $data)
-            //     ->setPaper('a4', 'landscape')
-            //     ->download($filename . '.pdf');
+            // return view('report.closing-by-sales', $data);
+            return Pdf::loadView('report.closing-by-sales', $data)
+                ->setPaper('a4', 'landscape')
+                ->download($filename . '.pdf');
         }
 
         return inertia('admin/report/closing/RecapBySales');
@@ -325,10 +325,10 @@ class ReportController extends Controller
                 'end_date' => $end_date,
             ];
 
-            return view('report.closing-by-services', $data);
-            // return Pdf::loadView('report.closing-by-sales', $data)
-            //     ->setPaper('a4', 'landscape')
-            //     ->download($filename . '.pdf');
+            // return view('report.closing-by-services', $data);
+            return Pdf::loadView('report.closing-by-services', $data)
+                ->setPaper('a4', 'landscape')
+                ->download($filename . '.pdf');
         }
 
         return inertia('admin/report/closing/RecapByServices');
