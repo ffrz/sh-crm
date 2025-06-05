@@ -25,7 +25,7 @@ return new class extends Migration
             $table->text('summary')->nullable();
             $table->text('notes')->nullable();
             $table->string('location', 100)->nullable();
-            $table->text('image_path')->nullable();
+            $table->string('image_path', 500)->nullable();
 
             $table->datetime('created_datetime')->nullable();
             $table->datetime('updated_datetime')->nullable();
