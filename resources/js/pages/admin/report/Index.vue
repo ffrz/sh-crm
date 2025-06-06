@@ -13,22 +13,27 @@ const title = 'Laporan';
         <q-card-section>
           <div class="text-subtitle2 text-bold">Laporan Interaksi</div>
           <ul class="menu q-mt-xs">
-            <li><my-link :href="route('admin.report.interaction')">Laporan Interaksi</my-link></li>
-            <li><my-link :href="route('admin.report.sales-activity')">Laporan Aktivitas Sales</my-link></li>
+            <li><my-link :href="route('admin.report.generate', { report_type: 'interaction' })">Laporan Interaksi</my-link></li>
+            <li><my-link :href="route('admin.report.generate', { report_type: 'sales-activity' })">Laporan Aktivitas Sales</my-link></li>
           </ul>
 
           <div class="text-subtitle2 text-bold">Laporan Closing</div>
           <ul class="menu q-mt-xs">
-            <li><my-link :href="route('admin.report.closing-detail')">Laporan Closing Penjualan</my-link></li>
-            <li><my-link :href="route('admin.report.closing-by-sales')">Laporan Rekap Closing Sales</my-link></li>
-            <li><my-link :href="route('admin.report.closing-by-services')">Laporan Rekap Closing Layanan</my-link></li>
+            <li><my-link :href="route('admin.report.generate', { report_type: 'closing-detail' })">Laporan Closing
+                Penjualan</my-link></li>
+            <li><my-link :href="route('admin.report.generate', { report_type: 'closing-by-sales' })">Laporan Rekap
+                Closing
+                Sales</my-link></li>
+            <li><my-link :href="route('admin.report.generate', { report_type: 'closing-by-services' })">Laporan Rincian
+                Closing</my-link></li>
           </ul>
 
           <div class="text-subtitle2 text-bold">Laporan Layanan Pelanggan</div>
           <ul class="menu q-mt-xs">
-            <li><my-link href="route('admin.report.customer-services-active')">Laporan Layanan Aktif Aktual</my-link></li>
-            <li><my-link href="route('admin.report.customer-services-new')">Laporan Layanan Baru</my-link></li>
-            <li><my-link href="route('admin.report.customer-services-ended')">Laporan Layanan Berakhir</my-link></li>
+            <li><my-link href="route('admin.report.customer-services-active')">Laporan Layanan Aktif Aktual</my-link>
+            </li>
+            <li><my-link :href="route('admin.report.customer-services-new')">Laporan Layanan Baru</my-link></li>
+            <li><my-link :href="route('admin.report.customer-services-ended')">Laporan Layanan Berakhir</my-link></li>
           </ul>
 
           <div class="text-subtitle2 text-bold">Laporan Klien</div>
@@ -42,7 +47,8 @@ const title = 'Laporan';
           <div class="text-subtitle2 text-bold">Laporan Sales</div>
           <ul class="menu q-mt-xs">
             <li><my-link href="route('admin.report.sales-performance')">Laporan Kinerja Sales</my-link></li>
-            <li><my-link href="route('admin.report.sales-target-vs-achievement')">Laporan Target Vs Capaian</my-link></li>
+            <li><my-link href="route('admin.report.sales-target-vs-achievement')">Laporan Target Vs Capaian</my-link>
+            </li>
             <li><my-link href="route('admin.report.sales-all-activity')">Laporan Aktivitas per Sales</my-link></li>
           </ul>
 

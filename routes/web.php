@@ -51,12 +51,18 @@ Route::middleware([Auth::class])->group(function () {
 
         Route::prefix('reports')->group(function () {
             Route::get('', [ReportController::class, 'index'])->name('admin.report.index');
-            Route::match(['get', 'post'], 'interaction', [ReportController::class, 'interaction'])->name('admin.report.interaction');
-            Route::match(['get', 'post'], 'sales-activity', [ReportController::class, 'salesActivity'])->name('admin.report.sales-activity');
+            Route::get('generate', [ReportController::class, 'generate'])->name('admin.report.generate');
 
-            Route::match(['get', 'post'], 'closing-detail', [ReportController::class, 'closingDetail'])->name('admin.report.closing-detail');
-            Route::match(['get', 'post'], 'closing-by-sales', [ReportController::class, 'closingBySales'])->name('admin.report.closing-by-sales');
-            Route::match(['get', 'post'], 'closing-by-services', [ReportController::class, 'closingByServices'])->name('admin.report.closing-by-services');
+            Route::get('interaction', [ReportController::class, 'interaction'])->name('admin.report.interaction');
+            Route::get('sales-activity', [ReportController::class, 'salesActivity'])->name('admin.report.sales-activity');
+
+            Route::get('closing-detail', [ReportController::class, 'closingDetail'])->name('admin.report.closing-detail');
+            Route::get('closing-by-sales', [ReportController::class, 'closingBySales'])->name('admin.report.closing-by-sales');
+            Route::get('closing-by-services', [ReportController::class, 'closingByServices'])->name('admin.report.closing-by-services');
+
+            Route::get('customer-services-active', [ReportController::class, 'customerServicesActive'])->name('admin.report.customer-services-active');
+            Route::get('customer-services-new', [ReportController::class, 'customerServicesNew'])->name('admin.report.customer-services-new');
+            Route::get('customer-services-ended', [ReportController::class, 'customerServicesEnded'])->name('admin.report.customer-services-ended');
         });
 
         Route::prefix('services')->group(function () {
