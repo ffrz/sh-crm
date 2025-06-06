@@ -53,32 +53,15 @@ class ReportController extends Controller
                 ->select('id', 'date', 'type', 'engagement_level', 'subject', 'summary', 'user_id', 'customer_id', 'service_id')
                 ->get();
 
-            $title = 'Laporan Interaksi';
-            $subtitles = ['Periode ' . format_date($start_date) . ' s/d ' . format_date($end_date)];
-            $user = null;
+            [$title, $user] = $this->resolveUserTitle('Laporan Interaksi', $user_id);
 
-            if ($user_id !== 'all') {
-                $user = User::find($user_id);
-                $title .= " - $user->name ($user->username)";
-            } else {
-                $title .= ' - All Sales';
-            }
-
-            $filename = env('APP_NAME') . ' - ' . $title;
-
-            $data = [
-                'title' => $title,
-                'subtitles' => $subtitles,
-                'items' => $items,
-                'user' => $user,
-                'start_date' => $start_date,
-                'end_date' => $end_date,
-            ];
-
-            // return view('report.interaction', $data);
-            return Pdf::loadView('report.interaction', $data)
-                ->setPaper('a4', 'landscape')
-                ->download($filename . '.pdf');
+            return $this->generatePdfReport('report.interaction', 'landscape', compact(
+                'items',
+                'title',
+                'start_date',
+                'end_date',
+                'user'
+            ));
         }
     }
 
@@ -141,31 +124,15 @@ class ReportController extends Controller
             ->orderBy('sales_name')
             ->get();
 
-        $title = 'Laporan Aktivitas Sales';
-        $subtitles = ['Periode ' . format_date($start_date) . ' s/d ' . format_date($end_date)];
-        $user = null;
+        [$title, $user] = $this->resolveUserTitle('Laporan Aktivitas Sales', $user_id);
 
-        if ($user_id !== 'all') {
-            $user = User::find($user_id);
-            $title .= " - $user->name ($user->username)";
-        } else {
-            $title .= ' - All Sales';
-        }
-
-        $filename = env('APP_NAME') . ' - ' . $title;
-
-        $data = [
-            'title' => $title,
-            'subtitles' => $subtitles,
-            'items' => $items,
-            'user' => $user,
-            'start_date' => $start_date,
-            'end_date' => $end_date,
-        ];
-
-        return Pdf::loadView('report.sales-activity', $data)
-            ->setPaper('a4', 'landscape')
-            ->download($filename . '.pdf');
+        return $this->generatePdfReport('report.sales-activity', 'landscape', compact(
+            'items',
+            'title',
+            'start_date',
+            'end_date',
+            'user'
+        ));
     }
 
     public function closingDetail(Request $request)
@@ -203,32 +170,15 @@ class ReportController extends Controller
             ->orderBy('closings.date', 'asc')
             ->get();
 
-        $title = 'Laporan Detail Closing';
-        $subtitles = ['Periode ' . format_date($start_date) . ' s/d ' . format_date($end_date)];
-        $user = null;
+        [$title, $user] = $this->resolveUserTitle('Laporan Detail Closing', $user_id);
 
-        if ($user_id !== 'all') {
-            $user = User::find($user_id);
-            $title .= " - $user->name ($user->username)";
-        } else {
-            $title .= ' - All Sales';
-        }
-
-        $filename = env('APP_NAME') . ' - ' . $title;
-
-        $data = [
-            'title' => $title,
-            'subtitles' => $subtitles,
-            'items' => $items,
-            'user' => $user,
-            'start_date' => $start_date,
-            'end_date' => $end_date,
-        ];
-
-        // return view('report.closing-detail', $data);
-        return Pdf::loadView('report.closing-detail', $data)
-            ->setPaper('a4', 'landscape')
-            ->download($filename . '.pdf');
+        return $this->generatePdfReport('report.closing-detail', 'landscape', compact(
+            'items',
+            'title',
+            'start_date',
+            'end_date',
+            'user'
+        ));
     }
 
     public function closingBySales(Request $request)
@@ -249,21 +199,13 @@ class ReportController extends Controller
             ->get();
 
         $title = 'Laporan Rekap Closing per Sales';
-        $subtitles = ['Periode ' . format_date($start_date) . ' s/d ' . format_date($end_date)];
-        $filename = env('APP_NAME') . ' - ' . $title;
 
-        $data = [
-            'title' => $title,
-            'subtitles' => $subtitles,
-            'items' => $items,
-            'start_date' => $start_date,
-            'end_date' => $end_date,
-        ];
-
-        // return view('report.closing-by-sales', $data);
-        return Pdf::loadView('report.closing-by-sales', $data)
-            ->setPaper('a4', 'landscape')
-            ->download($filename . '.pdf');
+        return $this->generatePdfReport('report.closing-by-sales', 'landscape', compact(
+            'items',
+            'title',
+            'start_date',
+            'end_date',
+        ));
     }
 
     public function closingByServices(Request $request)
@@ -283,21 +225,13 @@ class ReportController extends Controller
             ->get();
 
         $title = 'Laporan Rekap Closing per Layanan';
-        $subtitles = ['Periode ' . format_date($start_date) . ' s/d ' . format_date($end_date)];
-        $filename = env('APP_NAME') . ' - ' . $title;
 
-        $data = [
-            'title' => $title,
-            'subtitles' => $subtitles,
-            'items' => $items,
-            'start_date' => $start_date,
-            'end_date' => $end_date,
-        ];
-
-        // return view('report.closing-by-services', $data);
-        return Pdf::loadView('report.closing-by-services', $data)
-            ->setPaper('a4', 'landscape')
-            ->download($filename . '.pdf');
+        return $this->generatePdfReport('report.closing-by-services', 'landscape', compact(
+            'items',
+            'title',
+            'start_date',
+            'end_date',
+        ));
     }
 
     public function customerServicesActive(Request $request)
@@ -315,20 +249,60 @@ class ReportController extends Controller
             ->get();
 
         $title = 'Laporan Layanan Pelanggan Aktif';
-        $subtitles = ['Periode ' . format_date($start_date) . ' s/d ' . format_date($end_date)];
-        $filename = env('APP_NAME') . ' - ' . $title;
 
-        $data = [
-            'title' => $title,
-            'subtitles' => $subtitles,
-            'items' => $items,
-            'start_date' => $start_date,
-            'end_date' => $end_date,
-        ];
+        return $this->generatePdfReport('report.customer-services-active', 'landscape', compact(
+            'items',
+            'title',
+            'start_date',
+            'end_date',
+        ));
+    }
 
-        return view('report.customer-services-active', $data);
-        return Pdf::loadView('report.customer-services-active', $data)
-            ->setPaper('a4', 'landscape')
+    public function customerServicesNew(Request $request)
+    {
+        [$start_date, $end_date] = resolve_period($request->get('period'), $request->get('start_date'), $request->get('end_date'));
+
+        $items = CustomerService::with(['customer', 'service', 'closing', 'closing.user'])
+            ->whereNotNull('start_date')
+            ->when($start_date && $end_date, function ($query) use ($start_date, $end_date) {
+                $query->whereBetween('start_date', [$start_date, $end_date]);
+            })
+            ->get();
+
+        $title = 'Laporan Layanan Pelanggan Baru';
+
+        return $this->generatePdfReport('report.customer-services-new', 'landscape', compact(
+            'items',
+            'title',
+            'start_date',
+            'end_date',
+        ));
+    }
+
+    protected function resolveUserTitle(string $baseTitle, $user_id): array
+    {
+        $user = null;
+        if ($user_id !== 'all') {
+            $user = User::find($user_id);
+            $title = "$baseTitle - $user->name ($user->username)";
+        } else {
+            $title = "$baseTitle - All Sales";
+        }
+        return [$title, $user];
+    }
+
+
+    protected function generatePdfReport($view, $orientation, $data)
+    {
+        $filename = env('APP_NAME') . ' - ' . $data['title'];
+
+        if (isset($data['start_date']) || isset($data['end_date'])) {
+            $data['subtitles'] = ['Periode ' . format_date($data['start_date']) . ' s/d ' . format_date($data['end_date'])];
+        }
+
+        return view($view, $data);
+        return Pdf::loadView($view, $data)
+            ->setPaper('a4', $orientation)
             ->download($filename . '.pdf');
     }
 }

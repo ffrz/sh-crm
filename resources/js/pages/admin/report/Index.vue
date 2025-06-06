@@ -30,6 +30,8 @@ const report_types = [
   { value: 'closing-by-services', label: 'Laporan Rekap Closing Layanan' },
   { value: 'sales-activity', label: 'Laporan Aktivitas Sales' },
   { value: 'customer-services-active', label: 'Laporan Layanan Pelanggan Aktif' },
+  { value: 'customer-services-new', label: 'Laporan Layanan Pelanggan Baru' },
+  { value: 'customer-services-ended', label: 'Laporan Layanan Pelanggan Aktif' },
 ];
 
 const period_options = ref([
@@ -72,6 +74,9 @@ const submit = () => {
 
   if (filter_options.show_period) {
     query.append('period', form.period);
+  }
+
+  if (form.period == 'custom') {
     query.append('start_date', form.start_date);
     query.append('end_date', form.end_date);
   }
@@ -148,6 +153,8 @@ function updateState() {
   }
   else if ([
     'customer-services-active',
+    'customer-services-new',
+    'customer-services-ended',
     'closing-by-sales'
   ].includes(form.report_type)
   ) {
