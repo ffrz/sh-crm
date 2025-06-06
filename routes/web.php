@@ -51,7 +51,6 @@ Route::middleware([Auth::class])->group(function () {
 
         Route::prefix('reports')->group(function () {
             Route::get('', [ReportController::class, 'index'])->name('admin.report.index');
-            Route::get('generate', [ReportController::class, 'generate'])->name('admin.report.generate');
 
             Route::get('interaction', [ReportController::class, 'interaction'])->name('admin.report.interaction');
             Route::get('sales-activity', [ReportController::class, 'salesActivity'])->name('admin.report.sales-activity');

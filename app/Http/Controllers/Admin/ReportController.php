@@ -7,18 +7,28 @@ use App\Models\CustomerService;
 use App\Models\Interaction;
 use App\Models\Service;
 use App\Models\User;
-use App\Rules\UserIdOrAll;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
-use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return inertia('admin/report/Index');
+        $type = $request->get('report_type');
+
+        return inertia('admin/report/Index', [
+            'report_type' => $type,
+            'users' => User::where('active', true)
+                ->orderBy('username')
+                ->select('id', 'username', 'name')
+                ->get(),
+            'services' => Service::where('active', true)
+                ->orderBy('name')
+                ->select('id', 'name')
+                ->get()
+        ]);
     }
 
     public function interaction(Request $request)
@@ -224,7 +234,6 @@ class ReportController extends Controller
     public function closingBySales(Request $request)
     {
         [$start_date, $end_date] = resolve_period($request->get('period'), $request->get('start_date'), $request->get('end_date'));
-        $user_id = $request->get('user_id');
 
         $items = DB::table('closings')
             ->join('users', 'closings.user_id', '=', 'users.id')
@@ -293,50 +302,33 @@ class ReportController extends Controller
 
     public function customerServicesActive(Request $request)
     {
-        $today = Carbon::today();
+        [$start_date, $end_date] = resolve_period($request->get('period'), $request->get('start_date'), $request->get('end_date'));
 
-        if ($request->get('download', 0) == 1) {
-            $items = CustomerService::with(['customer', 'service'])
-                ->where('status', 'active')
-                ->whereDate('start_date', '<=', $today)
-                ->where(function ($q) use ($today) {
-                    $q->whereNull('end_date')->orWhere('end_date', '>=', $today);
-                })
-                ->get();
+        $items = CustomerService::with(['customer', 'service'])
+            ->where(function ($query) use ($start_date, $end_date) {
+                $query->where('start_date', '<=', $end_date)
+                    ->where(function ($q) use ($start_date) {
+                        $q->where('end_date', '>=', $start_date)
+                            ->orWhereNull('end_date');
+                    });
+            })
+            ->get();
 
-            $title = 'Laporan Layanan Pelanggan Aktif';
-            $filename = env('APP_NAME') . ' - ' . $title;
+        $title = 'Laporan Layanan Pelanggan Aktif';
+        $subtitles = ['Periode ' . format_date($start_date) . ' s/d ' . format_date($end_date)];
+        $filename = env('APP_NAME') . ' - ' . $title;
 
-            $data = [
-                'title' => $title,
-                'items' => $items,
-            ];
+        $data = [
+            'title' => $title,
+            'subtitles' => $subtitles,
+            'items' => $items,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+        ];
 
-            return view('report.customer-services-active', $data);
-            return Pdf::loadView('report.customer-services-active', $data)
-                ->setPaper('a4', 'landscape')
-                ->download($filename . '.pdf');
-        }
-
-        return inertia('admin/report/customer-services/Active', [
-            'download_url' => route('admin.report.customer-services-active', 'download=1')
-        ]);
-    }
-
-    public function generate(Request $request)
-    {
-        $type = $request->get('report_type');
-
-        return inertia('admin/report/Generate', [
-            'report_type' => $type,
-            'users' => User::where('active', true)
-                ->orderBy('username')
-                ->select('id', 'username', 'name')
-                ->get(),
-            'services' => Service::where('active', true)
-                ->orderBy('name')
-                ->select('id', 'name')
-                ->get()
-        ]);
+        return view('report.customer-services-active', $data);
+        return Pdf::loadView('report.customer-services-active', $data)
+            ->setPaper('a4', 'landscape')
+            ->download($filename . '.pdf');
     }
 }
