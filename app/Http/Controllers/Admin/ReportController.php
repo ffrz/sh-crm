@@ -279,6 +279,28 @@ class ReportController extends Controller
         ));
     }
 
+    public function customerServicesEnded(Request $request)
+    {
+        [$start_date, $end_date] = resolve_period($request->get('period'), $request->get('start_date'), $request->get('end_date'));
+
+        $items = CustomerService::with(['customer', 'service'])
+            ->whereIn('status', ['churned', 'cancelled'])
+            ->when($start_date && $end_date, function ($query) use ($start_date, $end_date) {
+                $query->whereBetween('end_date', [$start_date, $end_date]);
+            })
+            ->get();
+
+
+        $title = 'Laporan Layanan Pelanggan Berakhir';
+
+        return $this->generatePdfReport('report.customer-services-ended', 'landscape', compact(
+            'items',
+            'title',
+            'start_date',
+            'end_date',
+        ));
+    }
+
     protected function resolveUserTitle(string $baseTitle, $user_id): array
     {
         $user = null;

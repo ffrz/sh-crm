@@ -11,7 +11,7 @@
         <th>Layanan</th>
         <th>Deskripsi</th>
         <th>Pelanggan</th>
-        <th>ID Closing</th>
+        <th>Status</th>
         <th>Sales</th>
         <th>Tanggal Mulai</th>
         <th>Tanggal Berakhir</th>
@@ -26,7 +26,7 @@
           <td>{{ $item->service->name }}</td>
           <td>{{ $item->description }}</td>
           <td>{{ $item->customer->name }} - {{ $item->customer->company }}</td>
-          <td>#{{ $item->closing ? $item->closing->id : '-' }}</td>
+          <td>{{ \App\Models\CustomerService::Statuses[$item->status] }}</td>
           <td>{{ $item->closing ? $item->closing->user->name : '' }}</td>
           <td>{{ $item->start_date }}</td>
           <td>{{ $item->end_date }}</td>

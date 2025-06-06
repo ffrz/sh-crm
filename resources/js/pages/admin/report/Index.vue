@@ -31,7 +31,7 @@ const report_types = [
   { value: 'sales-activity', label: 'Laporan Aktivitas Sales' },
   { value: 'customer-services-active', label: 'Laporan Layanan Pelanggan Aktif' },
   { value: 'customer-services-new', label: 'Laporan Layanan Pelanggan Baru' },
-  { value: 'customer-services-ended', label: 'Laporan Layanan Pelanggan Aktif' },
+  { value: 'customer-services-ended', label: 'Laporan Layanan Pelanggan Berakhir' },
 ];
 
 const period_options = ref([
