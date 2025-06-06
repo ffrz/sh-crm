@@ -322,7 +322,6 @@ class ReportController extends Controller
             $data['subtitles'] = ['Periode ' . format_date($data['start_date']) . ' s/d ' . format_date($data['end_date'])];
         }
 
-        return view($view, $data);
         return Pdf::loadView($view, $data)
             ->setPaper('a4', $orientation)
             ->download($filename . '.pdf');
