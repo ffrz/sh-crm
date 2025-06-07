@@ -79,6 +79,7 @@ class InteractionController extends Controller
             'notes'            => 'nullable|string|max:500',
             'location'         => 'nullable|string|max:100',
             'image'            => 'nullable|image|max:5120',
+            'image_path'       => 'nullable|string',
         ]);
 
         $item = !$request->id
@@ -96,7 +97,12 @@ class InteractionController extends Controller
             $file = $request->file('image');
             $filename = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('uploads'), $filename);
-            $item->image_path = 'uploads/' . $filename;
+            $validated['image_path'] = 'uploads/' . $filename; // timpah dengan path yang digenerate
+        } else if (empty($validated['image_path'])) {
+            // Hapus file lama jika ada
+            if ($item->image_path && file_exists(public_path($item->image_path))) {
+                @unlink(public_path($item->image_path)); // pakai @ untuk suppress error jika file tidak ada
+            }
         }
 
         $item->fill($validated);

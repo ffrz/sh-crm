@@ -91,7 +91,7 @@ function updateLocation() {
 }
 
 onMounted(() => {
-  if (!form.location) {
+  if (!form.id) {
     updateLocation();
   }
 
@@ -105,6 +105,10 @@ function clearImage() {
   form.image_path = null
   imagePreview.value = null
   fileInput.value.value = null
+}
+
+function removeLocation() {
+  form.location = null;
 }
 
 </script>
@@ -160,29 +164,37 @@ function clearImage() {
                 <q-btn label="Ambil Foto" size="sm" @click="triggerInput" color="secondary" icon="add_a_photo"
                   :disable="form.processing" />
                 <!-- Tombol buang -->
-                <q-btn class="q-ml-sm" size="sm" icon="close" label="Buang" :disable="form.processing || !imagePreview" color="red"
-                  @click="clearImage" />
+                <q-btn class="q-ml-sm" size="sm" icon="close" label="Buang" :disable="form.processing || !imagePreview"
+                  color="red" @click="clearImage" />
                 <input type="file" ref="fileInput" accept="image/*" capture="environment" style="display: none"
                   @change="onFileChange" />
-                <q-img v-if="imagePreview" :src="imagePreview" class="q-mt-md" style="max-width: 500px;"
-                  :style="{ border: '1px solid #ddd' }">
-                  <template v-slot:error>
-                    <div class="text-negative text-center q-pa-md">Gambar tidak tersedia</div>
-                  </template>
-                </q-img>
+                <div>
+                  <q-img v-if="imagePreview" :src="imagePreview" class="q-mt-md" style="max-width: 500px;" :ratio="1"
+                    :style="{ border: '1px solid #ddd' }">
+                    <template v-slot:error>
+                      <div class="text-negative text-center q-pa-md">Gambar tidak tersedia</div>
+                    </template>
+                  </q-img>
+                </div>
               </div>
               <div class="q-my-md">
-                <span class="text-subtitle2 text-bold text-grey-9">Lokasi:</span>
-                <span class="q-mr-sm">
-                  <template v-if="form.location" class="q-mt-sm">
-                    ({{ form.location.split(',')[0] }}, {{ form.location.split(',')[1] }})
-                  </template>
-                  <template v-else>
-                    Belum tersedia
-                  </template>
-                </span>
-                <q-btn size="sm" label="Perbarui Lokasi" color="grey-8" :disable="form.processing"
-                  @click="updateLocation()" />
+                <div>
+                  <span class="text-subtitle2 text-bold text-grey-9">Lokasi:</span>
+                  <span class="q-mr-sm">
+                    <template v-if="form.location" class="q-mt-sm">
+                      ({{ form.location.split(',')[0] }}, {{ form.location.split(',')[1] }})
+                    </template>
+                    <template v-else>
+                      Belum tersedia
+                    </template>
+                  </span>
+                </div>
+                <div>
+                  <q-btn size="sm" label="Perbarui Lokasi" color="secondary" :disable="form.processing"
+                    @click="updateLocation()" />
+                  <q-btn size="sm" icon="delete" label="Hapus Lokasi" color="red-9"
+                    :disable="!form.location || form.processing" class="q-ml-sm" @click="removeLocation()" />
+                </div>
               </div>
             </q-card-section>
             <q-card-section class="q-gutter-sm">
