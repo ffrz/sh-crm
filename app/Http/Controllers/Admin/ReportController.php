@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
 use App\Models\CustomerService;
 use App\Models\Interaction;
 use App\Models\Service;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -301,6 +303,83 @@ class ReportController extends Controller
         ));
     }
 
+    public function clientNew(Request $request)
+    {
+        [$start_date, $end_date] = resolve_period($request->get('period'), $request->get('start_date'), $request->get('end_date'));
+        $user_id = $request->get('user_id');
+
+        $q = Customer::with('assigned_user');
+        if ($user_id !== 'all') {
+            $q->where('assigned_user_id', $user_id);
+        }
+        $items = $q->whereBetween('created_datetime', [$start_date, $end_date])
+            ->orderByDesc('created_datetime')
+            ->get();
+
+        [$title, $user] = $this->resolveUserTitle('Laporan Klien Baru', $user_id);
+
+        return $this->generatePdfReport('report.customer-new', 'landscape', compact(
+            'items',
+            'title',
+            'start_date',
+            'end_date',
+            'user'
+        ));
+    }
+
+    public function clientActiveInactive(Request $request)
+    {
+        [$start_date, $end_date] = resolve_period($request->get('period'), $request->get('start_date'), $request->get('end_date'));
+        $user_id = $request->get('user_id');
+        $q = Customer::with(['assigned_user', 'interactions' => function ($q) {
+            $q->where('status', 'done')->latest('date');
+        }, 'closings' => function ($q) {
+            $q->latest('date');
+        }]);
+
+        if ($user_id !== 'all') {
+            $q->where('assigned_user_id', $user_id);
+        }
+
+        $items = $q->get()
+            ->map(function ($customer) {
+                return [
+                    'id'                => $customer->id,
+                    'client'            => $customer->name . ' - ' . $customer->company,
+                    'status'            => $customer->active ? 'Aktif' : 'Tidak Aktif',
+                    'last_interaction'  => optional($customer->interactions->first())->date ?? '-',
+                    'engagement_level'  => optional($customer->interactions->first())->engagement_level ?? '-',
+                    'last_closing'      => optional($customer->closings->first())->date ?? '-',
+                    'sales'             => $customer->assigned_user ? $customer->assigned_user->name : '-',
+                ];
+            });
+
+        [$title, $user] = $this->resolveUserTitle('Laporan Klien Aktif - Tidak Aktif', $user_id);
+
+        return $this->generatePdfReport('report.customer-active-inactive', 'landscape', compact(
+            'items',
+            'title',
+            'start_date',
+            'end_date',
+            'user'
+        ));
+    }
+
+    public function clientHistory(Request $request)
+    {
+        [$start_date, $end_date] = resolve_period($request->get('period'), $request->get('start_date'), $request->get('end_date'));
+
+        $title = 'Laporan Riwayat Klien';
+        $items = [];
+
+        return $this->generatePdfReport('report.customer-new', 'landscape', compact(
+            'items',
+            'title',
+            'start_date',
+            'end_date'
+        ));
+    }
+
     protected function resolveUserTitle(string $baseTitle, $user_id): array
     {
         $user = null;
@@ -314,7 +393,7 @@ class ReportController extends Controller
     }
 
 
-    protected function generatePdfReport($view, $orientation, $data)
+    protected function generatePdfReport($view, $orientation, $data, $response = 'pdf')
     {
         $filename = env('APP_NAME') . ' - ' . $data['title'];
 
@@ -322,8 +401,16 @@ class ReportController extends Controller
             $data['subtitles'] = ['Periode ' . format_date($data['start_date']) . ' s/d ' . format_date($data['end_date'])];
         }
 
-        return Pdf::loadView($view, $data)
-            ->setPaper('a4', $orientation)
-            ->download($filename . '.pdf');
+        if ($response == 'pdf') {
+            return Pdf::loadView($view, $data)
+                ->setPaper('a4', $orientation)
+                ->download($filename . '.pdf');
+        }
+
+        if ($response == 'html') {
+            return view($view, $data);
+        }
+
+        throw new Exception('Unknown response type!');
     }
 }

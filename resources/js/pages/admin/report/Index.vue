@@ -32,6 +32,9 @@ const report_types = [
   { value: 'customer-services-active', label: 'Laporan Layanan Pelanggan Aktif' },
   { value: 'customer-services-new', label: 'Laporan Layanan Pelanggan Baru' },
   { value: 'customer-services-ended', label: 'Laporan Layanan Pelanggan Berakhir' },
+  { value: 'client-new', label: 'Laporan Klien Baru' },
+  { value: 'client-active-inactive', label: 'Laporan Klien Aktif / Nonaktif' },
+  { value: 'client-history', label: 'Laporan Riwayat Klien' },
 ];
 
 const period_options = ref([
@@ -146,7 +149,9 @@ function updateState() {
     'interaction',
     'sales-activity',
     'closing-detail',
-    'closing-by-services'
+    'closing-by-services',
+    'client-new',
+    'client-active-inactive',
   ].includes(form.report_type)) {
     filter_options.show_period = true;
     filter_options.show_user = true;
@@ -155,7 +160,8 @@ function updateState() {
     'customer-services-active',
     'customer-services-new',
     'customer-services-ended',
-    'closing-by-sales'
+    'closing-by-sales',
+    'client-history',
   ].includes(form.report_type)
   ) {
     filter_options.show_period = true;

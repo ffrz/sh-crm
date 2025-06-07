@@ -62,6 +62,10 @@ Route::middleware([Auth::class])->group(function () {
             Route::get('customer-services-active', [ReportController::class, 'customerServicesActive'])->name('admin.report.customer-services-active');
             Route::get('customer-services-new', [ReportController::class, 'customerServicesNew'])->name('admin.report.customer-services-new');
             Route::get('customer-services-ended', [ReportController::class, 'customerServicesEnded'])->name('admin.report.customer-services-ended');
+
+            Route::get('client-new', [ReportController::class, 'clientNew'])->name('admin.report.client-new');
+            Route::get('client-active-inactive', [ReportController::class, 'clientActiveInactive'])->name('admin.report.client-active-inactive');
+            Route::get('client-history', [ReportController::class, 'clientHistory'])->name('admin.report.client-history');
         });
 
         Route::prefix('services')->group(function () {
