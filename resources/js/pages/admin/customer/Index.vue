@@ -7,12 +7,12 @@ import { useQuasar } from "quasar";
 import { usePageStorage } from '@/helpers/usePageStorage'
 
 const storage = usePageStorage('customers')
-
 const title = "Client";
 const $q = useQuasar();
 const showFilter = ref(true);
 const rows = ref([]);
 const loading = ref(true);
+
 const filter = reactive(storage.get('filter', {
   status: "all",
   ...getQueryParams(),

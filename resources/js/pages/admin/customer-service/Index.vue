@@ -1,36 +1,39 @@
 <script setup>
 import { router, usePage } from "@inertiajs/vue3";
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import { handleDelete, handleFetchItems } from "@/helpers/client-req-handler";
 import { check_role, getQueryParams } from "@/helpers/utils";
 import { useQuasar } from "quasar";
+import { usePageStorage } from '@/helpers/usePageStorage'
 
+const storage = usePageStorage('customer-services')
 const title = "Layanan Client";
 const $q = useQuasar();
 const page = usePage();
 const showFilter = ref(true);
 const rows = ref([]);
 const loading = ref(true);
-const filter = reactive({
+
+const filter = reactive(storage.get('filter', {
   search: "",
   status: "all",
   service_id: "all",
   ...getQueryParams(),
-});
+}));
+
+const pagination = ref(storage.get('pagination', {
+  page: 1,
+  rowsPerPage: 10,
+  rowsNumber: 10,
+  sortBy: "id",
+  descending: true,
+}));
 
 const status_colors = {
   active: "green",
   churned: "red",
   lost: "black",
 };
-
-const pagination = ref({
-  page: 1,
-  rowsPerPage: 10,
-  rowsNumber: 10,
-  sortBy: "id",
-  descending: true,
-});
 
 const columns = [
   {
@@ -134,6 +137,9 @@ const computedColumns = computed(() => {
   if ($q.screen.gt.sm) return columns;
   return columns.filter((col) => col.name === "id" || col.name === "action");
 });
+watch(filter, () => storage.set('filter', filter), { deep: true })
+watch(pagination, () => storage.set('pagination', pagination.value), { deep: true })
+
 </script>
 
 <template>
