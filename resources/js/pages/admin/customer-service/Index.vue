@@ -8,12 +8,13 @@ import { useQuasar } from "quasar";
 const title = "Layanan Client";
 const $q = useQuasar();
 const page = usePage();
-const showFilter = ref(false);
+const showFilter = ref(true);
 const rows = ref([]);
 const loading = ref(true);
 const filter = reactive({
   search: "",
   status: "all",
+  service_id: "all",
   ...getQueryParams(),
 });
 
@@ -146,13 +147,15 @@ const computedColumns = computed(() => {
       <q-btn icon="file_export" dense class="q-ml-sm" color="grey" style="" @click.stop>
         <q-menu anchor="bottom right" self="top right" transition-show="scale" transition-hide="scale">
           <q-list style="width: 200px">
-            <q-item clickable v-ripple v-close-popup :href="route('admin.customer-service.export', { format: 'pdf', filter: filter })">
+            <q-item clickable v-ripple v-close-popup
+              :href="route('admin.customer-service.export', { format: 'pdf', filter: filter })">
               <q-item-section avatar>
                 <q-icon name="picture_as_pdf" color="red-9" />
               </q-item-section>
               <q-item-section>Export PDF</q-item-section>
             </q-item>
-            <q-item clickable v-ripple v-close-popup :href="route('admin.customer-service.export', { format: 'excel', filter: filter })">
+            <q-item clickable v-ripple v-close-popup
+              :href="route('admin.customer-service.export', { format: 'excel', filter: filter })">
               <q-item-section avatar>
                 <q-icon name="csv" color="green-9" />
               </q-item-section>
@@ -168,10 +171,7 @@ const computedColumns = computed(() => {
           <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.status"
             :options="statuses" label="Status" dense map-options emit-value outlined
             @update:model-value="onFilterChange" />
-          <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.customers"
-            :options="customers" label="Client" dense map-options emit-value outlined
-            @update:model-value="onFilterChange" />
-          <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.services"
+          <q-select class="custom-select col-xs-12 col-sm-2" style="min-width: 150px" v-model="filter.service_id"
             :options="services" label="Layanan" dense map-options emit-value outlined
             @update:model-value="onFilterChange" />
           <q-input class="col" outlined dense debounce="300" v-model="filter.search" placeholder="Cari" clearable>
