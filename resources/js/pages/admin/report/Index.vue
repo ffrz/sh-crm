@@ -28,12 +28,14 @@ const filter_options = reactive({
 const report_types = [
   { value: 'interaction', label: 'Laporan Interaksi' },
   { value: 'closing-detail', label: 'Laporan Closing Penjualan' },
-  { value: 'closing-by-sales', label: 'Laporan Rekap Closing Sales' },
+  { value: 'closing-by-sales', label: 'Laporan Rekapitulasi Closing Sales' },
   { value: 'closing-by-services', label: 'Laporan Rekap Closing Layanan' },
-  { value: 'sales-activity', label: 'Laporan Aktivitas Sales' },
   { value: 'customer-services-active', label: 'Laporan Layanan Pelanggan Aktif' },
   { value: 'customer-services-new', label: 'Laporan Layanan Pelanggan Baru' },
   { value: 'customer-services-ended', label: 'Laporan Layanan Pelanggan Berakhir' },
+  { value: 'sales-performance', label: 'Laporan Rekapitulasi Kinerja Sales' },
+  { value: 'sales-activity', label: 'Laporan Rekap Aktivitas Sales' },
+  { value: 'sales-activity-detail', label: 'Laporan Rincian Aktivitas Sales' },
   { value: 'client-new', label: 'Laporan Klien Baru' },
   { value: 'client-active-inactive', label: 'Laporan Klien Aktif / Nonaktif' },
   { value: 'client-history', label: 'Laporan Riwayat Klien' },
@@ -112,6 +114,7 @@ const validate = () => {
   let is_valid = true;
 
   form.errors.report_type = null;
+
   if (!form.report_type) {
     is_valid = false;
     form.errors.report_type = 'Pilih jenis laporan!';
@@ -158,6 +161,14 @@ const validate = () => {
     }
   }
 
+  form.errors.user_id = null;
+  if (form.report_type == 'sales-activity-detail') {
+    if (form.user_id == 'all') {
+      is_valid = false;
+      form.errors.user_id = 'Pilih Sales terlebih dahulu!';
+    }
+  }
+
   return is_valid;
 };
 
@@ -178,6 +189,7 @@ function updateState() {
     'closing-by-services',
     'client-new',
     'client-active-inactive',
+    'sales-activity-detail',
   ].includes(form.report_type)) {
     filter_options.show_period = true;
     filter_options.show_user = true;
@@ -187,6 +199,7 @@ function updateState() {
     'customer-services-new',
     'customer-services-ended',
     'closing-by-sales',
+    'sales-performance',
   ].includes(form.report_type)
   ) {
     filter_options.show_period = true;

@@ -12,7 +12,6 @@ use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\VisitController;
 use App\Http\Middleware\Auth;
 use App\Http\Middleware\NonAuthenticated;
 use Illuminate\Support\Facades\Route;
@@ -54,6 +53,7 @@ Route::middleware([Auth::class])->group(function () {
 
             Route::get('interaction', [ReportController::class, 'interaction'])->name('admin.report.interaction');
             Route::get('sales-activity', [ReportController::class, 'salesActivity'])->name('admin.report.sales-activity');
+            Route::get('sales-activity-detail', [ReportController::class, 'salesActivityDetail'])->name('admin.report.sales-activity-detail');
 
             Route::get('closing-detail', [ReportController::class, 'closingDetail'])->name('admin.report.closing-detail');
             Route::get('closing-by-sales', [ReportController::class, 'closingBySales'])->name('admin.report.closing-by-sales');
@@ -66,6 +66,8 @@ Route::middleware([Auth::class])->group(function () {
             Route::get('client-new', [ReportController::class, 'clientNew'])->name('admin.report.client-new');
             Route::get('client-active-inactive', [ReportController::class, 'clientActiveInactive'])->name('admin.report.client-active-inactive');
             Route::get('client-history', [ReportController::class, 'clientHistory'])->name('admin.report.client-history');
+
+            Route::get('sales-performance', [ReportController::class, 'salesPerformance'])->name('admin.report.sales-performance');
         });
 
         Route::prefix('services')->group(function () {

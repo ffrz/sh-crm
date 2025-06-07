@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Closing;
 use App\Models\Customer;
 use App\Models\CustomerService;
 use App\Models\Interaction;
@@ -73,7 +74,11 @@ class ReportController extends Controller
 
     public function salesActivity(Request $request)
     {
-        [$start_date, $end_date] = resolve_period($request->get('period'), $request->get('start_date'), $request->get('end_date'));
+        [$start_date, $end_date] = resolve_period(
+            $request->get('period'),
+            $request->get('start_date'),
+            $request->get('end_date')
+        );
         $user_id = $request->get('user_id');
 
         // Interactions
@@ -85,6 +90,7 @@ class ReportController extends Controller
             )
             ->where('status', 'done')
             ->whereBetween('date', [$start_date, $end_date])
+            ->when($user_id, fn($q) => $q->where('user_id', $user_id))
             ->groupBy('date', 'user_id');
 
         // Closings
@@ -95,6 +101,7 @@ class ReportController extends Controller
                 DB::raw('COUNT(*) as total_closings')
             )
             ->whereBetween('date', [$start_date, $end_date])
+            ->when($user_id, fn($q) => $q->where('user_id', $user_id))
             ->groupBy('date', 'user_id');
 
         // New Customers
@@ -105,6 +112,7 @@ class ReportController extends Controller
                 DB::raw('COUNT(*) as total_new_customers')
             )
             ->whereBetween('created_datetime', [$start_date, $end_date])
+            ->when($user_id, fn($q) => $q->where('created_by_uid', $user_id))
             ->groupBy('date', 'created_by_uid');
 
         // Gabungkan semua dengan LEFT JOIN
@@ -140,6 +148,78 @@ class ReportController extends Controller
             'user'
         ));
     }
+
+    public function salesActivityDetail(Request $request)
+    {
+        [$start_date, $end_date] = resolve_period(
+            $request->get('period'),
+            $request->get('start_date'),
+            $request->get('end_date')
+        );
+
+        $user_id = $request->get('user_id');
+
+        if (!$user_id) {
+            abort(400, 'user_id harus diisi');
+        }
+
+        $interactions = Interaction::with('customer')
+            ->where('user_id', $user_id)
+            ->where('status', 'done')
+            ->whereBetween('date', [$start_date, $end_date])
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'date'   => $item->date,
+                    'type'   => 'Interaksi',
+                    'client' => $item->customer->name . ' - ' . $item->customer->company,
+                    'detail' => Interaction::Types[$item->type] . ' | ' . $item->service->name . ' | ' .  Interaction::EngagementLevels[$item->engagement_level] . ' | ' . $item->notes,
+                    'data_1' => 0,
+                ];
+            });
+
+        $closings = Closing::with(['customer', 'service'])
+            ->where('user_id', $user_id)
+            ->whereBetween('date', [$start_date, $end_date])
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'date'   => $item->date,
+                    'type'   => 'Closing',
+                    'client' => $item->customer->name . ' - ' . $item->customer->company,
+                    'detail' => ($item->service->name ?? '-') . ' - ' . ($item->description ?? '-') . ': Rp ' . number_format($item->amount, 0, ',', '.'),
+                    'data_1' => $item->amount,
+                ];
+            });
+
+        $items = $interactions
+            ->merge($closings)
+            ->sortBy('date')
+            ->values()
+            ->map(function ($item, $index) {
+                return [
+                    'no'     => $index + 1,
+                    'date'   => $item['date'],
+                    'type'   => $item['type'],
+                    'client' => $item['client'],
+                    'detail' => $item['detail'],
+                    'data_1' => $item['data_1'],
+                ];
+            });
+
+        $user = User::find($user_id);
+        $title = 'Laporan Aktivitas per Sales';
+        $subtitles = ['Sales: ' . ($user->name ?? '-')];
+
+        return $this->generatePdfReport('report.sales-activity-detail', 'landscape', compact(
+            'items',
+            'title',
+            'subtitles',
+            'start_date',
+            'end_date'
+        ));
+    }
+
 
     public function closingDetail(Request $request)
     {
@@ -204,7 +284,7 @@ class ReportController extends Controller
             ->orderBy('total_closings', 'desc')
             ->get();
 
-        $title = 'Laporan Rekap Closing per Sales';
+        $title = 'Laporan Rekapitulasi Closing per Sales';
 
         return $this->generatePdfReport('report.closing-by-sales', 'landscape', compact(
             'items',
@@ -374,7 +454,7 @@ class ReportController extends Controller
             'start_date',
             'end_date',
             'user'
-        ), 'html');
+        ));
     }
 
     public function clientHistory(Request $request)
@@ -452,8 +532,45 @@ class ReportController extends Controller
             'subtitles',
             'start_date',
             'end_date',
-        ), 'html');
+        ));
     }
+
+    public function salesPerformance(Request $request)
+    {
+        [$start_date, $end_date] = resolve_period(
+            $request->get('period'),
+            $request->get('start_date'),
+            $request->get('end_date')
+        );
+
+        $items = User::withCount([
+            'interactions as interactions_count' => function ($query) use ($start_date, $end_date) {
+                $query->whereBetween('date', [$start_date, $end_date]);
+            },
+            'closings as closings_count' => function ($query) use ($start_date, $end_date) {
+                $query->whereBetween('date', [$start_date, $end_date]);
+            },
+            'customers as new_clients_count' => function ($query) use ($start_date, $end_date) {
+                $query->whereBetween('created_datetime', [$start_date, $end_date]);
+            }
+        ])
+            ->withSum([
+                'closings as total_amount' => function ($query) use ($start_date, $end_date) {
+                    $query->whereBetween('date', [$start_date, $end_date]);
+                },
+            ], 'amount')
+            ->get();
+
+        $title = 'Laporan Rekapitulasi Kinerja Sales';
+
+        return $this->generatePdfReport('report.sales-performance', 'landscape', compact(
+            'items',
+            'title',
+            'start_date',
+            'end_date',
+        ));
+    }
+
 
     protected function resolveTitle(string $baseTitle, $user_id): array
     {
