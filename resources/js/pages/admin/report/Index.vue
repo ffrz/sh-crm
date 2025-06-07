@@ -12,6 +12,7 @@ const form = useApiForm({
   report_type: page.props.report_type ?? null,
   user_id: 'all',
   service_id: 'all',
+  client_id: 'all',
   period: 'this_month',
   start_date: dayjs().format('YYYY-MM-DD'),
   end_date: dayjs().format('YYYY-MM-DD'),
@@ -20,7 +21,8 @@ const form = useApiForm({
 const filter_options = reactive({
   show_user: false,
   show_service: false,
-  show_period: false
+  show_period: false,
+  show_client: false,
 });
 
 const report_types = [
@@ -67,12 +69,28 @@ const users = [
   }))
 ];
 
+const clients = [
+  { value: 'all', label: 'Semua' },
+  ...page.props.clients.map(client => ({
+    value: client.id,
+    label: `${client.name} - ${client.company} [${client.id}]`,
+  }))
+];
+
 const submit = () => {
   if (!validate()) return;
 
   const query = new URLSearchParams();
   if (filter_options.show_user) {
     query.append('user_id', form.user_id);
+  }
+
+  if (filter_options.show_client) {
+    query.append('client_id', form.client_id);
+  }
+
+  if (filter_options.show_service) {
+    query.append('service_id', form.service_id);
   }
 
   if (filter_options.show_period) {
@@ -132,6 +150,14 @@ const validate = () => {
     }
   }
 
+  form.errors.client_id = null;
+  if (form.report_type == 'client-history') {
+    if (form.client_id == 'all') {
+      is_valid = false;
+      form.errors.client_id = 'Pilih client terlebih dahulu!';
+    }
+  }
+
   return is_valid;
 };
 
@@ -161,9 +187,14 @@ function updateState() {
     'customer-services-new',
     'customer-services-ended',
     'closing-by-sales',
-    'client-history',
   ].includes(form.report_type)
   ) {
+    filter_options.show_period = true;
+  }
+  else if ([
+    'client-history',
+  ].includes(form.report_type)) {
+    filter_options.show_client = true;
     filter_options.show_period = true;
   }
 
@@ -173,7 +204,7 @@ function updateState() {
 onMounted(() => updateState())
 // Watch perubahan pada form
 watch(
-  () => [form.report_type, form.user_id, form.service_id, form.period, form.start_date, form.end_date],
+  () => [form.report_type, form.user_id, form.service_id, form.period, form.start_date, form.end_date, form.client_id],
   () => updateState()
 );
 
@@ -200,6 +231,9 @@ watch(
               <q-select v-if="filter_options.show_service" v-model="form.service_id" label="Layanan" :options="services"
                 map-options emit-value :error="!!form.errors.service_id" :disable="form.processing"
                 :error-message="form.errors.service_id" />
+              <q-select v-if="filter_options.show_client" v-model="form.client_id" label="Client" :options="clients"
+                map-options emit-value :error="!!form.errors.client_id" :disable="form.processing"
+                :error-message="form.errors.client_id" />
               <q-select v-if="filter_options.show_period" class="custom-select col-12" style="min-width: 150px"
                 v-model="form.period" :options="period_options" label="Periode" map-options emit-value
                 :error="!!form.errors.period" :disable="form.processing" />

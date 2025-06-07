@@ -29,7 +29,11 @@ class ReportController extends Controller
             'services' => Service::where('active', true)
                 ->orderBy('name')
                 ->select('id', 'name')
-                ->get()
+                ->get(),
+            'clients' => Customer::where('active', true)
+                ->orderBy('name')
+                ->select('id', 'name', 'company')
+                ->get(),
         ]);
     }
 
@@ -55,7 +59,7 @@ class ReportController extends Controller
                 ->select('id', 'date', 'type', 'engagement_level', 'subject', 'summary', 'user_id', 'customer_id', 'service_id')
                 ->get();
 
-            [$title, $user] = $this->resolveUserTitle('Laporan Interaksi', $user_id);
+            [$title, $user] = $this->resolveTitle('Laporan Interaksi', $user_id);
 
             return $this->generatePdfReport('report.interaction', 'landscape', compact(
                 'items',
@@ -126,7 +130,7 @@ class ReportController extends Controller
             ->orderBy('sales_name')
             ->get();
 
-        [$title, $user] = $this->resolveUserTitle('Laporan Aktivitas Sales', $user_id);
+        [$title, $user] = $this->resolveTitle('Laporan Aktivitas Sales', $user_id);
 
         return $this->generatePdfReport('report.sales-activity', 'landscape', compact(
             'items',
@@ -172,7 +176,7 @@ class ReportController extends Controller
             ->orderBy('closings.date', 'asc')
             ->get();
 
-        [$title, $user] = $this->resolveUserTitle('Laporan Detail Closing', $user_id);
+        [$title, $user] = $this->resolveTitle('Laporan Detail Closing', $user_id);
 
         return $this->generatePdfReport('report.closing-detail', 'landscape', compact(
             'items',
@@ -316,7 +320,7 @@ class ReportController extends Controller
             ->orderByDesc('created_datetime')
             ->get();
 
-        [$title, $user] = $this->resolveUserTitle('Laporan Klien Baru', $user_id);
+        [$title, $user] = $this->resolveTitle('Laporan Klien Baru', $user_id);
 
         return $this->generatePdfReport('report.customer-new', 'landscape', compact(
             'items',
@@ -331,11 +335,19 @@ class ReportController extends Controller
     {
         [$start_date, $end_date] = resolve_period($request->get('period'), $request->get('start_date'), $request->get('end_date'));
         $user_id = $request->get('user_id');
-        $q = Customer::with(['assigned_user', 'interactions' => function ($q) {
-            $q->where('status', 'done')->latest('date');
-        }, 'closings' => function ($q) {
-            $q->latest('date');
-        }]);
+        $q = Customer::with([
+            'assigned_user',
+            'interactions' => function ($q) use ($start_date, $end_date) {
+                $q->where('status', 'done')
+                    ->whereBetween('date', [$start_date, $end_date])
+                    ->latest('date');
+            },
+            'closings' => function ($q) use ($start_date, $end_date) {
+                $q->whereBetween('date', [$start_date, $end_date])
+                    ->latest('date');
+            }
+        ]);
+        $q->whereDate('created_datetime', '<=', $end_date);
 
         if ($user_id !== 'all') {
             $q->where('assigned_user_id', $user_id);
@@ -354,7 +366,7 @@ class ReportController extends Controller
                 ];
             });
 
-        [$title, $user] = $this->resolveUserTitle('Laporan Klien Aktif - Tidak Aktif', $user_id);
+        [$title, $user] = $this->resolveTitle('Laporan Klien Aktif - Tidak Aktif', $user_id);
 
         return $this->generatePdfReport('report.customer-active-inactive', 'landscape', compact(
             'items',
@@ -362,25 +374,88 @@ class ReportController extends Controller
             'start_date',
             'end_date',
             'user'
-        ));
+        ), 'html');
     }
 
     public function clientHistory(Request $request)
     {
         [$start_date, $end_date] = resolve_period($request->get('period'), $request->get('start_date'), $request->get('end_date'));
 
-        $title = 'Laporan Riwayat Klien';
-        $items = [];
+        $client = Customer::with([
+            'interactions' => function ($q) use ($start_date, $end_date) {
+                $q->where('status', 'done')
+                    ->whereBetween('date', [$start_date, $end_date])
+                    ->with('user');
+            },
+            'closings' => function ($q) use ($start_date, $end_date) {
+                $q->whereBetween('date', [$start_date, $end_date])
+                    ->with(['user', 'service']);
+            },
+            'services' => function ($q) use ($start_date, $end_date) {
+                $q->whereBetween('start_date', [$start_date, $end_date])
+                    ->with('service');
+            },
+        ])->findOrFail($request->client_id);
 
-        return $this->generatePdfReport('report.customer-new', 'landscape', compact(
+        // Gabungkan semua aktivitas
+        $items = collect();
+
+        // Interaksi
+        foreach ($client->interactions as $item) {
+            if ($item->status !== 'done') continue;
+
+            $items->push([
+                'date'   => $item->date,
+                'type'   => 'Interaksi',
+                'detail' => $item->notes,
+                'sales'  => $item->user->name ?? '-',
+            ]);
+        }
+
+        // Closing
+        foreach ($client->closings as $item) {
+            $items->push([
+                'date'   => $item->date,
+                'type'   => 'Closing',
+                'detail' => ($item->service->name ?? '-') . ', Rp' . number_format($item->amount, 0, ',', '.'),
+                'sales'  => $item->user->name ?? '-',
+            ]);
+        }
+
+        // Layanan
+        foreach ($client->services as $item) {
+            $items->push([
+                'date'   => $item->start_date,
+                'type'   => 'Layanan',
+                'detail' => ucfirst($item->status) . ' – ' . ($item->service->name ?? '-'),
+                'sales'  => '-', // tidak ada sales langsung untuk layanan aktif
+            ]);
+        }
+
+        // Urutkan berdasarkan tanggal
+        $items = $items->sortBy('date')->values()->map(function ($item, $index) {
+            return [
+                'no'     => $index + 1,
+                'date'   => $item['date'],
+                'type'   => $item['type'],
+                'detail' => $item['detail'],
+                'sales'  => $item['sales'],
+            ];
+        });
+
+        $title = 'Laporan Riwayat Klien';
+        $subtitles = ['Client: ' . $client->name . ' - ' . $client->company];
+
+        return $this->generatePdfReport('report.customer-history', 'landscape', compact(
             'items',
             'title',
+            'subtitles',
             'start_date',
-            'end_date'
-        ));
+            'end_date',
+        ), 'html');
     }
 
-    protected function resolveUserTitle(string $baseTitle, $user_id): array
+    protected function resolveTitle(string $baseTitle, $user_id): array
     {
         $user = null;
         if ($user_id !== 'all') {
@@ -398,7 +473,10 @@ class ReportController extends Controller
         $filename = env('APP_NAME') . ' - ' . $data['title'];
 
         if (isset($data['start_date']) || isset($data['end_date'])) {
-            $data['subtitles'] = ['Periode ' . format_date($data['start_date']) . ' s/d ' . format_date($data['end_date'])];
+            if (empty($data['subtitles'])) {
+                $data['subtitles'] = [];
+            }
+            $data['subtitles'][] = 'Periode ' . format_date($data['start_date']) . ' s/d ' . format_date($data['end_date']);
         }
 
         if ($response == 'pdf') {
