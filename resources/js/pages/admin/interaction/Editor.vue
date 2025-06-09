@@ -9,7 +9,7 @@ import { ref, onMounted } from 'vue'
 
 const page = usePage();
 const title = (!!page.props.data.id ? "Edit" : "Tambah") + " Interaksi";
-
+// const  selectedCustomerLabel = ref('');
 const { filteredCustomers, filterCustomerFn } = useCustomerFilter(page.props.customers);
 
 const statuses = Object.entries(window.CONSTANTS.INTERACTION_STATUSES).map(([value, label]) => ({
@@ -118,7 +118,7 @@ function removeLocation() {
   <authenticated-layout>
     <template #title>{{ title }}</template>
     <q-page class="row justify-center">
-      <div class="col col-lg-6 q-pa-sm">
+      <div class="col col-md-6 q-pa-sm">
         <q-form class="row" @submit.prevent="submit" @validation-error="scrollToFirstErrorField">
           <q-card square flat bordered class="col">
             <q-inner-loading :showing="form.processing">
@@ -135,9 +135,9 @@ function removeLocation() {
                 :error="!!form.errors.type" :disable="form.processing" />
               <q-select v-model="form.user_id" label="Sales" :options="users" map-options emit-value
                 :error="!!form.errors.user_id" :disable="form.processing" />
-              <q-select v-model="form.customer_id" label="Client" use-input input-debounce="300" clearable
+              <q-select v-model="form.customer_id" label="Client" use-input input-debounce="300" clearable class="editable-select"
                 :options="filteredCustomers" map-options emit-value @filter="filterCustomerFn" option-label="label"
-                :display-value="selectedCustomerLabel" option-value="value" :error="!!form.errors.customer_id"
+                 option-value="value" :error="!!form.errors.customer_id"
                 :error-message="form.errors.customer_id" :disable="form.processing">
                 <template v-slot:no-option>
                   <q-item>
