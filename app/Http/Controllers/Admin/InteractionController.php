@@ -225,6 +225,10 @@ class InteractionController extends Controller
             $q->where('type', '=', $filter['type']);
         }
 
+        if (!empty($filter['customer_id']) && ($filter['customer_id'] != 'all')) {
+            $q->where('customer_id', '=', $filter['customer_id']);
+        }
+
         if (!empty($filter['engagement_level']) && ($filter['engagement_level'] != 'all')) {
             $q->where('engagement_level', '=', $filter['engagement_level']);
         }
