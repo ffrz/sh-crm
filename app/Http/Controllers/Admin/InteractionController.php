@@ -48,13 +48,16 @@ class InteractionController extends Controller
         return response()->json($items);
     }
 
-    public function editor($id = 0)
+    public function editor(Request $request, $id = 0)
     {
         $item = $id ? Interaction::findOrFail($id) : new Interaction([
-            'status' => Interaction::Status_Planned,
+            'status' => Interaction::Status_Done,
+            'type' => Interaction::Type_Visit,
             'user_id' => Auth::user()->id,
             'date' => Carbon::now(),
+            'customer_id' => $request->get('customer_id', null)
         ]);
+        
         return inertia('admin/interaction/Editor', [
             'data' => $item,
             'users' => User::where('active', true)->orderBy('username', 'asc')->get(),

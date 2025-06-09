@@ -127,6 +127,10 @@ const title = "Rincian Client";
                   </tr>
                 </tbody>
               </table>
+              <div class="q-mt-lg">
+                <q-btn label="Catat Interaksi" color="secondary" size="sm" icon="add"
+                  :href="route('admin.interaction.add', { customer_id: page.props.data.id })" />
+              </div>
             </q-card-section>
           </q-card>
         </div>
