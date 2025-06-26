@@ -3,9 +3,10 @@
 
 <head>
   <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ env('APP_NAME') }}</title>
-  <meta name="description" content="{{ env('APP_NAME') }} adalah solusi digital untuk mengelola proses produksi maklun dan konveksi secara transparan, terstruktur, dan mudah diawasi — dari penyerahan bahan hingga pembayaran hasil kerja.">
+  <meta name="description"
+    content="{{ env('APP_NAME') }} adalah sistem manajemen hubungan pelanggan (Customer Relationship Management) berbasis web yang membantu Anda melacak interaksi, memantau progres prospek, dan meningkatkan konversi penjualan dalam satu platform terintegrasi.">
   <meta name="keywords" content="">
   <link href="assets/img/favicon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
@@ -22,15 +23,15 @@
 </head>
 
 <body class="index-page">
-  <header id="header" class="header d-flex align-items-center sticky-top">
+  <header class="header d-flex align-items-center sticky-top" id="header">
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
-      <a href="./" class="logo d-flex align-items-center me-auto">
+      <a class="logo d-flex align-items-center me-auto" href="./">
         <h1 class="sitename">{{ env('APP_NAME') }}</h1>
       </a>
 
-      <nav id="navmenu" class="navmenu">
+      <nav class="navmenu" id="navmenu">
         <ul>
-          <li><a href="#hero" class="active">Beranda</a></li>
+          <li><a class="active" href="#hero">Beranda</a></li>
           <li><a href="#about">Tentang</a></li>
           <li><a href="#features">Fitur</a></li>
           <li><a href="#contact">Hubungi Kami</a></li>
@@ -47,7 +48,7 @@
   <main class="main">
 
     <!-- Hero Section -->
-    <section id="hero" class="section hero light-background">
+    <section class="section hero light-background" id="hero">
 
       <div class="container">
         <div class="row gy-4">
@@ -58,7 +59,7 @@
               penjualan dalam satu platform terintegrasi.</p>
           </div>
           <div class="col-lg-6 order-lg-2 hero-img order-1" data-aos="zoom-out" data-aos-delay="200">
-            <img src="assets/img/hero-img.jpg" class="img-fluid" style="border-radius: 10px;" alt="">
+            <img class="img-fluid" src="assets/img/hero-img.jpg" alt="" style="border-radius: 10px;">
           </div>
         </div>
       </div>
@@ -66,7 +67,7 @@
     </section><!-- /Hero Section -->
 
     <!-- About Section -->
-    <section id="about" class="section about">
+    <section class="section about" id="about">
 
       <div class="container">
 
@@ -77,7 +78,7 @@
         </p>
         <div class="row gy-3 items-center">
           <div class="col-lg-6 d-flex flex-column justify-content-center" data-aos="fade-up" data-aos-delay="100">
-            <img src="assets/img/about-img.jpg" alt="" class="img-fluid" style="border-radius:10px;">
+            <img class="img-fluid" src="assets/img/about-img.jpg" alt="" style="border-radius:10px;">
           </div>
           <div class="col-lg-6 d-flex flex-column justify-content-center" data-aos="fade-up" data-aos-delay="200">
             <div class="about-content ps-lg-3 ps-0">
@@ -140,7 +141,7 @@
     </section><!-- /About Section -->
 
     <!-- Features Section -->
-    <section id="features" class="services section light-background">
+    <section class="services section light-background" id="features">
 
       <!-- Section Title -->
       <div class="section-title container" data-aos="fade-up">
@@ -154,28 +155,28 @@
           <div class="col-12 col-md-3" data-aos="fade-up" data-aos-delay="100">
             <div class="service-item position-relative">
               <div class="icon"><i class="bi bi-transparency icon"></i></div>
-              <h4><a href="#" class="stretched-link">Transparansi Proses Penjualan</a></h4>
+              <h4><a class="stretched-link" href="#">Transparansi Proses Penjualan</a></h4>
               <p>Semua aktivitas terekam dan terstruktur sehingga Anda tahu apa yang sedang terjadi, siapa yang melakukannya, dan apa langkah selanjutnya.</p>
             </div>
           </div>
           <div class="col-12 col-md-3" data-aos="fade-up" data-aos-delay="200">
             <div class="service-item position-relative">
               <div class="icon"><i class="bi bi-database-up icon"></i></div>
-              <h4><a href="#" class="stretched-link">Efisiensi & Produktivitas</a></h4>
+              <h4><a class="stretched-link" href="#">Efisiensi & Produktivitas</a></h4>
               <p>Kurangi catatan manual dan tumpukan spreadsheet. Sistem digital ini membuat manajemen pelanggan menjadi jauh lebih mudah.</p>
             </div>
           </div>
           <div class="col-12 col-md-3" data-aos="fade-up" data-aos-delay="200">
             <div class="service-item position-relative">
               <div class="icon"><i class="bi bi-graph-up-arrow icon"></i></div>
-              <h4><a href="#" class="stretched-link">Skalabilitas Tim & Proyek</a></h4>
+              <h4><a class="stretched-link" href="#">Skalabilitas Tim & Proyek</a></h4>
               <p>Baik dikelola sendiri atau bersama tim, Shiftech CRM dirancang untuk mendukung pertumbuhan usaha tanpa ribet.</p>
             </div>
           </div>
           <div class="col-12 col-md-3" data-aos="fade-up" data-aos-delay="200">
             <div class="service-item position-relative">
               <div class="icon"><i class="bi bi-hand-thumbs-up icon"></i></div>
-              <h4><a href="#" class="stretched-link">Meningkatkan Peluang Konversi</a></h4>
+              <h4><a class="stretched-link" href="#">Meningkatkan Peluang Konversi</a></h4>
               <p>Dengan data yang lebih jelas dan terpusat, Anda bisa membuat keputusan yang lebih tepat dalam menawarkan produk,
                 layanan, atau tindak lanjut.</p>
             </div>
@@ -189,7 +190,7 @@
 
   </main>
 
-  <footer id="footer" class="footer position-relative">
+  <footer class="footer position-relative" id="footer">
 
     <div class="footer-newsletter">
       <div class="container">
@@ -197,7 +198,8 @@
           <div class="col-lg-12">
             <h4>Mulai Sekarang!</h4>
             <p>Tinggalkan sistem pencatatan manual. Kelola pelanggan, tim, dan prospek Anda lebih cerdas dengan {{ env('APP_NAME') }}!</p>
-            <a href="https://wa.me/6285317404760?text=Halo+saya+ingin+mendaftar+aplikasi+{{ env('APP_NAME') }}+untuk+usaha+saya.+Mohon+info+selanjutnya." target="_blank" class="btn-get-started">
+            <a class="btn-get-started" href="https://wa.me/6285317404760?text=Halo+saya+ingin+mendaftar+aplikasi+{{ env('APP_NAME') }}+untuk+usaha+saya.+Mohon+info+selanjutnya."
+              target="_blank">
               Pesan Sekrang
             </a>
           </div>
@@ -214,7 +216,7 @@
           <p><strong>Email:</strong> <span>crm@shiftech.my.id</span></p>
         </div>
       </div>
-      
+
 
     </div>
 
@@ -233,7 +235,7 @@
   </footer>
 
   <!-- Scroll Top -->
-  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+  <a class="scroll-top d-flex align-items-center justify-content-center" id="scroll-top" href="#"><i
       class="bi bi-arrow-up-short"></i></a>
 
   <!-- Preloader -->
