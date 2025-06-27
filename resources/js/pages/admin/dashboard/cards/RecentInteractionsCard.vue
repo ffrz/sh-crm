@@ -1,7 +1,7 @@
 <script setup>
-import { usePage, router } from '@inertiajs/vue3';
+import { usePage, router } from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
-import { computed } from 'vue';
+import { computed } from "vue";
 
 const $q = useQuasar();
 const page = usePage();
@@ -14,7 +14,12 @@ const columns = [
   { name: "customer", label: "Client", field: "customer", align: "left" },
   { name: "service", label: "Layanan", field: "service", align: "left" },
   { name: "subject", label: "Subjek", field: "subject", align: "left" },
-  { name: "engagement_level", label: "Engagement", field: "engagement_level", align: "center" },
+  {
+    name: "engagement_level",
+    label: "Engagement",
+    field: "engagement_level",
+    align: "center",
+  },
 ];
 
 const type_colors = {
@@ -41,22 +46,32 @@ const engagement_level_colors = {
   lost: "black",
 };
 
-const onRowClicked = (row) => router.get(route("admin.interaction.detail", { id: row.id }));
+const onRowClicked = (row) =>
+  router.get(route("admin.interaction.detail", { id: row.id }));
 
 const computedColumns = computed(() =>
-  $q.screen.gt.sm ? columns : columns.filter((col) => ["id", "action"].includes(col.name))
+  $q.screen.gt.sm
+    ? columns
+    : columns.filter((col) => ["id", "action"].includes(col.name))
 );
-
 </script>
 <template>
   <div class="col-lg-6 col-12 card-container">
-    <div class="text-subtitle2 text-bold text-grey-8">
-      Interaksi Terbaru
-    </div>
-    <q-card square bordered class="no-shadow bg-white" style="width:100%;">
+    <div class="text-subtitle2 text-bold text-grey-8">Interaksi Terbaru</div>
+    <q-card square bordered class="no-shadow bg-white" style="width: 100%">
       <q-card-section class="q-pa-none">
-        <q-table flat bordered square color="primary" row-key="id" virtual-scroll :rows="rows" dense
-          :rows-per-page-options="[5]" :columns="computedColumns">
+        <q-table
+          flat
+          bordered
+          square
+          color="primary"
+          row-key="id"
+          virtual-scroll
+          :rows="rows"
+          dense
+          :rows-per-page-options="[5]"
+          :columns="computedColumns"
+        >
           <template v-slot:loading>
             <q-inner-loading showing color="red" />
           </template>
@@ -71,22 +86,33 @@ const computedColumns = computed(() =>
           </template>
 
           <template v-slot:body="props">
-            <q-tr :props="props" :class="props.row.active == 'inactive' ? 'bg-red-1' : ''" class="cursor-pointer"
-              @click="onRowClicked(props.row)">
+            <q-tr
+              :props="props"
+              :class="props.row.active == 'inactive' ? 'bg-red-1' : ''"
+              class="cursor-pointer"
+              @click="onRowClicked(props.row)"
+            >
               <q-td key="id" :props="props" class="wrap-column">
                 <div>
                   {{ props.row.id }}
                   <template v-if="$q.screen.lt.md">
-                    - <span><q-icon name="history" /> {{ $dayjs(props.row.date).format('D MMMM YYYY') }}</span>
+                    -
+                    <span
+                      ><q-icon name="history" />
+                      {{ $dayjs(props.row.date).format("D MMMM YYYY") }}</span
+                    >
                   </template>
                 </div>
                 <template v-if="$q.screen.lt.md">
                   <div>
-                    <q-icon name="people" /> #{{ props.row.customer.id }} - {{ props.row.customer.name }}
-                    - {{ props.row.customer.company }}
+                    <q-icon name="people" /> #{{ props.row.customer.id }} -
+                    {{ props.row.customer.name }} -
+                    {{ props.row.customer.company }}
                   </div>
                   <div v-if="props.row.customer.address">
-                    <q-icon name="location_on" />{{ props.row.customer.address }}
+                    <q-icon name="location_on" />{{
+                      props.row.customer.address
+                    }}
                   </div>
                   <div><q-icon name="apps" /> {{ props.row.service.name }}</div>
                   <div><q-icon name="input" /> {{ props.row.subject }}</div>
@@ -94,25 +120,34 @@ const computedColumns = computed(() =>
                     <q-badge :color="type_colors[props.row.type]">
                       {{ $CONSTANTS.INTERACTION_TYPES[props.row.type] }}
                     </q-badge>
-                    <q-badge :color="engagement_level_colors[props.row.engagement_level]">
+                    <q-badge
+                      :color="
+                        engagement_level_colors[props.row.engagement_level]
+                      "
+                    >
                       <q-icon name="favorite" />&nbsp;{{
-                        $CONSTANTS.INTERACTION_ENGAGEMENT_LEVELS[props.row.engagement_level] }}
+                        $CONSTANTS.INTERACTION_ENGAGEMENT_LEVELS[
+                          props.row.engagement_level
+                        ]
+                      }}
                     </q-badge>
                     <q-badge :color="status_colors[props.row.status]">
                       {{ $CONSTANTS.INTERACTION_STATUSES[props.row.status] }}
                     </q-badge>
                   </div>
-                  <div v-if="props.row.notes"><q-icon name="notes" /> {{ props.row.notes }}</div>
+                  <div v-if="props.row.notes">
+                    <q-icon name="notes" /> {{ props.row.notes }}
+                  </div>
                 </template>
               </q-td>
               <q-td key="date" :props="props" class="wrap-column">
                 <div>
-                  {{ $dayjs(props.row.interaction_date).format('D MMMM YYYY') }}
-                  <template v-if="props.row.interaction_time">
-                    <span class="text-grey-6">({{ props.row.interaction_time }})</span>
-                  </template>
+                  {{ $dayjs(props.row.date).format("D MMMM YYYY") }}
                 </div>
-                <div><q-icon name="history" v-if="$q.screen.lt.md" /> {{ props.row.name }}</div>
+                <div>
+                  <q-icon name="history" v-if="$q.screen.lt.md" />
+                  {{ props.row.name }}
+                </div>
               </q-td>
               <q-td key="type" :props="props">
                 {{ $CONSTANTS.INTERACTION_TYPES[props.row.type] }}
@@ -121,9 +156,11 @@ const computedColumns = computed(() =>
                 {{ props.row.user.username }}
               </q-td>
               <q-td key="customer" :props="props">
-                {{ props.row.customer.name }} - {{ props.row.customer.company }} (#{{ props.row.customer.id }})
-                <br />{{ props.row.customer.business_type }}
-                <br />{{ props.row.customer.address }}
+                {{ props.row.customer.name }} -
+                {{ props.row.customer.company }} (#{{ props.row.customer.id }})
+                <br />{{ props.row.customer.business_type }} <br />{{
+                  props.row.customer.address
+                }}
               </q-td>
               <q-td key="service" :props="props">
                 {{ props.row.service.name }}
@@ -132,8 +169,14 @@ const computedColumns = computed(() =>
                 {{ props.row.subject }}
               </q-td>
               <q-td key="engagement_level" :props="props">
-                <q-badge :color="engagement_level_colors[props.row.engagement_level]">
-                  {{ $CONSTANTS.INTERACTION_ENGAGEMENT_LEVELS[props.row.engagement_level] }}
+                <q-badge
+                  :color="engagement_level_colors[props.row.engagement_level]"
+                >
+                  {{
+                    $CONSTANTS.INTERACTION_ENGAGEMENT_LEVELS[
+                      props.row.engagement_level
+                    ]
+                  }}
                 </q-badge>
               </q-td>
             </q-tr>

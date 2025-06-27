@@ -336,7 +336,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
                   -
                   <span
                     ><q-icon name="history" />
-                    {{ $dayjs(props.row.date).format("DD MMMM YYYY") }}</span
+                    {{ $dayjs(props.row.date).format("D MMMM YYYY") }}</span
                   >
                 </template>
               </div>
@@ -375,7 +375,7 @@ watch(pagination, () => storage.set("pagination", pagination.value), {
             </q-td>
             <q-td key="date" :props="props" class="wrap-column">
               <div>
-                {{ $dayjs(props.row.date).format("DD MMMM YYYY") }}
+                {{ $dayjs(props.row.date).format("D MMMM YYYY") }}
                 <template v-if="props.row.interaction_time">
                   <span class="text-grey-6"
                     >({{ props.row.interaction_time }})</span

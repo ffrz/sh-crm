@@ -4,7 +4,6 @@ import { formatNumber } from "@/helpers/utils";
 
 const page = usePage();
 const title = "Rincian Closing";
-
 </script>
 
 <template>
@@ -14,8 +13,14 @@ const title = "Rincian Closing";
     <template #right-button>
       <div class="q-gutter-sm">
         <q-btn icon="arrow_back" dense color="grey-7" @click="$goBack()" />
-        <q-btn icon="edit" dense color="primary"
-          @click="router.get(route('admin.closing.edit', { id: page.props.data.id }))" />
+        <q-btn
+          icon="edit"
+          dense
+          color="primary"
+          @click="
+            router.get(route('admin.closing.edit', { id: page.props.data.id }))
+          "
+        />
       </div>
     </template>
     <q-page class="row justify-center">
@@ -23,25 +28,39 @@ const title = "Rincian Closing";
         <div class="row">
           <q-card square flat bordered class="col">
             <q-card-section>
-              <div class="text-subtitle1 text-bold text-grey-8">Info Closing</div>
+              <div class="text-subtitle1 text-bold text-grey-8">
+                Info Closing
+              </div>
               <table class="detail">
                 <tbody>
                   <tr>
-                    <td style="width:150px">Id</td>
-                    <td style="width:1px">:</td>
+                    <td style="width: 150px">Id</td>
+                    <td style="width: 1px">:</td>
                     <td>#{{ page.props.data.id }}</td>
                   </tr>
                   <tr>
                     <td>Tanggal</td>
                     <td>:</td>
-                    <td>{{ $dayjs(page.props.data.date).format('DD MMMM YYYY') }}</td>
+                    <td>
+                      {{
+                        $dayjs(page.props.data.date).format("D MMMM YYYY YYYY")
+                      }}
+                    </td>
                   </tr>
                   <tr>
                     <td>Sales</td>
                     <td>:</td>
                     <td>
-                      <a :href="route('admin.user.detail', { id: page.props.data.user.id })">
-                        {{ page.props.data.user.name }} ({{ page.props.data.user.username }})
+                      <a
+                        :href="
+                          route('admin.user.detail', {
+                            id: page.props.data.user.id,
+                          })
+                        "
+                      >
+                        {{ page.props.data.user.name }} ({{
+                          page.props.data.user.username
+                        }})
                       </a>
                     </td>
                   </tr>
@@ -49,9 +68,19 @@ const title = "Rincian Closing";
                     <td>Client</td>
                     <td>:</td>
                     <td>
-                      <a :href="route('admin.customer.detail', { id: page.props.data.customer.id })">
+                      <a
+                        :href="
+                          route('admin.customer.detail', {
+                            id: page.props.data.customer.id,
+                          })
+                        "
+                      >
                         {{ page.props.data.customer.name }}
-                        {{ page.props.data.customer.company ? `- ${page.props.data.customer.company}` : '' }}
+                        {{
+                          page.props.data.customer.company
+                            ? `- ${page.props.data.customer.company}`
+                            : ""
+                        }}
                         - (#{{ page.props.data.customer.id }})
                       </a>
                       <template v-if="page.props.data.customer.address">
@@ -63,7 +92,13 @@ const title = "Rincian Closing";
                     <td>Layanan</td>
                     <td>:</td>
                     <td>
-                      <a :href="route('admin.service.detail', { id: page.props.data.service.id })">
+                      <a
+                        :href="
+                          route('admin.service.detail', {
+                            id: page.props.data.service.id,
+                          })
+                        "
+                      >
                         {{ page.props.data.service.name }}
                       </a>
                     </td>
@@ -88,10 +123,20 @@ const title = "Rincian Closing";
                     <td>:</td>
                     <td>
                       {{ $dayjs(page.props.data.created_datetime).fromNow() }} -
-                      {{ $dayjs(page.props.data.created_datetime).format("DD MMMM YY HH:mm:ss") }}
+                      {{
+                        $dayjs(page.props.data.created_datetime).format(
+                          "D MMMM YYYY YY HH:mm:ss"
+                        )
+                      }}
                       <template v-if="page.props.data.created_by_user">
                         oleh
-                        <a :href="route('admin.user.detail', { id: page.props.data.created_by_user.id })">
+                        <a
+                          :href="
+                            route('admin.user.detail', {
+                              id: page.props.data.created_by_user.id,
+                            })
+                          "
+                        >
                           {{ page.props.data.created_by_user.username }}
                         </a>
                       </template>
@@ -102,10 +147,20 @@ const title = "Rincian Closing";
                     <td>:</td>
                     <td>
                       {{ $dayjs(page.props.data.updated_datetime).fromNow() }} -
-                      {{ $dayjs(page.props.data.updated_datetime).format("DD MMMM YY HH:mm:ss") }}
+                      {{
+                        $dayjs(page.props.data.updated_datetime).format(
+                          "D MMMM YYYY YY HH:mm:ss"
+                        )
+                      }}
                       <template v-if="page.props.data.updated_by_user">
                         oleh
-                        <a :href="route('admin.user.detail', { id: page.props.data.updated_by_user.id })">
+                        <a
+                          :href="
+                            route('admin.user.detail', {
+                              id: page.props.data.updated_by_user.id,
+                            })
+                          "
+                        >
                           {{ page.props.data.updated_by_user.username }}
                         </a>
                       </template>

@@ -54,7 +54,7 @@ const form = useForm({
   service_id: page.props.data.service_id
     ? Number(page.props.data.service_id)
     : null,
-  date: dayjs(page.props.data.visit_date).format("YYYY-MM-DD"),
+  date: dayjs(page.props.data.date).format("YYYY-MM-DD"),
   type: page.props.data.type ?? "visit",
   status: page.props.data.status,
   engagement_level: page.props.data.engagement_level ?? "none",

@@ -9,8 +9,8 @@ const page = usePage();
   <table class="detail">
     <tbody>
       <tr>
-        <td style="width:100px">Nama</td>
-        <td style="width:1px">:</td>
+        <td style="width: 100px">Nama</td>
+        <td style="width: 1px">:</td>
         <td>{{ page.props.data.name }}</td>
       </tr>
       <tr>
@@ -48,18 +48,19 @@ const page = usePage();
         <td>:</td>
         <td>
           <template v-if="page.props.data.assigned_user">
-            {{ page.props.data.assigned_user.name + ' - ' +
-              (page.props.data.assigned_user.username) }}
+            {{
+              page.props.data.assigned_user.name +
+              " - " +
+              page.props.data.assigned_user.username
+            }}
           </template>
-          <template v-else>
-            -
-          </template>
+          <template v-else> - </template>
         </td>
       </tr>
       <tr>
         <td>Status</td>
         <td>:</td>
-        <td>{{ page.props.data.active ? 'Aktif' : 'Tidak Aktif' }}</td>
+        <td>{{ page.props.data.active ? "Aktif" : "Tidak Aktif" }}</td>
       </tr>
       <tr>
         <td>Layanan</td>
@@ -70,8 +71,8 @@ const page = usePage();
             <q-badge>
               {{ $CONSTANTS.CUSTOMER_SERVICE_STATUSES[item.status] }}
             </q-badge>
-            | <span>{{ item.start_date ?? '?' }}</span>
-            - <span>{{ item.end_date ?? '?' }}</span>
+            | <span>{{ item.start_date ?? "?" }}</span> -
+            <span>{{ item.end_date ?? "?" }}</span>
           </div>
         </td>
       </tr>
@@ -85,10 +86,20 @@ const page = usePage();
         <td>:</td>
         <td>
           {{ $dayjs(page.props.data.created_datetime).fromNow() }} -
-          {{ $dayjs(page.props.data.created_datetime).format("DD MMMM YY HH:mm:ss") }}
+          {{
+            $dayjs(page.props.data.created_datetime).format(
+              "D MMMM YYYY YY HH:mm:ss"
+            )
+          }}
           <template v-if="page.props.data.created_by_user">
             oleh
-            <a :href="route('admin.user.detail', { id: page.props.data.created_by_user.id })">
+            <a
+              :href="
+                route('admin.user.detail', {
+                  id: page.props.data.created_by_user.id,
+                })
+              "
+            >
               {{ page.props.data.created_by_user.username }}
             </a>
           </template>
@@ -99,10 +110,20 @@ const page = usePage();
         <td>:</td>
         <td>
           {{ $dayjs(page.props.data.updated_datetime).fromNow() }} -
-          {{ $dayjs(page.props.data.updated_datetime).format("DD MMMM YY HH:mm:ss") }}
+          {{
+            $dayjs(page.props.data.updated_datetime).format(
+              "D MMMM YYYY YY HH:mm:ss"
+            )
+          }}
           <template v-if="page.props.data.updated_by_user">
             oleh
-            <a :href="route('admin.user.detail', { id: page.props.data.updated_by_user.id })">
+            <a
+              :href="
+                route('admin.user.detail', {
+                  id: page.props.data.updated_by_user.id,
+                })
+              "
+            >
               {{ page.props.data.updated_by_user.username }}
             </a>
           </template>

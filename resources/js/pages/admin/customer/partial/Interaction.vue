@@ -48,47 +48,75 @@ const engagement_level_colors = {
 
 const columns = [
   { name: "id", label: "#", field: "id", align: "left", sortable: true },
-  { name: "date", label: "Tanggal", field: "date", align: "left", sortable: true },
+  {
+    name: "date",
+    label: "Tanggal",
+    field: "date",
+    align: "left",
+    sortable: true,
+  },
   { name: "type", label: "Jenis", field: "type", align: "left" },
   { name: "sales", label: "Sales", field: "sales", align: "left" },
   { name: "service", label: "Layanan", field: "service", align: "left" },
   { name: "subject", label: "Subjek", field: "subject", align: "left" },
-  { name: "engagement_level", label: "Engagement", field: "engagement_level", align: "center" },
+  {
+    name: "engagement_level",
+    label: "Engagement",
+    field: "engagement_level",
+    align: "center",
+  },
   { name: "action", align: "right" },
 ];
 
 onMounted(() => fetchItems());
 
-const deleteItem = (row) => handleDelete({
-  message: `Hapus interaksi ${row.name}?`,
-  url: route("admin.interaction.delete", row.id),
-  fetchItemsCallback: fetchItems,
-  loading,
-});
+const deleteItem = (row) =>
+  handleDelete({
+    message: `Hapus interaksi ${row.name}?`,
+    url: route("admin.interaction.delete", row.id),
+    fetchItemsCallback: fetchItems,
+    loading,
+  });
 
-const fetchItems = (props = null) => handleFetchItems({
-  pagination,
-  filter,
-  props,
-  rows,
-  url: route("admin.interaction.data"),
-  loading,
-});
+const fetchItems = (props = null) =>
+  handleFetchItems({
+    pagination,
+    filter,
+    props,
+    rows,
+    url: route("admin.interaction.data"),
+    loading,
+  });
 
-const onRowClicked = (row) => router.get(route("admin.interaction.detail", { id: row.id }));
+const onRowClicked = (row) =>
+  router.get(route("admin.interaction.detail", { id: row.id }));
 
 const computedColumns = computed(() =>
-  $q.screen.gt.sm ? columns : columns.filter((col) => ["id", "action"].includes(col.name))
+  $q.screen.gt.sm
+    ? columns
+    : columns.filter((col) => ["id", "action"].includes(col.name))
 );
-
 </script>
 
 <template>
-
   <div class="q-pa-none">
-    <q-table class="full-height-table" flat bordered square color="primary" row-key="id" virtual-scroll
-      v-model:pagination="pagination" :filter="filter.search" :loading="loading" :columns="computedColumns" :rows="rows"
-      :rows-per-page-options="[10, 25, 50]" @request="fetchItems" binary-state-sort>
+    <q-table
+      class="full-height-table"
+      flat
+      bordered
+      square
+      color="primary"
+      row-key="id"
+      virtual-scroll
+      v-model:pagination="pagination"
+      :filter="filter.search"
+      :loading="loading"
+      :columns="computedColumns"
+      :rows="rows"
+      :rows-per-page-options="[10, 25, 50]"
+      @request="fetchItems"
+      binary-state-sort
+    >
       <template v-slot:loading>
         <q-inner-loading showing color="red" />
       </template>
@@ -103,13 +131,21 @@ const computedColumns = computed(() =>
       </template>
 
       <template v-slot:body="props">
-        <q-tr :props="props" :class="props.row.active == 'inactive' ? 'bg-red-1' : ''" class="cursor-pointer"
-          @click="onRowClicked(props.row)">
+        <q-tr
+          :props="props"
+          :class="props.row.active == 'inactive' ? 'bg-red-1' : ''"
+          class="cursor-pointer"
+          @click="onRowClicked(props.row)"
+        >
           <q-td key="id" :props="props" class="wrap-column">
             <div>
               {{ props.row.id }}
               <template v-if="$q.screen.lt.md">
-                - <span><q-icon name="history" /> {{ $dayjs(props.row.date).format('DD MMMM YYYY') }}</span>
+                -
+                <span
+                  ><q-icon name="history" />
+                  {{ $dayjs(props.row.date).format("D MMMM YYYY") }}</span
+                >
               </template>
             </div>
             <template v-if="$q.screen.lt.md">
@@ -119,25 +155,37 @@ const computedColumns = computed(() =>
                 <q-badge :color="type_colors[props.row.type]">
                   {{ $CONSTANTS.INTERACTION_TYPES[props.row.type] }}
                 </q-badge>
-                <q-badge :color="engagement_level_colors[props.row.engagement_level]">
+                <q-badge
+                  :color="engagement_level_colors[props.row.engagement_level]"
+                >
                   <q-icon name="favorite" />&nbsp;{{
-                    $CONSTANTS.INTERACTION_ENGAGEMENT_LEVELS[props.row.engagement_level] }}
+                    $CONSTANTS.INTERACTION_ENGAGEMENT_LEVELS[
+                      props.row.engagement_level
+                    ]
+                  }}
                 </q-badge>
                 <q-badge :color="status_colors[props.row.status]">
                   {{ $CONSTANTS.INTERACTION_STATUSES[props.row.status] }}
                 </q-badge>
               </div>
-              <div v-if="props.row.notes"><q-icon name="notes" /> {{ props.row.notes }}</div>
+              <div v-if="props.row.notes">
+                <q-icon name="notes" /> {{ props.row.notes }}
+              </div>
             </template>
           </q-td>
           <q-td key="date" :props="props" class="wrap-column">
             <div>
-              {{ $dayjs(props.row.interaction_date).format('YYYY-MM-DD') }}
+              {{ $dayjs(props.row.interaction_date).format("YYYY-MM-DD") }}
               <template v-if="props.row.interaction_time">
-                <span class="text-grey-6">({{ props.row.interaction_time }})</span>
+                <span class="text-grey-6"
+                  >({{ props.row.interaction_time }})</span
+                >
               </template>
             </div>
-            <div><q-icon name="history" v-if="$q.screen.lt.md" /> {{ props.row.name }}</div>
+            <div>
+              <q-icon name="history" v-if="$q.screen.lt.md" />
+              {{ props.row.name }}
+            </div>
           </q-td>
           <q-td key="type" :props="props">
             {{ $CONSTANTS.INTERACTION_TYPES[props.row.type] }}
@@ -157,24 +205,54 @@ const computedColumns = computed(() =>
             {{ props.row.subject }}
           </q-td>
           <q-td key="engagement_level" :props="props">
-            <q-badge :color="engagement_level_colors[props.row.engagement_level]">
-              {{ $CONSTANTS.INTERACTION_ENGAGEMENT_LEVELS[props.row.engagement_level] }}
+            <q-badge
+              :color="engagement_level_colors[props.row.engagement_level]"
+            >
+              {{
+                $CONSTANTS.INTERACTION_ENGAGEMENT_LEVELS[
+                  props.row.engagement_level
+                ]
+              }}
             </q-badge>
           </q-td>
           <q-td key="action" :props="props">
             <div class="flex justify-end">
-              <q-btn :disabled="!check_role($CONSTANTS.USER_ROLE_ADMIN)" icon="more_vert" dense flat
-                style="height: 40px; width: 30px" @click.stop>
-                <q-menu anchor="bottom right" self="top right" transition-show="scale" transition-hide="scale">
+              <q-btn
+                :disabled="!check_role($CONSTANTS.USER_ROLE_ADMIN)"
+                icon="more_vert"
+                dense
+                flat
+                style="height: 40px; width: 30px"
+                @click.stop
+              >
+                <q-menu
+                  anchor="bottom right"
+                  self="top right"
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
                   <q-list style="width: 200px">
-                    <q-item clickable v-ripple v-close-popup
-                      @click.stop="router.get(route('admin.interaction.edit', props.row.id))">
+                    <q-item
+                      clickable
+                      v-ripple
+                      v-close-popup
+                      @click.stop="
+                        router.get(
+                          route('admin.interaction.edit', props.row.id)
+                        )
+                      "
+                    >
                       <q-item-section avatar>
                         <q-icon name="edit" />
                       </q-item-section>
                       <q-item-section icon="edit">Edit</q-item-section>
                     </q-item>
-                    <q-item @click.stop="deleteItem(props.row)" clickable v-ripple v-close-popup>
+                    <q-item
+                      @click.stop="deleteItem(props.row)"
+                      clickable
+                      v-ripple
+                      v-close-popup
+                    >
                       <q-item-section avatar>
                         <q-icon name="delete_forever" />
                       </q-item-section>
